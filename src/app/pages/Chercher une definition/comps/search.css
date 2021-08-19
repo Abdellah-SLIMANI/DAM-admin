@@ -1,0 +1,10 @@
+.searchContainer{
+    background-image: url('../../../../dictionnaireImages/hall.png');
+    background-position: center;
+    margin: auto;
+}
+
+.PrivateNotchedOutline-root-97, .MuiOutlinedInput-notchedOutline{
+    background: white;
+    z-index: -1;
+}

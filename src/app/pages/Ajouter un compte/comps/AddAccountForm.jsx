@@ -1,0 +1,190 @@
+import React, { useState } from 'react'
+import {
+    Card,
+    Checkbox,
+    FormControlLabel,
+    Grid,
+    Button,
+    CircularProgress,
+    CardHeader,
+    TextField,
+} from '@material-ui/core'
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
+
+import { makeStyles } from '@material-ui/core/styles'
+import history from 'history.js'
+import clsx from 'clsx'
+import useAuth from 'app/hooks/useAuth'
+import images from '../../../../dictionnaireImages/images'
+import { Autocomplete } from '@material-ui/lab'
+import axios from 'axios'
+
+
+export default function AddAccountForm() {
+    const [userInfo, setUserInfo] = useState({
+        nom: '',
+        prenom: '',
+        email: '',
+        role: '',
+    })
+    const [loading, setLoading] = useState(false)
+
+    const handleChange = ({ target: { name, value } }) => {
+        let temp = { ...userInfo }
+        temp[name] = value
+        console.log("TEMP",temp)
+        setUserInfo(temp)
+    }
+
+    const handleFormSubmit = async (event) => {
+        setLoading(true)
+        console.log("UserInfo",userInfo)
+        try {
+            axios.post('http://13.36.215.163:8000/api/administration/create_account/', userInfo)
+            .then(res=> console.log("RES IN POSTING USER", res))
+        } catch (e) {
+            console.log(e)
+            setLoading(false)
+        }
+    }
+    const suggestions = [
+        {
+            label: 'Administrateur'
+        },
+        {
+            label: 'Valideur'
+        },
+        {
+            label: 'Utilisateur'
+        }
+    ]
+    
+
+    return (
+        <div>
+        <Card>
+            <Grid container>
+                <Grid item lg={5} md={5} sm={5} xs={12}>
+                    <div className="p-8 flex justify-center items-center h-full">
+                        <h3>Remplissez ce formulaire pour ajouter un compte!</h3>
+                        <img
+                            className="w-100"
+                            src={images.logoDicMini}
+                            alt=""
+                        />
+                    </div>
+                </Grid>
+                <Grid item lg={7} md={7} sm={7} xs={12}>
+                    <div className="p-8 h-full bg-light-gray relative">
+                        <ValidatorForm onSubmit={handleFormSubmit}>
+                            <TextValidator
+                                className="mb-6 w-full"
+                                variant="outlined"
+                                size="small"
+                                label="Nom"
+                                onChange={handleChange}
+                                type="text"
+                                name="nom"
+                                value={userInfo.nom}
+                                validators={['required']}
+                                errorMessages={[
+                                    'Ce champ est obligatoire!',
+                                ]}
+                            />
+                        <TextValidator
+                                className="mb-6 w-full"
+                                variant="outlined"
+                                size="small"
+                                label="Prenom"
+                                onChange={handleChange}
+                                type="text"
+                                name="prenom"
+                                value={userInfo.prenom}
+                                validators={['required']}
+                                errorMessages={[
+                                    'Ce champ est obligatoire!',
+                                ]}
+                            />
+                               <TextValidator
+                                    className="mb-6 w-full"
+                                    variant="outlined"
+                                    size="small"
+                                    label="Email"
+                                    onChange={handleChange}
+                                    type="email"
+                                    name="email"
+                                    value={userInfo.email}
+                                    validators={['required', 'isEmail']}
+                                    errorMessages={[
+                                        'Ce champ est obligatoire!',
+                                        "L'email n'est pas valide",
+                                    ]}
+                                />
+                                <Autocomplete
+                                    className="mb-6 w-full"
+                                    options={suggestions}
+                                    getOptionLabel={(option) => option.label}
+                                    renderInput={(params) => (
+                                        <TextField
+                                        validators={['required']}
+                                        errorMessages={[
+                                            'Ce champ est obligatoire!',
+                                        ]}
+                                            {...params}
+                                            label="Role"
+                                            variant="outlined"
+                                            name= 'role'
+                                            value={userInfo.role}
+                                            onChange={handleChange}
+                                            type= 'text'
+                                            fullWidth
+                                        />   
+                                    )}
+                                />
+                            {/* <FormControlLabel
+                                className="mb-3 min-w-288"
+                                name="agreement"
+                                onChange={handleChange}
+                                control={
+                                    <Checkbox
+                                        size="small"
+                                        onChange={({
+                                            target: { checked },
+                                        }) =>
+                                            handleChange({
+                                                target: {
+                                                    name: 'agreement',
+                                                    value: checked,
+                                                },
+                                            })
+                                        }
+                                        checked={userInfo.agreement || true}
+                                    />
+                                }
+                                label="Remeber me"
+                            /> */}
+
+                            {/* {message && (
+                                <p className="text-error">{message}</p>
+                            )} */}
+
+                            <div className="flex flex-wrap items-center mb-4">
+                                <div className="relative">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        // disabled={loading}
+                                        type="submit"
+                                    >
+                                        Ajouter
+                                    </Button>
+                                </div>
+                            </div>
+                        </ValidatorForm>
+                    </div>
+                </Grid>
+            </Grid>
+        </Card>
+    </div>
+    )
+}
