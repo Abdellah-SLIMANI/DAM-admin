@@ -72,7 +72,7 @@ export default function ModifyDefTxtEdit() {
             <h4>Remplissez les champs ci-dessous pour modifier une définition.</h4>
                 <div>
                     <Button className='bg-primary text-white'>Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white ml-2'>Soumetre</Button>
+                    <Button className='bg-green text-white ml-2'>Soumettre</Button>
                 </div>
             </div>
             <Tab.Container id="left-tabs-example" defaultActiveKey="titre">
