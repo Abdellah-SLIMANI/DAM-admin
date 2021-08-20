@@ -69,8 +69,11 @@ export default function ModifyDefTxtEdit() {
         <div className = 'adminPageContainer'>
             <div className= 'mainArea addWordContainer'>
             <div className= 'd-flex justify-content-between mb-3'>
-                <h2>Edition des définitions du dictionnaire</h2>
-                <Button style={{background: '#A01102', color: 'white'}}>Soumetre</Button>
+            <h4>Remplissez les champs ci-dessous pour modifier une définition.</h4>
+                <div>
+                    <Button className='bg-primary text-white'>Enregistrer comme brouillon</Button>
+                    <Button className='bg-green text-white ml-2'>Soumetre</Button>
+                </div>
             </div>
             <Tab.Container id="left-tabs-example" defaultActiveKey="titre">
                 <Row className='border p-5'>
@@ -161,7 +164,7 @@ export default function ModifyDefTxtEdit() {
                         </Tab.Pane>
                         <Tab.Pane eventKey="genre">
                         <div className='flex'>
-                            <div className='d-flex flex-column'>
+                            <div className='d-flex flex-row'>
                             <JoditEditor
                             ref={genre}
                             value={content.editor}
