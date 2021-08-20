@@ -152,7 +152,7 @@ export default function AddDefComp() {
                 <h4>Remplissez les champs ci-dessous pour ajouter une définition.</h4>
                 <div>
                     <Button className='bg-primary text-white' onClick={()=>{draft()}}>Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white ml-2' onClick={()=>{soummetre()}}>Soummetre</Button>
+                    <Button className='bg-green text-white ml-2' onClick={()=>{soummetre()}}>Soumetre</Button>
                 </div>
             </div>
             <Card>

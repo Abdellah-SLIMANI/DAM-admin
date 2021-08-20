@@ -51,8 +51,8 @@ export default function ModifyDefTxtEdit() {
 
     let query = useQuery();
       
-    useEffect(async() => {
-        await axios.get(`http://13.36.215.163:8000/api/elastic/search/?titre=${query.get('titre')}`)
+    useEffect(() => {
+         axios.get(`http://13.36.215.163:8000/api/elastic/search/?titre=${query.get('titre')}`)
             .then(response => response.data.find((word) => {
                 if(word.titre === query.get('titre')){
                     console.log('WORD',word)
@@ -60,8 +60,6 @@ export default function ModifyDefTxtEdit() {
                 }
             }))
     }, [])
-    console.log('old content',oldContent)
-    // console.log("CONTENTT",content.titre)
 	
 	const config = {
 		readonly: false // all options from https://xdsoft.net/jodit/doc/
@@ -72,7 +70,7 @@ export default function ModifyDefTxtEdit() {
             <div className= 'mainArea addWordContainer'>
             <div className= 'd-flex justify-content-between mb-3'>
                 <h2>Edition des définitions du dictionnaire</h2>
-                <Button style={{background: '#A01102', color: 'white'}}>Soummetre</Button>
+                <Button style={{background: '#A01102', color: 'white'}}>Soumetre</Button>
             </div>
             <Tab.Container id="left-tabs-example" defaultActiveKey="titre">
                 <Row className='border p-5'>

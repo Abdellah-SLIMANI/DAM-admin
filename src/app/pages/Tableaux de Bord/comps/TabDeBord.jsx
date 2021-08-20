@@ -26,7 +26,7 @@ const TabDeBord = () => {
     function redirectToModify(def) {
         localStorage.setItem('modifyWord',def.titre);
         let queryString = "titre=" + def.titre;
-        history.push(`/modifier-une-defintion-write/?${queryString}`);
+        history.push(`/modifier-une-definition-write/?${queryString}`);
       }
 
     React.useEffect(() => {
@@ -61,7 +61,7 @@ const TabDeBord = () => {
                         {/* <TableCell className="px-0">Validée</TableCell> get rid of */}
                         <TableCell className="px-0">Emetteur</TableCell>
                         <TableCell className="px-0">Date d'émission</TableCell>
-                        <TableCell className="px-0">Status</TableCell>
+                        <TableCell className="px-0">Statut</TableCell>
                         <TableCell className="px-0">Version</TableCell>
                         <TableCell className="px-0">Action</TableCell>
                     </TableRow>

@@ -18,12 +18,12 @@ const administrationRoutes = [
     //     auth: authRoles.sa
     // },
     {
-        path: '/modifier-une-defintion',
+        path: '/modifier-une-definition',
         component: React.lazy(() => import('../../pages/Modifier une Definition/SearchDef')),
         auth: authRoles.sa
     },
     {
-        path: '/modifier-une-defintion-write',
+        path: '/modifier-une-definition-write',
         component: React.lazy(() => import('../../pages/Modifier une Definition/ModifyDefWriting')),
         auth: authRoles.sa
     }

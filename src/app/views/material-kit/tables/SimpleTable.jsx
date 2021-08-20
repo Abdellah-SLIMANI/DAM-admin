@@ -63,7 +63,7 @@ const SimpleTable = () => {
                         <TableCell className="px-0">Name</TableCell>
                         <TableCell className="px-0">Company</TableCell>
                         <TableCell className="px-0">Start Date</TableCell>
-                        <TableCell className="px-0">Status</TableCell>
+                        <TableCell className="px-0">Statut</TableCell>
                         <TableCell className="px-0">Amount</TableCell>
                         <TableCell className="px-0">Action</TableCell>
                     </TableRow>

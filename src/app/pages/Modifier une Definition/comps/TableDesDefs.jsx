@@ -26,7 +26,7 @@ const TableDesDefs = () => {
     function redirectToModify(def) {
         localStorage.setItem('modifyWord',def.titre);
         let queryString = "titre=" + def.titre;
-        history.push(`/modifier-une-defintion-write/?${queryString}`);
+        history.push(`/modifier-une-definition-write/?${queryString}`);
       }
 
       function useQuery() {

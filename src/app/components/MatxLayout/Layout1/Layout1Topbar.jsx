@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect,useState } from 'react'
 import {
     Icon,
     IconButton,
@@ -19,6 +19,7 @@ import { NotificationProvider } from 'app/contexts/NotificationContext'
 import images from 'dictionnaireImages/images'
 import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
 import { AddBoxOutlined, CreateOutlined, PeopleAltOutlined } from '@material-ui/icons'
+import axios from 'axios'
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     topbar: {
@@ -83,6 +84,7 @@ const Layout1Topbar = () => {
     const { logout, user } = useAuth()
     const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
     const fixed = settings?.layout1Settings?.topbar?.fixed
+    const [menuItems, setMenuItems] = useState([])
 
     const updateSidebarMode = (sidebarSettings) => {
         updateSettings({
@@ -111,6 +113,11 @@ const Layout1Topbar = () => {
         updateSidebarMode({ mode })
     }
 
+    useEffect(() => {
+        axios.get('http://13.36.215.163:8000/api/administration/get_user_menu/', {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
+            .then(res => setMenuItems(res.data))
+    }, [])
+
     return (
         <div className={classes.topbar}>
             <div className={clsx({ 'topbar-hold': true, fixed: fixed })}>
@@ -123,7 +130,20 @@ const Layout1Topbar = () => {
                             <Icon>menu</Icon>
                         </IconButton> */}
                         <img src={images.logoDicMaxi} alt="" className={classes.myLogo}/>
-                        <MenuItem className={classes.topBarMenuItem}>      
+
+                        {
+                            console.log("MENU ITEMS", menuItems ),
+                            menuItems && menuItems.map((item) => 
+                                
+                                <MenuItem className={classes.topBarMenuItem}>      
+                                <Link className={classes.menuItem} to={item.path}>
+                                    <Icon style={{marginRight: '5%'}}> {item.icone}</Icon> 
+                                            <span> {item.title} </span>
+                                </Link>
+                            </MenuItem>
+                            )
+                        }
+                        {/* <MenuItem className={classes.topBarMenuItem}>      
                             <Link className={classes.menuItem} to="/Tableaux-de-bord">
                                 <DashboardOutlinedIcon style={{marginRight: '5%'}}/> 
                                         <span> Tableau de bord </span>
@@ -141,7 +161,7 @@ const Layout1Topbar = () => {
                         <AddBoxOutlined style={{marginRight: '5%'}}/> 
                                         <span> Ajouter une defintion </span>
                             </Link>
-                            </MenuItem>
+                            </MenuItem> */}
                     </div>
                     <div className="flex items-center">
                         {/* <MatxSearchBox /> */}

@@ -12,7 +12,6 @@ import formsRoutes from './views/forms/FormsRoutes'
 import mapRoutes from './views/map/MapRoutes'
 import accountsRoutes from './pages/AccountsRoutes'
 
-
 const redirectRoute = [
     {
         path: '/',
