@@ -143,25 +143,6 @@ const Layout1Topbar = () => {
                             </MenuItem>
                             )
                         }
-                        {/* <MenuItem className={classes.topBarMenuItem}>      
-                            <Link className={classes.menuItem} to="/Tableaux-de-bord">
-                                <DashboardOutlinedIcon style={{marginRight: '5%'}}/> 
-                                        <span> Tableau de bord </span>
-                            </Link>
-                        </MenuItem>
-                        
-                        <MenuItem className={classes.topBarMenuItem}>
-                        <Link className={classes.menuItem} to="/modifier-une-defintion">
-                        <CreateOutlined style={{marginRight: '5%'}}/> 
-                                        <span> Modifier une definition </span>
-                            </Link>
-                            </MenuItem>
-                            <MenuItem className={classes.topBarMenuItem}>
-                        <Link className={classes.menuItem} to="/ajouter-une-definition">
-                        <AddBoxOutlined style={{marginRight: '5%'}}/> 
-                                        <span> Ajouter une defintion </span>
-                            </Link>
-                            </MenuItem> */}
                     </div>
                     <div className="flex items-center">
                         {/* <MatxSearchBox /> */}

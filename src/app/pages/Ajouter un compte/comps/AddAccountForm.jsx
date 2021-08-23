@@ -1,19 +1,12 @@
 import React, { useState } from 'react'
 import {
     Card,
-    Checkbox,
-    FormControlLabel,
     Grid,
     Button,
-    CircularProgress,
-    CardHeader,
     TextField,
 } from '@material-ui/core'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
 
-import { makeStyles } from '@material-ui/core/styles'
-import history from 'history.js'
-import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
 import images from '../../../../dictionnaireImages/images'
 import { Autocomplete } from '@material-ui/lab'
@@ -63,10 +56,10 @@ export default function AddAccountForm() {
     return (
         <div>
         <Card>
-            <Grid container>
+            <Grid container className='flex flex-column justify-center items-center'>
                 <Grid item lg={5} md={5} sm={5} xs={12}>
                     <div className="p-8 flex justify-center items-center h-full">
-                        <h3>Remplissez ce formulaire pour ajouter un compte!</h3>
+                        <h3>Remplissez ce formulaire pour ajouter un utilisateur!</h3>
                         <img
                             className="w-100"
                             src={images.logoDicMini}
@@ -74,7 +67,7 @@ export default function AddAccountForm() {
                         />
                     </div>
                 </Grid>
-                <Grid item lg={7} md={7} sm={7} xs={12}>
+                <Grid item lg={7} md={7} sm={7} xs={12} style={{width: 'inherit'}}>
                     <div className="p-8 h-full bg-light-gray relative">
                         <ValidatorForm onSubmit={handleFormSubmit}>
                             <TextValidator
@@ -124,6 +117,11 @@ export default function AddAccountForm() {
                                     className="mb-6 w-full"
                                     options={suggestions}
                                     getOptionLabel={(option) => option.label}
+                                    name= 'role'
+                                    inputValue={userInfo.role}
+                                    onInputChange={(event, newInputValue) => {
+                                        setUserInfo({...userInfo ,role:newInputValue});
+                                      }}
                                     renderInput={(params) => (
                                         <TextField
                                         validators={['required']}
@@ -135,45 +133,17 @@ export default function AddAccountForm() {
                                             variant="outlined"
                                             name= 'role'
                                             value={userInfo.role}
-                                            onChange={handleChange}
                                             type= 'text'
                                             fullWidth
                                         />   
                                     )}
                                 />
-                            {/* <FormControlLabel
-                                className="mb-3 min-w-288"
-                                name="agreement"
-                                onChange={handleChange}
-                                control={
-                                    <Checkbox
-                                        size="small"
-                                        onChange={({
-                                            target: { checked },
-                                        }) =>
-                                            handleChange({
-                                                target: {
-                                                    name: 'agreement',
-                                                    value: checked,
-                                                },
-                                            })
-                                        }
-                                        checked={userInfo.agreement || true}
-                                    />
-                                }
-                                label="Remeber me"
-                            /> */}
-
-                            {/* {message && (
-                                <p className="text-error">{message}</p>
-                            )} */}
-
                             <div className="flex flex-wrap items-center mb-4">
                                 <div className="relative">
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        // disabled={loading}
+                                        disabled={loading}
                                         type="submit"
                                     >
                                         Ajouter

@@ -84,7 +84,7 @@ const TableDesDefs = () => {
                             <Icon>edit</Icon>
                         </IconButton>
                     </Tooltip>
-                    {/* <Tooltip title="View Details" placement="top">
+                    <Tooltip title="View Details" placement="top">
                         <IconButton onClick={()=>{redirectToModify(definition)}}>
                             <Icon>delete</Icon>
                         </IconButton>
@@ -93,7 +93,7 @@ const TableDesDefs = () => {
                         <IconButton onClick={()=>{redirectToModify(definition)}}>
                             <Icon>done</Icon>
                         </IconButton>
-                    </Tooltip> */}
+                    </Tooltip>
                     </div>
                 </Card>
 

@@ -3,7 +3,7 @@ import { authRoles } from '../auth/authRoles'
 
 const accountsRoutes = [
     {
-        path: '/ajouter-un-compte',
+        path: '/ajouter-un-utilisateur',
         component: React.lazy(() => import('./Ajouter un compte/AddAccount')),
         auth: authRoles.sa,
     },

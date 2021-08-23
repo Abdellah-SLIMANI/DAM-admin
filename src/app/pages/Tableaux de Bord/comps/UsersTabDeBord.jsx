@@ -15,7 +15,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { User } from '@auth0/auth0-spa-js'
 import useAuth from 'app/hooks/useAuth'
 
-const TabDeBord = () => {
+const UsersTabDeBord = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(5)
     const [page, setPage] = React.useState(0)
     const [definitions, setDefinitions] = useState([])
@@ -30,7 +30,7 @@ const TabDeBord = () => {
       }
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/article/?page='+page , {
+        axios.get('http://13.36.215.163:8000/api/administration/users/' , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
@@ -38,37 +38,21 @@ const TabDeBord = () => {
             console.log(res.data)
             setDefinitions(res.data)
         })
-    }, [page])
+    }, [])
     console.log(definitions)
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
     }
+
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value)
-        setPage(1)
+        setPage(0)
     }
 
     const ValidateWord = (word) =>{
-        let data = user.role == 'Utilisateur' ? {
-            titre: word.titre,
-            status: 'soumis',
-            data: word.data
-        } : 
-        {
-            titre: word.titre,
-            status: 'valide',
-            data: word.data
-        }
-        axios.put('http://13.36.215.163:8000/api/administration/article/'+word.id+'/' , data , {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-            }})
-            .then(
-                (res)=> console.log("PUT", res)
-            )
-
-        window.location.reload()
+        let status = { status : 'soumis'}
+        axios.put('')
     }
 
     return (
@@ -79,7 +63,7 @@ const TabDeBord = () => {
                     <TableRow>
                         <TableCell className="px-0">Titre</TableCell>
                         <TableCell className="px-0">Code</TableCell>
-                        {user.role == 'Valideur' && <TableCell className="px-0">Emetteur</TableCell>}
+                        <TableCell className="px-0">Emetteur</TableCell>
                         <TableCell className="px-0">Date d'émission</TableCell>
                         <TableCell className="px-0">Statut</TableCell>
                         <TableCell className="px-0">Version</TableCell>
@@ -87,7 +71,11 @@ const TabDeBord = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {definitions.results && definitions.results
+                    {definitions && definitions
+                        .slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                        )
                         .map((definition, index) => (
                             <TableRow key={index}>
                                 <TableCell
@@ -95,23 +83,22 @@ const TabDeBord = () => {
                                     align="left"
                                     dangerouslySetInnerHTML={{__html:definition.data.titre}}
                                 >
+                                    {/* {definition.data.titre || definition.titre}  */}
                                 </TableCell>
 
                                 <TableCell
                                     className="px-0 capitalize"
                                     align="left"
                                 >
-                                    {definition.data.codes ? definition.data.code : '--'}
+                                    {/* {definition.data.} */}
                                 </TableCell>
 
-{                                
-                                user.role == 'Valideur' && 
                                 <TableCell
                                     className="px-0 capitalize"
                                     align="left"
                                 >
-                                    {definition.created_by.first_name} {definition.created_by.last_name}
-                                </TableCell>}
+                                    
+                                </TableCell>
 
 
                                 <TableCell
@@ -156,7 +143,7 @@ const TabDeBord = () => {
                                     <IconButton>
                                         <Icon color="error">close</Icon>
                                     </IconButton>
-                                    <IconButton onClick={()=>ValidateWord(definition)}>
+                                    <IconButton>
                                         <Icon className='hover-bg-green'>done</Icon>
                                     </IconButton>
                                            
@@ -168,8 +155,10 @@ const TabDeBord = () => {
 
             <TablePagination
                 className="px-4"
+                rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={definitions.count}
+                count={definitions.length}
+                rowsPerPage={rowsPerPage}
                 page={page}
                 backIconButtonProps={{
                     'aria-label': 'Previous Page',
@@ -178,8 +167,6 @@ const TabDeBord = () => {
                     'aria-label': 'Next Page',
                 }}
                 onChangePage={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
         </div>
@@ -187,4 +174,4 @@ const TabDeBord = () => {
     )
 }
 
-export default TabDeBord
+export default UsersTabDeBord

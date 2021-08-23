@@ -64,7 +64,7 @@ export default function AddDefComp() {
     const [reference, setreference] = useState('')
     const [renvoi, setrenvoi] = useState('')
     const [codes, setcodes] = useState('')
-    const [edition, setedition] = useState(new Date().getFullYear())
+    const [edition, setedition] = useState()
     
 	const config = {
 		readonly: false // all options from https://xdsoft.net/jodit/doc/
@@ -144,7 +144,7 @@ export default function AddDefComp() {
         console.log("DATAAAA OF THE SUBMIT", data , user.email)
     }
 
-
+    console.log("EDITION???",edition)
     return (
         <div className = 'adminPageContainer'>
             <div className= 'mainArea addWordContainer'>
@@ -359,7 +359,9 @@ export default function AddDefComp() {
                         <Tab.Pane eventKey='edition'>
                         <TextField 
                                     value= {edition}
-                                    onBlur={newContent => setedition(newContent)}
+                                    // onBlur={newContent => setedition(newContent)}
+                                    type='number'
+                                    defaultValue= {new Date().getFullYear()}
                                 />
                         </Tab.Pane>
                     </Tab.Content>
