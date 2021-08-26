@@ -12,6 +12,7 @@ import sessionRoutes from './views/sessions/SessionRoutes'
 import AuthGuard from './auth/AuthGuard'
 import { AuthProvider } from 'app/contexts/JWTAuthContext'
 import { SettingsProvider } from 'app/contexts/SettingsContext'
+import { LastLocationProvider } from 'react-router-last-location';
 
 const App = () => {
     return (
@@ -22,6 +23,7 @@ const App = () => {
                         <GlobalCss />
                         <BrowserRouter basename={process.env.PUBLIC_URL}>
                         <Router history={history}>
+                        <LastLocationProvider>
                             <AuthProvider>
                                 <MatxSuspense>
                                     <Switch>
@@ -41,6 +43,7 @@ const App = () => {
                                     </Switch>
                                 </MatxSuspense>
                             </AuthProvider>
+                            </LastLocationProvider>
                         </Router>
                         </BrowserRouter>
                     </MatxTheme>

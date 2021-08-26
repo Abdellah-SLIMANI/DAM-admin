@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import ModifyDefTxtEdit from './comps/ModifyDefTxtEdit'
+React.lazy(()=> import('./comps/ModifyDefTxtEdit'))
 
-export default class ModifyDefWriting extends Component {
-    render() {
+export default function ModifyDefWriting() {
+        const ModifyDefTxtEdit = React.lazy(()=> import('./comps/ModifyDefTxtEdit'))
         return (
             <div className='m-10'>
                 <ModifyDefTxtEdit />
             </div>
-        )
-    }
+        ) 
 }

@@ -1,54 +1,54 @@
-import { useHistory } from 'react-router';
-import React, { useState } from 'react';
-import { ReactSearchAutocomplete } from 'react-search-autocomplete'
-import images from 'dictionnaireImages/images';
-import './search.css'
+// import { useHistory } from 'react-router';
+// import React, { useState } from 'react';
+// import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+// import images from 'dictionnaireImages/images';
+// import './search.css'
 
-function SearchBar({selectedWord,setSelectedWord,location}) {
-    const [words,setWords] = useState([])
-    const [url,setUrl] = useState("")
-    const history = useHistory()
+// function SearchBar({selectedWord,setSelectedWord,location}) {
+//     const [words,setWords] = useState([])
+//     const [url,setUrl] = useState("")
+//     const history = useHistory()
 
-    const handleOnSearch = (string, results) => {
-        fetch("http://13.36.215.163:8000/api/elastic/search/?titre="+string)
-        .then(response => response.json())
-        .then((data) => setWords(data))
-      }
+//     const handleOnSearch = (string, results) => {
+//         fetch("http://13.36.215.163:8000/api/elastic/search/?titre="+string)
+//         .then(response => response.json())
+//         .then((data) => setWords(data))
+//       }
       
-      const handleOnSelect = (item) => {
-        console.log("ORWEOO ITEM DA",item)
-        let queryString = "titre=" + item.titre;
-        localStorage.setItem('modifyWord',item.titre)
-        history.push(`/modifier-une-definition/?${queryString}`);
-      }
+//       const handleOnSelect = (item) => {
+//         console.log("ORWEOO ITEM DA",item)
+//         let queryString = "titre=" + item.titre;
+//         localStorage.setItem('modifyWord',item.titre)
+//         history.push(`/modifier-une-definition/?${queryString}`);
+//       }
     
-      const handleOnFocus = () => {
-        console.log('Focused')
-      }
+//       const handleOnFocus = () => {
+//         console.log('Focused')
+//       }
 
-    return (
-         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
-             <img src={images.logoDicMaxi} alt="" style={{transform: 'translate(0,20%)'}}/>
-                <div className=' m-auto' style={{width: '40%',transform: 'translate(0px, 100%)'}}>
-                <ReactSearchAutocomplete
-                inputDebounce= {0}
-                items={words}
-                fuseOptions={{ keys: ["titre", "description"] }}
-                resultStringKeyName="titre"
-                onSearch={handleOnSearch}
-                onSelect={handleOnSelect}
-                onFocus={handleOnFocus}
-                placeholder = "Saisir le titre de la définition"
-                autoFocus
-          />
-             </div>
-         </div>
+//     return (
+//          <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
+//              <img src={images.logoDicMaxi} alt="" style={{transform: 'translate(0,20%)'}}/>
+//                 <div className=' m-auto' style={{width: '40%',transform: 'translate(0px, 100%)'}}>
+//                 <ReactSearchAutocomplete
+//                 inputDebounce= {0}
+//                 items={words}
+//                 fuseOptions={{ keys: ["titre", "description"] }}
+//                 resultStringKeyName="titre"
+//                 onSearch={handleOnSearch}
+//                 onSelect={handleOnSelect}
+//                 onFocus={handleOnFocus}
+//                 placeholder = "Saisir le titre de la définition"
+//                 autoFocus
+//           />
+//              </div>
+//          </div>
 
-    )
+//     )
     
-}
+// }
 
-export default SearchBar;
+// export default SearchBar;
 
 // import { Button, InputAdornment, TextField } from '@material-ui/core'
 // import images from 'dictionnaireImages/images'
@@ -94,112 +94,102 @@ export default SearchBar;
 //     )
 // }
 
-// import fetch from 'cross-fetch'
-// import React, { useState } from 'react'
-// import { TextField, CircularProgress } from '@material-ui/core'
-// import Autocomplete from '@material-ui/lab/Autocomplete'
-// import images from 'dictionnaireImages/images'
-// import { useHistory, useLocation } from 'react-router-dom'
-// import { functions } from 'lodash-es'
+import fetch from 'cross-fetch'
+import React, { useState } from 'react'
+import { TextField, CircularProgress } from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import images from 'dictionnaireImages/images'
+import { useHistory, useLocation } from 'react-router-dom'
+import './search.css'
 
-// export default function AsyncAutocomplete() {
-//     const [open, setOpen] = React.useState(false)
-//     const [defs, setDefs] = React.useState([])
-//     const [value, setValue] = React.useState('')
-//     const [loading, setLoading] = React.useState(false)
+export default function AsyncAutocomplete() {
+    const [open, setOpen] = React.useState(false)
+    const [defs, setDefs] = React.useState([])
+    const [value, setValue] = React.useState('')
+    const [loading, setLoading] = React.useState(false)
 
-//     const [inputValue, setInputValue] = React.useState('');
-//     const history = useHistory()
-//     let location = useLocation();
+    const [inputValue, setInputValue] = React.useState('');
+    const history = useHistory()
+    let location = useLocation();
 
-//     const handleChange = (event) => {
-//         console.log(value, 'INSIDE ONCHANGE')
-//         setValue(event.target.value);
-//       };
+   function handleSearch(word){
+        console.log( 'WE ARE IN')
+        let queryString = "titre=" + word;
+        localStorage.setItem('modifyWord',word)
+        history.push(`/modifier-une-definition/?${queryString}`);
+    }
 
-//       const myComp = React.memo(      function handleSearch(word){
-//         console.log( 'WE ARE IN')
-//         let queryString = "titre=" + word;
-//         localStorage.setItem('modifyWord',word)
-//         history.push(`/modifier-une-definition/?${queryString}`);
-//     })
+    React.useEffect(() => {
+        setLoading(true)
+        console.log("VALUEEEEE",value)
+        ;(async () => {
+            const response = await fetch(
+                `http://13.36.215.163:8000/api/elastic/search/?titre=${inputValue}`
+            ).finally(() => {setLoading(false)})
+            const defs = await response.json()
 
-//     React.useEffect(() => {
-//         setLoading(true)
-//         console.log("VALUEEEEE",value)
-//         ;(async () => {
-//             const response = await fetch(
-//                 `http://13.36.215.163:8000/api/elastic/search/?titre=${inputValue}`
-//             ).finally(() => {setLoading(false)})
-//             // await sleep(1e3) // For demo purposes.
-//             const defs = await response.json()
+                setDefs(defs)
+        })()
 
-//                 setDefs(
-//                     defs
-//                 )
-//             console.log('defss',defs)
-//             console.log("keys defs",Object.keys(defs))
-//         })()
+    }, [inputValue,location.pathname])
 
-//     }, [inputValue,location.pathname])
+    React.useEffect(() => {
+        if (!open) {
+            setDefs([])
+        }
+    }, [open])
 
-//     React.useEffect(() => {
-//         if (!open) {
-//             setDefs([])
-//         }
-//     }, [open])
-
-//     console.log('INPUT VALUE',inputValue)
-//     return (
+    return (
         
 
-//         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
-//             <img src={images.logoDicMaxi} alt="" className='m-auto'/>
-//                         <div className=' m-auto' style={{width: '40%',transform: 'translate(0px, 100%)'}}>
-//             <Autocomplete
-//             id="asynchronous-demo"
-//             className="w-300"
-//             open={open}
-//             onOpen={() => {
-//                 setOpen(true)
-//             }}
-//             onClose={() => {
-//                 setOpen(false)
-//             }}
-//             inputValue={inputValue}
-//             onInputChange={(event, newInputValue) => {
-//               setInputValue(newInputValue);
-//             }}
-//             getOptionSelected={(def,value) => (def.titre === value.titre && myComp( ))}
-//             getOptionLabel={(def) => def.titre}
-//             options={defs}
-//             loading={loading}
-//             renderInput={(params) => (
-//                 <TextField
-//                     {...params}
-//                     label="Saisir le titre de la définition"
-//                     fullWidth
-//                     className ='bg-white'
-//                     variant="outlined"
-//                     InputProps={{
-//                         ...params.InputProps,
-//                         endAdornment: (
-//                             <React.Fragment>
-//                                 {loading ? (
-//                                     <CircularProgress
-//                                         color="inherit"
-//                                         size={20}
-//                                     />
-//                                 ) : null}
-//                                 {params.InputProps.endAdornment}
-//                             </React.Fragment>
-//                         ),
-//                     }}
-//                 />
-//             )}
-//         />
-//             </div>
-//         </div>
-//     )
-// }
+        <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
+            <img src={images.logoDicMaxi} alt="" className='m-auto'/>
+            <div className=' m-auto' style={{width: '40%',transform: 'translate(0px, 100%)'}}>
+            <Autocomplete
+              open={open}
+              onOpen={() => {
+                  setOpen(true)
+              }}
+              onClose={() => {
+                  setOpen(false)
+              }}
+              inputValue={inputValue}
+              onInputChange={(event, newInputValue) => {
+                setInputValue(newInputValue);
+              }}
+              value={value}
+              onChange= {(event, newval) => handleSearch(newval && newval.titre)}
+              getOptionSelected={(def,value) => (def.titre === value.titre) }
+              getOptionLabel={(def) => def.titre }
+              options={defs}
+              loading={loading}
+              noOptionsText = 'Aucune définition'
+              renderInput={(params) => (
+                  <TextField
+                      {...params}
+                      label="Saisir le titre de la définition"
+                      fullWidth
+                      className ='bg-white'
+                      variant="outlined"
+                      InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                              <React.Fragment>
+                                  {loading ? (
+                                      <CircularProgress
+                                          color="inherit"
+                                          size={20}
+                                      />
+                                  ) : null}
+                                  {params.InputProps.endAdornment}
+                              </React.Fragment>
+                          ),
+                      }}
+                  />
+              )}
+          />
+            </div>
+        </div>
+    )
+}
 /************************************************************************************************************************************************************* */

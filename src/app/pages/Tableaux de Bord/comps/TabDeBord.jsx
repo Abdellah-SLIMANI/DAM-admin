@@ -27,7 +27,7 @@ const TabDeBord = () => {
         localStorage.setItem('modifyWord',def.titre);
         let queryString = "titre=" + def.titre;
         history.push(`/modifier-une-definition-write/?${queryString}`);
-      }
+    }
 
     React.useEffect(() => {
         axios.get('http://13.36.215.163:8000/api/administration/article/?page='+page , {
@@ -65,10 +65,9 @@ const TabDeBord = () => {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
             .then(
-                (res)=> console.log("PUT", res)
+                (res)=> {console.log("PUT", res) ;
+                window.location.reload()}
             )
-
-        window.location.reload()
     }
 
     return (
@@ -93,7 +92,7 @@ const TabDeBord = () => {
                                 <TableCell
                                     className="px-0 capitalize"
                                     align="left"
-                                    dangerouslySetInnerHTML={{__html:definition.data.titre}}
+                                    dangerouslySetInnerHTML={{__html:definition.titre}}
                                 >
                                 </TableCell>
 
@@ -103,7 +102,6 @@ const TabDeBord = () => {
                                 >
                                     {definition.data.codes ? definition.data.code : '--'}
                                 </TableCell>
-
 {                                
                                 user.role == 'Valideur' && 
                                 <TableCell

@@ -77,11 +77,12 @@ const UsersTabDeBord = () => {
                             page * rowsPerPage + rowsPerPage
                         )
                         .map((definition, index) => (
+                            
                             <TableRow key={index}>
                                 <TableCell
                                     className="px-0 capitalize"
                                     align="left"
-                                    dangerouslySetInnerHTML={{__html:definition.data.titre}}
+                                    dangerouslySetInnerHTML={{__html:definition.titre}}
                                 >
                                     {/* {definition.data.titre || definition.titre}  */}
                                 </TableCell>
@@ -97,7 +98,7 @@ const UsersTabDeBord = () => {
                                     className="px-0 capitalize"
                                     align="left"
                                 >
-                                    
+                                    {console.log(definition.titre)}
                                 </TableCell>
 
 

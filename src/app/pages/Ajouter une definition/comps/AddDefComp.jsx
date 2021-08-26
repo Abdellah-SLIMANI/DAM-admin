@@ -1,53 +1,17 @@
 import React, { useRef, useState } from 'react'
+import TxtModify from './TxtModify';
 import { Col, Nav, Row } from 'react-bootstrap'
 import Tab from 'react-bootstrap/Tab'
-import JoditEditor from "jodit-react";
 import { Button, Card, TextField } from '@material-ui/core'
 import './AddDefComp.css'
 import axios from 'axios'
 import useAuth from 'app/hooks/useAuth';
+import { useHistory } from 'react-router-dom';
+import CodeAdd from './CodeAdd';
 
 export default function AddDefComp() {
-
     const {user} = useAuth()
-
-    const titreRef = useRef(null)
-    const genreRef  = useRef(null)
-    const terminologieRef  = useRef(null)
-    const anglaisRef  = useRef(null)
-    const syntheseRef  = useRef(null)
-    const auteursRef  = useRef(null)
-    const etymologieRef  = useRef(null)
-    const synonymeRef  = useRef(null)
-    const antonymeRef  = useRef(null)
-    const homonymeRef  = useRef(null)
-    const sigleRef  = useRef(null)
-    const symboleRef  = useRef(null)
-    const abreviationRef  = useRef(null)
-    const referenceRef  = useRef(null)
-    const renvoiRef  = useRef(null)
-    const codesRef  = useRef(null)
-    const editionRef  = useRef(null)
-	// const [content, setContent] = useState({
-    //     titre: '',
-    //     genre: '',
-    //     terminologie: '',
-    //     anglais: '',
-    //     synthese: '',
-    //     auteurs: '',
-    //     etymologie: '',
-    //     synonyme: '',
-    //     antonyme: '',
-    //     homonyme: '',
-    //     sigle: '',
-    //     symbole: '',
-    //     abreviation: '',
-    //     reference: '',
-    //     renvoi: '',
-    //     codes: '',
-    //     edition: new Date().getFullYear()
-    // })
-
+    const history = useHistory();
     const [titre, settitre] = useState('')
     const [genre, setgenre] = useState('')
     const [terminologie, setterminologie] = useState('')
@@ -64,12 +28,27 @@ export default function AddDefComp() {
     const [reference, setreference] = useState('')
     const [renvoi, setrenvoi] = useState('')
     const [codes, setcodes] = useState('')
-    const [edition, setedition] = useState()
-    
-	const config = {
-		readonly: false // all options from https://xdsoft.net/jodit/doc/
-	}
+    const [edition, setedition] = useState('')
 
+    const content = {
+        titre,
+        genre,
+        terminologie,
+        anglais,
+        synthese,
+        auteurs,
+        etymologie,
+        synonyme,
+        antonyme,
+        homonyme,
+        sigle,
+        symbole,
+        abreviation,
+        reference,
+        renvoi,
+        codes,
+        edition
+    }
     function soummetre(){
         let config = {
             headers: {
@@ -81,30 +60,12 @@ export default function AddDefComp() {
             "titre": titre,
             'status': 'soumis',
             'created_by': user.id,
-            'data': {
-                "titre" : titre,
-                "genre" : genre,
-                "terminologie": terminologie,
-                "anglais" : anglais,
-                "synthese": synthese,
-                "auteurs" : auteurs,
-                "etymologie": etymologie,
-                "synonyme": synonyme,
-                "antonyme": antonyme,
-                "homonyme": homonyme,
-                "sigle": sigle,
-                "symbole": symbole,
-                "abreviation": abreviation,
-                "reference": reference,
-                "renvoi": renvoi,
-                "codes": codes,
-                "edition": edition
-            }
+            'data': content
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
-
-        console.log("DATAAAA OF THE SUBMIT", data , user.email)
+        .then(history.push(`/Tableaux-de-bord/`))
+        
     }
 
     function draft(){
@@ -118,33 +79,12 @@ export default function AddDefComp() {
             "titre": titre,
             'status': 'brouillon',
             'created_by': user.id,
-            'data': {
-                "titre" : titre,
-                "genre" : genre,
-                "terminologie": terminologie,
-                "anglais" : anglais,
-                "synthese": synthese,
-                "auteurs" : auteurs,
-                "etymologie": etymologie,
-                "synonyme": synonyme,
-                "antonyme": antonyme,
-                "homonyme": homonyme,
-                "sigle": sigle,
-                "symbole": symbole,
-                "abreviation": abreviation,
-                "reference": reference,
-                "renvoi": renvoi,
-                "codes": codes,
-                "edition": edition
-            }
+            'data': content
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
-
-        console.log("DATAAAA OF THE SUBMIT", data , user.email)
+        .then(history.push(`/Tableaux-de-bord/`))
     }
-
-    console.log("EDITION???",edition)
     return (
         <div className = 'adminPageContainer'>
             <div className= 'mainArea addWordContainer'>
@@ -156,213 +96,149 @@ export default function AddDefComp() {
                 </div>
             </div>
             <Card>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="titre">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="titre" unmountOnExit={true}>
                 <Row className='p-10'>
                     <Col sm={3}>
                     <Nav variant="pills" className="flex-column">
-                        <Nav.Item>
-                        <Nav.Link eventKey="titre" className='bg-deafult'>Titre</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                        <Nav.Link eventKey="genre">Genre</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='terminologie'>Terminologie (anatomica ou embryologica)</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='anglais'>Traduction anglais</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='synthese'>Synthèse et développement</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='auteurs'>Auteurs</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='etymologie'>Etymologie</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='synonyme'>Synonyme</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='antonyme'>Antonyme</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='homonyme'>Homonyme</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='sigle'>Sigle</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='symbole'>Symbole</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='abreviation'>Abréviation</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='reference'>Référence</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='renvoi'>Renvoi vers les autres définitions séparées par des virgules</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='codes'>Codes internes de spécialité</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey='edition'>Edition</Nav.Link>
-                        </Nav.Item>
+                    <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey="titre">Titre</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'> 
+                            <Nav.Item>
+                                <Nav.Link eventKey="genre">Genre</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='terminologie'>Terminologie (anatomica ou embryologica)</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='anglais'>Traduction anglais</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='synthese'>Synthèse et développement</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='auteurs'>Auteurs</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='etymologie'>Etymologie</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='synonyme'>Synonyme</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='antonyme'>Antonyme</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='homonyme'>Homonyme</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='sigle'>Sigle</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='symbole'>Symbole</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='abreviation'>Abréviation</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='reference'>Référence</Nav.Link>
+                            </Nav.Item>
+                        </Card >
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='renvoi'>Renvoi vers les autres définitions séparées par des virgules</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='codes'>Codes internes de spécialité</Nav.Link>
+                            </Nav.Item>
+                        </Card>
+                        <Card className='m-1'>
+                            <Nav.Item>
+                                <Nav.Link eventKey='edition'>Edition</Nav.Link>
+                            </Nav.Item>
+                        </Card >
                         </Nav>
                     </Col>
                     <Col sm={9}>
                     <Tab.Content>
                         <Tab.Pane eventKey="titre">
-                        <JoditEditor
-                            ref={titreRef}
-                            value={titre}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => settitre(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                            <TxtModify value= {titre} setValue = {settitre}/>
                         </Tab.Pane>
                         <Tab.Pane eventKey="genre">
-                        <JoditEditor
-                            ref={genreRef}
-                            value={genre}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setgenre(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                            <TxtModify value= {genre} setValue = {setgenre}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='terminologie'>
-                        <JoditEditor
-                            ref={terminologieRef}
-                            value={terminologie}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setterminologie(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="terminologie">
+                            <TxtModify value= {terminologie} setValue = {setterminologie}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='anglais'>
-                        <JoditEditor
-                            ref={anglaisRef}
-                            value={anglais}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setanglais(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="anglais">
+                            <TxtModify value= {anglais} setValue = {setanglais}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='synthese'>
-                        <JoditEditor
-                            ref={syntheseRef}
-                            value={synthese}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setsynthese(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="synthese">
+                            <TxtModify value= {synthese} setValue = {setsynthese}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='auteurs'>
-                        <JoditEditor
-                            ref={auteursRef}
-                            value={auteurs}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setauteurs(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="auteurs">
+                            <TxtModify value= {auteurs} setValue = {setauteurs}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='etymologie'>
-                        <JoditEditor
-                            ref={etymologieRef}
-                            value={etymologie}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setetymologie(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="etymologie">
+                            <TxtModify value= {etymologie} setValue = {setetymologie}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='synonyme'>
-                        <JoditEditor
-                            ref={synonymeRef}
-                            value={synonyme}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setsynonyme(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="synonyme">
+                            <TxtModify value= {synonyme} setValue = {setsynonyme}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='antonyme'>
-                            <TextField 
-                                value= {antonyme}
-                            />
+                        <Tab.Pane eventKey="antonyme">
+                            <TxtModify value= {antonyme} setValue = {setantonyme}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='homonyme'>
-                        <TextField 
-                                value= {homonyme}
-                            />
+                        <Tab.Pane eventKey="homonyme">
+                            <TxtModify value= {homonyme} setValue = {sethomonyme}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='sigle'>
-                        <JoditEditor
-                            ref={sigleRef}
-                            value={sigle}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setsigle(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="sigle">
+                            <TxtModify value= {sigle} setValue = {setsigle}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='symbole'>
-                        <JoditEditor
-                            ref={symboleRef}
-                            value={symbole}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setsymbole(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="symbole">
+                            <TxtModify value= {symbole} setValue = {setsymbole}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='abreviation'>
-                            <TextField 
-                                    value= {abreviation}
-                                />
+                        <Tab.Pane eventKey="abreviation">
+                            <TxtModify value= {abreviation} setValue = {setabreviation}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='reference'>
-                        <JoditEditor
-                            ref={referenceRef}
-                            value={reference}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setreference(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="reference">
+                            <TxtModify value= {reference} setValue = {setreference}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='renvoi'>
-                        <JoditEditor
-                            ref={renvoiRef}
-                            value={renvoi}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => setrenvoi(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => {}}
-                        />
+                        <Tab.Pane eventKey="renvoi">
+                            <TxtModify value= {renvoi} setValue = {setrenvoi}/>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='codes'>
-                        <TextField 
-                                    value= {codes}
-                                    onBlur={newContent => setcodes(newContent)}
-                                />
+                        <Tab.Pane eventKey="codes">
+                            <CodeAdd />
                         </Tab.Pane>
-                        <Tab.Pane eventKey='edition'>
-                        <TextField 
-                                    value= {edition}
-                                    // onBlur={newContent => setedition(newContent)}
-                                    type='number'
-                                    defaultValue= {new Date().getFullYear()}
-                                />
+                        <Tab.Pane eventKey="edition">
+                            <TxtModify value= {edition} setValue = {setedition}/>
                         </Tab.Pane>
                     </Tab.Content>
                     </Col>
