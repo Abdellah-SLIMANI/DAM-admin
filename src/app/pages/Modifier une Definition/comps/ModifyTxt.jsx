@@ -2,16 +2,17 @@ import { TextField } from '@material-ui/core'
 import { SimpleCard } from 'app/components'
 import React from 'react'
 
-export default function ModifyTxt({value, oldValue, setValue}) {
+export default function ModifyTxt({value, oldValue, setValue, option}) {
+    console.log(value,oldValue)
     return (
-        <div style={{display: 'flex' ,flexDirection: 'row', width: '100%'}}>
+        <div style={{display: 'flex' ,flexDirection: 'row', width: '100%',margin: '100px'}}>
         <div style={{width: '50%' ,marginInline: '0.5%'}}>
             <SimpleCard className='p-5' title='Nouvelle version'>
                 <TextField
-                    value={value}
+                    value={value.toString()}
                     variant='outlined'
-                    defaultValue = {Date().getFullYear()}
-                    onChange={newval => setValue(newval)}
+                    defaultValue = { option && new Date().getFullYear()}
+                    onChange={(event,newval) => setValue(newval)}
                 >
 
                 </TextField>
@@ -20,11 +21,10 @@ export default function ModifyTxt({value, oldValue, setValue}) {
         <div style={{width: '50%', marginInline: '0.5%'}}>
             <SimpleCard className= 'p-5' title= 'Version en cours'>
             <TextField
-                value={oldValue}
+                defaultValue= {oldValue}
                 variant='outlined'
                 disabled
             >
-
             </TextField>
             </SimpleCard>
         </div>

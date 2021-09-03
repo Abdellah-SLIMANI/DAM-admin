@@ -6,14 +6,13 @@ import {
     TextField,
 } from '@material-ui/core'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
-
-import useAuth from 'app/hooks/useAuth'
 import images from '../../../../dictionnaireImages/images'
 import { Autocomplete } from '@material-ui/lab'
 import axios from 'axios'
-
+import { useHistory } from 'react-router-dom'
 
 export default function AddAccountForm() {
+    const history = useHistory()
     const [userInfo, setUserInfo] = useState({
         nom: '',
         prenom: '',
@@ -25,16 +24,14 @@ export default function AddAccountForm() {
     const handleChange = ({ target: { name, value } }) => {
         let temp = { ...userInfo }
         temp[name] = value
-        console.log("TEMP",temp)
         setUserInfo(temp)
     }
 
     const handleFormSubmit = async (event) => {
         setLoading(true)
-        console.log("UserInfo",userInfo)
         try {
             axios.post('http://13.36.215.163:8000/api/administration/create_account/', userInfo)
-            .then(res=> console.log("RES IN POSTING USER", res))
+            .then(res=> res.status == 200 ? history.push('./tableaux-de-bord'): alert("problem accured"))
         } catch (e) {
             console.log(e)
             setLoading(false)

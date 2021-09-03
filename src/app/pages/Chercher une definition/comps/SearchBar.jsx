@@ -159,8 +159,8 @@ export default function AsyncAutocomplete() {
               }}
               value={value}
               onChange= {(event, newval) => handleSearch(newval && newval.titre)}
-              getOptionSelected={(def,value) => (def.titre === value.titre) }
-              getOptionLabel={(def) => def.titre }
+              getOptionSelected={(def,value) => (def.titre ==+ value.titre) }
+              getOptionLabel={(def) => def.titre || "" }
               options={defs}
               loading={loading}
               noOptionsText = 'Aucune définition'

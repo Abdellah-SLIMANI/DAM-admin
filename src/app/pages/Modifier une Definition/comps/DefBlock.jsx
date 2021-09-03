@@ -4,7 +4,7 @@ import { Button, Card } from '@material-ui/core';
 import SimpleCard from 'app/components/cards/SimpleCard';
 import RedoIcon from '@material-ui/icons/Redo';
 
-export default function ModifyBlock({value , oldValue ,setValue , index}) {
+export default function ModifyBlock({value , oldValue ,setValue}) {
 
     const config = {
 		readonly: false, 
@@ -33,21 +33,17 @@ export default function ModifyBlock({value , oldValue ,setValue , index}) {
         autofocus: true,
         width: '100%',
     }
-    console.log("OUR VALUE", value)
 
-    const handleChangeValue = (index,event) => {
-        console.log(index, event.target && event.target.name)
-    }
+    console.log("TO STRING", value.toString())
     return (
-    <div style={{display: 'flex' ,flexDirection: 'row', width: '100%', marginBottom: '3rem'}}>
+    <div style={{display: 'flex' ,flexDirection: 'row', width: '100%'}}>
         <div style={{width: '50%' ,marginInline: '0.5%'}}>
             <SimpleCard className='p-5' title='Nouvelle version'>
                 <JoditEditor
                     value={value} 
                     config={config}
                     tabIndex={1} 
-                    // onChange= {event => handleChangeValue(index,event)}
-                    onBlur={(newContent) => setValue(newContent)}
+                    onBlur={newContent => setValue(newContent)}
                 />
             </SimpleCard>
         </div>
@@ -59,7 +55,7 @@ export default function ModifyBlock({value , oldValue ,setValue , index}) {
                     tabIndex={1}
                 />
             </SimpleCard>
-            <Button onClick={()=>{setValue(oldValue) ; console.log("OldValue => ", oldValue ,'\n', "value =>" , value)}} style={{transform: 'translate(-70%, 0)', background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button>
+            <Button onClick={()=>setValue(oldValue)} style={{transform: 'translate(-70%, 0)', background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button>
         </div>
     </div>
     )

@@ -32,7 +32,7 @@
     "jwt-decode": "^3.0.0-beta.2",
     "lodash": "^4.17.19",
     "material-ui-search-bar": "^1.0.0",
-    "mui-datatables": "^3.2.0",
+    "mui-datatables": "^3.7.8",
     "node-sass": "^4.14.1",
     "notistack": "^0.8.8",
     "prop-types": "^15.7.2",

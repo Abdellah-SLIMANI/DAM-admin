@@ -4,7 +4,7 @@ import { TextField, CircularProgress, Chip } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { SimpleCard } from 'app/components'
 
-export default function CodeAdd({value , oldValue}) {
+export default function CodeAdd({value , setValue}) {
     const [open, setOpen] = React.useState(false)
     const [options, setOptions] = React.useState([])
     const loading = open && options.length === 0
@@ -20,12 +20,12 @@ export default function CodeAdd({value , oldValue}) {
             const response = await fetch(
                 'http://13.36.215.163:8000/api/administration/get_domaine_list/'
             )
-            const countries = await response.json()
-            console.log('cntr',countries.Domaines)
+            const codes = await response.json()
+            console.log('cntr',codes.Domaines)
 
             if (active) {
                 setOptions(
-                    countries.Domaines
+                    codes.Domaines
                 )
             }
         })()
@@ -41,6 +41,8 @@ export default function CodeAdd({value , oldValue}) {
         }
     }, [open])
 
+    console.log("INPUT VALUE", value)
+
     return (
         <div style={{width: '100%'}}>
         <SimpleCard>
@@ -53,6 +55,7 @@ export default function CodeAdd({value , oldValue}) {
             onClose={() => {
                 setOpen(false)
             }}
+            onChange={(event, newval )=> setValue(newval.map(val => (val.code + ' (' + val.super + ')')))}
             getOptionSelected={(option, value) => option.code === value.code}
             getOptionLabel={(option) => option.code + " - " +option.super}
             options={options}

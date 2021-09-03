@@ -4,7 +4,7 @@ import { TextField, CircularProgress, Chip } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { SimpleCard } from 'app/components'
 
-export default function DomaineModify({value , oldValue}) {
+export default function DomaineModify({value , oldValue ,setValue}) {
     const [open, setOpen] = React.useState(false)
     const [options, setOptions] = React.useState([])
     const loading = open && options.length === 0
@@ -20,12 +20,11 @@ export default function DomaineModify({value , oldValue}) {
             const response = await fetch(
                 'http://13.36.215.163:8000/api/administration/get_domaine_list/'
             )
-            const countries = await response.json()
-            console.log('cntr',countries.Domaines)
+            const Codes = await response.json()
 
             if (active) {
                 setOptions(
-                    countries.Domaines
+                    Codes.Domaines
                 )
             }
         })()
@@ -54,8 +53,10 @@ export default function DomaineModify({value , oldValue}) {
             onClose={() => {
                 setOpen(false)
             }}
+            // inputValue= {value}
+            onChange={(event, newval )=> setValue(newval.map(val => (val.code + ' (' + val.super + ')')))}
             getOptionSelected={(option, value) => option.code === value.code}
-            getOptionLabel={(option) => option.code + " - " +option.super}
+            getOptionLabel={(option) => option.code + " - " + option.super}
             options={options}
             loading={loading}
             filterSelectedOptions
@@ -98,6 +99,7 @@ export default function DomaineModify({value , oldValue}) {
             <TextField
                 value={oldValue}
                 variant='outlined'
+                className='w-full'
                 disabled
             >
 

@@ -6,7 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Slide from '@material-ui/core/Slide'
-import { Icon, IconButton } from '@material-ui/core'
 import {
     Grid,
     TextField,
@@ -19,56 +18,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
-export default function ModifyUserDialog({user}) {
-    const [open, setOpen] = React.useState(false)
-    const [currentUser, setCurrentUser] = React.useState([]) 
-    // const [userInfo, setUserInfo] = useState({
-    //     last_name: '',
-    //     first_name: '',
-    //     email: '',
-    //     groups: ''
-    // })
-    let userInfo = {
-                last_name: '',
-        first_name: '',
-        email: '',
-        groups: ''
-    };
-    const [loading, setLoading] = useState(false)
-
-    function handleClickOpen() {
-        setOpen(true)
-    }
-
-    function handleClose() {
-        setOpen(false)
-    }
-
-    useEffect(() => {
-        axios.get("http://13.36.215.163:8000/api/administration/user/"+user.id+"/", {headers: {'Authorization': `Bearer ${localStorage.getItem("accessToken")}`} })
-            .then(res => 
-                setCurrentUser(res.data)
-            )
-    }, [])
-    userInfo = currentUser;
-    console.log("USEEEEEEEEEEEEEEEEEER",currentUser , "THEN\n", userInfo)
-
-    const handleChange = ({ target: { name, value } }) => {
-        let temp =  {...userInfo }
-        temp[name] = value
-        console.log("TEMP",temp)
-        userInfo = temp;
-    }
-
+export default function ModifyUserDialog({user,open ,handleClose}) {
+    const [currentUser, setCurrentUser] = useState(user)
+    
     const handleFormSubmit = async (event) => {
-        setLoading(true)
-        console.log("UserInfo",userInfo)
         try {
-            axios.put('http://13.36.215.163:8000/api/administration/user/'+user.id+'/', userInfo)
+            axios.put('http://13.36.215.163:8000/api/administration/user/'+user.id+'/', user ,)
             .then(res=> console.log("RES IN POSTING USER", res))
+            .finally(handleClose)
         } catch (e) {
             console.log(e)
-            setLoading(false)
         }
     }
 
@@ -84,12 +43,9 @@ export default function ModifyUserDialog({user}) {
         }
     ]
     
-
+    console.log("USER CHANGING", currentUser)
     return (
         <div>
-            <IconButton onClick={handleClickOpen}>
-                <Icon>edit</Icon>
-            </IconButton>
             <Dialog
                 style={{padding: '2rem'}}
                 maxWidth="xl"
@@ -101,7 +57,7 @@ export default function ModifyUserDialog({user}) {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle id="alert-dialog-slide-title">
-                    Modifier les informations de l'utilisateur: {user.last_name} {user.first_name}
+                Modifier les informations de l'utilisateur: {user.last_name} {user.first_name}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
@@ -112,10 +68,10 @@ export default function ModifyUserDialog({user}) {
                                 variant="outlined"
                                 size="small"
                                 label="Nom"
-                                onChange={handleChange}
+                                onChange={(event) => user.last_name = event.target.value}
                                 type="text"
                                 name="last_name"
-                                value={userInfo.last_name === null || userInfo.last_name === undefined ? '' : userInfo.last_name}
+                                value={user.last_name === null || user.last_name === undefined ? '' : user.last_name}
                                 validators={['required']}
                                 errorMessages={[
                                     'Ce champ est obligatoire!',
@@ -126,10 +82,10 @@ export default function ModifyUserDialog({user}) {
                                 variant="outlined"
                                 size="small"
                                 label="Prenom"
-                                onChange={handleChange}
+                                onChange={(event) => user.first_name = event.target.value}
                                 type="text"
                                 name="first_name"
-                                value={userInfo.first_name === null || userInfo.first_name === undefined ? '' : userInfo.first_name}
+                                value={user.first_name === null || user.first_name === undefined ? '' : user.first_name}
                                 validators={['required']}
                                 errorMessages={[
                                     'Ce champ est obligatoire!',
@@ -140,10 +96,10 @@ export default function ModifyUserDialog({user}) {
                                     variant="outlined"
                                     size="small"
                                     label="Email"
-                                    onChange={handleChange}
+                                    onChange={(event) => user.email = event.target.value}
                                     type="email"
                                     name="email"
-                                    value={userInfo.email === null || userInfo.email === undefined ? '' : userInfo.email}
+                                    value={user.email === null || user.email === undefined ? '' : user.email}
                                     validators={['required', 'isEmail']}
                                     errorMessages={[
                                         'Ce champ est obligatoire!',
@@ -155,7 +111,7 @@ export default function ModifyUserDialog({user}) {
                                     options={suggestions}
                                     getOptionLabel={(option) => option.label}
                                     name= 'groups'
-                                    inputValue={userInfo.groups === null || userInfo.groups === undefined ? '' : userInfo.groups}
+                                    inputValue={user.groups === null || user.groups === undefined ? '' : user.groups}
                                     onInputChange={(event, newInputValue) => {
                                         // setUserInfo({...userInfo ,role:newInputValue});
                                       }}
@@ -169,7 +125,7 @@ export default function ModifyUserDialog({user}) {
                                             label="Role"
                                             variant="outlined"
                                             name= 'groups'
-                                            value={userInfo.groups === null || userInfo.groups === undefined ? '' : userInfo.groups}
+                                            value={user.groups === null || user.groups === undefined ? '' : user.groups}
                                             type= 'text'
                                             fullWidth
                                         />   
@@ -180,10 +136,10 @@ export default function ModifyUserDialog({user}) {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleFormSubmit} color="primary">
+                    <Button onClick={handleClose} color="primary">
                         Annuler
                     </Button>
-                    <Button onClick={handleClose} color="primary">
+                    <Button onClick={handleFormSubmit} color="primary">
                         Soumettre
                     </Button>
                 </DialogActions>

@@ -1,3 +1,4 @@
+import { MatxSuspense } from 'app/components'
 import useAuth from 'app/hooks/useAuth'
 import React from 'react'
 import AccountsTable from '../Tableaux de Bord/comps/AccountsTable'
@@ -7,6 +8,7 @@ export default function TableauxDeBord() {
 
     const {user} = useAuth()
     return (
+        <MatxSuspense>
         <div className='m-10'>
             {
                 user.role == 'Administrateur'?
@@ -15,5 +17,6 @@ export default function TableauxDeBord() {
                 <TabDeBord />
             }
         </div>
+        </MatxSuspense>
     )
 }

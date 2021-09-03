@@ -13,16 +13,33 @@ import {
 import { SimpleCard } from 'app/components'
 import axios from 'axios'
 import ModifyUserDialog from './ModifyUserDialog'
+import DeleteAccount from './DeleteAccount'
 
 const AccountsTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
     const [page, setPage] = React.useState(0)
     const [users, setUsers] = useState([])
+    const [modaluser, setModalUser] = useState([])
     const [open, setOpen] = React.useState(false)
+    const [openDelete, setOpenDelete] = React.useState(false)
 
-    function handleClickOpen() {
+    function handleClickOpen(user) {
+        console.log("MODALUSER", user)
+        setModalUser(user)
         setOpen(true)
     }  
+
+    function handleOpenDelete(user) {
+        console.log("MODALUSER", user)
+        setModalUser(user)
+        setOpenDelete(true)
+    }  
+
+
+    function handleClose(){
+        setOpen(false)
+        setOpenDelete(false)
+    }
 
     React.useEffect(() => {
         axios.get('http://13.36.215.163:8000/api/administration/user/?page='+page, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
@@ -104,10 +121,10 @@ const AccountsTable = () => {
                                     {user.date_joined}
                                 </TableCell>
                                 <TableCell className="px-0 flex flex-row">
-                                    <IconButton>
-                                        <ModifyUserDialog user= {user}/>
+                                    <IconButton onClick={() => handleClickOpen(user)}>
+                                        <Icon>Edit</Icon>
                                     </IconButton>
-                                    <IconButton>
+                                    <IconButton onClick={() => handleOpenDelete(user)}>
                                         <Icon color="error">close</Icon>
                                     </IconButton>
                                 </TableCell>
@@ -133,6 +150,8 @@ const AccountsTable = () => {
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
         </div>
+        <ModifyUserDialog user= {modaluser} open={open} handleClose={() => handleClose()}/>
+        <DeleteAccount user= {modaluser} open={openDelete} handleClose={() => handleClose()} />
         </SimpleCard>
     )
 }

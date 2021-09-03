@@ -14,11 +14,14 @@ import axios from 'axios'
 import { useHistory, useLocation } from 'react-router-dom'
 import { User } from '@auth0/auth0-spa-js'
 import useAuth from 'app/hooks/useAuth'
+import DeleteDef from './DeleteDef'
 
 const TabDeBord = () => {
-    const [rowsPerPage, setRowsPerPage] = React.useState(5)
+    const [rowsPerPage, setRowsPerPage] = React.useState(10)
+    const [open, setOpen] = React.useState(false)
     const [page, setPage] = React.useState(0)
     const [definitions, setDefinitions] = useState([])
+    const [modalDef, setModalDef] = useState([])
     const history = useHistory();
     let {user} = useAuth()
     console.log("USER NOW", user)
@@ -27,6 +30,16 @@ const TabDeBord = () => {
         localStorage.setItem('modifyWord',def.titre);
         let queryString = "titre=" + def.titre;
         history.push(`/modifier-une-definition-write/?${queryString}`);
+    }
+
+    function handleClickOpen(def) {
+        console.log("MODALUSER", def)
+        setModalDef(def)
+        setOpen(true)
+    }  
+
+    function handleClose(){
+        setOpen(false)
     }
 
     React.useEffect(() => {
@@ -65,9 +78,8 @@ const TabDeBord = () => {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
             .then(
-                (res)=> {console.log("PUT", res) ;
-                window.location.reload()}
-            )
+                (res)=> {console.log("PUT", res)}
+            ).finally(window.location.reload())
     }
 
     return (
@@ -144,15 +156,16 @@ const TabDeBord = () => {
                                 <TableCell
                                     className="px-0 capitalize"
                                     align="left"
+                                    dangerouslySetInnerHTML={{__html:definition.data.edition}}
                                 >
-                                    {definition.data.edition}
+                                    {/* {definition.data.edition} */}
                                 </TableCell>
                                 <TableCell className="px-0">
                                     <IconButton onClick={() => redirectToModify(definition)}>
                                         <Icon>edit</Icon>
                                     </IconButton>
                                     <IconButton>
-                                        <Icon color="error">close</Icon>
+                                        <Icon color="error" onClick = {()=> handleClickOpen(definition)}>close</Icon>
                                     </IconButton>
                                     <IconButton onClick={()=>ValidateWord(definition)}>
                                         <Icon className='hover-bg-green'>done</Icon>
@@ -181,6 +194,7 @@ const TabDeBord = () => {
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
         </div>
+        <DeleteDef open = {open} handleClose={()=>handleClose()} def={modalDef}/>
         </SimpleCard>
     )
 }
