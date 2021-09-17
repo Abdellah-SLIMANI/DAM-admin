@@ -1,15 +1,16 @@
 import React, { useRef, useState } from 'react'
+import { useStyles } from '@material-ui/pickers/views/Calendar/Day';
 import TxtModify from './TxtModify';
 import { Col, Nav, Row } from 'react-bootstrap'
 import Tab from 'react-bootstrap/Tab'
-import { Button, Card, IconButton, TextField } from '@material-ui/core'
+import { Button, Card, CircularProgress, IconButton, TextField } from '@material-ui/core'
 import './AddDefComp.css'
 import axios from 'axios'
 import useAuth from 'app/hooks/useAuth';
 import { useHistory } from 'react-router-dom';
 import CodeAdd from './CodeAdd';
 import AuthorAdd from './AuthorAdd';
-import { AddIcCallOutlined, RemoveCircleOutline } from '@material-ui/icons';
+
 
 export default function AddDefComp() {
     const {user} = useAuth()
@@ -30,8 +31,10 @@ export default function AddDefComp() {
         renvoi : '',
         edition : new Date().getFullYear().toString(),
     }
-    
-    const [codes, setCodes] = useState('')
+    const [loadingS, setLoadingS] = useState(false)
+    const [loadingB, setLoadingB] = useState(false)
+    const classes = useStyles()
+    const [codes, setCodes] = useState([])
     const [auteurs, setAuteurs] = useState([])
     const [synthese, setSynthese] = useState([])
     const [content, setContent] = useState(initContent)
@@ -61,6 +64,7 @@ export default function AddDefComp() {
     }
 
     function soummetre({isDraft = false} = {}){
+        isDraft ? setLoadingB(true) : setLoadingS(true)
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -71,12 +75,13 @@ export default function AddDefComp() {
             "titre": content.titre,
             'status': isDraft ? 'brouillon': 'soumis',
             'created_by': user.id,
-            'data': {...content , auteurs:auteurs, definition:synthese}
+            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes}
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
+        .then(res => res.status == 201 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Error',res))
         .catch(e => console.log("Error while Posting data",e))
-        .finally(history.push(`/Tableaux-de-bord/`))
+        .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
     }
 
     return (
@@ -85,8 +90,8 @@ export default function AddDefComp() {
             <div className= 'd-flex justify-content-between mb-3'>
                 <h4>Remplissez les champs ci-dessous pour ajouter une définition.</h4>
                 <div>
-                    <Button className='bg-primary text-white' onClick={()=>{soummetre({isDraft: true})}}>Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white ml-2' onClick={()=>{soummetre()}}>Soumettre</Button>
+                <Button className='text-white' variant='contained' color= 'primary' disabled={loadingB} type="submit" onClick={()=>{soummetre({isDraft: true})}}>{loadingB &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Enregistrer comme brouillon</Button>
+                    <Button className='bg-green text-white' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
                 </div>
             </div>
             <Card>
@@ -131,8 +136,8 @@ export default function AddDefComp() {
 
                             <Tab.Pane eventKey='codes'>
                                 <CodeAdd 
-                                        value= {auteurs} 
-                                        setValue = {handleSetValue}
+                                        value= {codes} 
+                                        setValue = {setCodes}
                                     />
                             </Tab.Pane>
                     </Tab.Content>

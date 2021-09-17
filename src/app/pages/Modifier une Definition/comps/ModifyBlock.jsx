@@ -3,41 +3,10 @@ import JoditEditor from "jodit-react";
 import { Button, Card } from '@material-ui/core';
 import SimpleCard from 'app/components/cards/SimpleCard';
 import RedoIcon from '@material-ui/icons/Redo';
+import { ReadOnly, config } from 'app/pages/Utils';
 
-export default function ModifyBlock({value , oldValue ,setValue , index}) {
-
-    const config = {
-		readonly: false, 
-        language: "fr",
-        resizer: {
-            "showSize": true,
-            "hideSizeTimeout": 0,
-            "min_width": 10,
-            "min_height": 10
-        },
-        useSplitMode: true,
-        autofocus: true,
-        width: '100%',
-	}
-
-    const ReadOnly = {
-        readonly: true,
-        language: "fr",
-        resizer: {
-            "showSize": true,
-            "hideSizeTimeout": 0,
-            "min_width": 10,
-            "min_height": 10
-        },
-        useSplitMode: true,
-        autofocus: true,
-        width: '100%',
-    }
-    console.log("OUR VALUE", value)
-
-    const handleChangeValue = (index,event) => {
-        console.log(index, event.target && event.target.name)
-    }
+export default function ModifyBlock({value , setValue ,oldValue,fieldName}) {
+    console.log("VALUE INSIDE",value,oldValue)
     return (
     <div style={{display: 'flex' ,flexDirection: 'row', width: '100%', marginBottom: '3rem'}}>
         <div style={{width: '50%' ,marginInline: '0.5%'}}>
@@ -46,8 +15,7 @@ export default function ModifyBlock({value , oldValue ,setValue , index}) {
                     value={value} 
                     config={config}
                     tabIndex={1} 
-                    // onChange= {event => handleChangeValue(index,event)}
-                    onBlur={(newContent) => setValue(newContent)}
+                    onBlur={(newContent) => setValue({[fieldName]: newContent})}
                 />
             </SimpleCard>
         </div>
@@ -59,7 +27,7 @@ export default function ModifyBlock({value , oldValue ,setValue , index}) {
                     tabIndex={1}
                 />
             </SimpleCard>
-            <Button onClick={()=>{setValue(oldValue) ; console.log("OldValue => ", oldValue ,'\n', "value =>" , value)}} style={{transform: 'translate(-70%, 0)', background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button>
+            <Button onClick={()=>{setValue({[fieldName]: oldValue})}} style={{transform: 'translate(-70%, 0)', background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button>
         </div>
     </div>
     )

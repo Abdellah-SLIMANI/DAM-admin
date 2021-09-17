@@ -14,23 +14,22 @@ import { SimpleCard } from 'app/components'
 import axios from 'axios'
 import ModifyUserDialog from './ModifyUserDialog'
 import DeleteAccount from './DeleteAccount'
+import MUIDataTable from 'mui-datatables'
 
 const AccountsTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
-    const [page, setPage] = React.useState(0)
+    const [page, setPage] = React.useState(1)
     const [users, setUsers] = useState([])
     const [modaluser, setModalUser] = useState([])
     const [open, setOpen] = React.useState(false)
     const [openDelete, setOpenDelete] = React.useState(false)
 
     function handleClickOpen(user) {
-        console.log("MODALUSER", user)
         setModalUser(user)
         setOpen(true)
     }  
 
     function handleOpenDelete(user) {
-        console.log("MODALUSER", user)
         setModalUser(user)
         setOpenDelete(true)
     }  
@@ -47,21 +46,120 @@ const AccountsTable = () => {
             console.log("USERS DATA",res.data)
             setUsers(res.data)
         })
-    }, [])
-    console.log("USRES",users)
+    }, [page])
+    console.log("USRES",users.results)
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage)
+        setPage(event)
     }
-
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value)
-        setPage(0)
     }
 
+
+    const columns = [
+        {
+            name: "first_name",
+            label: 'Prénom',
+            options: {
+             filter: true,
+             sort: false
+            }
+        },
+        {
+            name: "last_name",
+            label: 'Nom',
+            options: {
+             filter: true,
+             sort: false
+            }
+        },
+        {
+            name: "email",
+            label: 'Email',
+            options: {
+             filter: true,
+             sort: false
+            }
+        },
+        {
+            name: "groups",
+            label: 'Rôle',
+            options: {
+             filter: true,
+             sort: false
+            }
+        },
+        {
+            name: "date_joined",
+            label: 'Date de création',
+            options: {
+             filter: true,
+             sort: false
+            }
+        },
+        {
+            name: 'Action',
+            label: 'Action',
+            options: {
+             filter: true,
+             sort: false,
+             customBodyRenderLite: (dataIndex) => {
+                return ( 
+                    <>
+                                    <IconButton onClick={() => handleClickOpen(users.results[dataIndex])}>
+                                        <Icon>edit</Icon>
+                                    </IconButton>
+                                    <IconButton onClick={() => handleOpenDelete(users.results[dataIndex])}>
+                                        <Icon color="error">close</Icon>
+                                    </IconButton>
+                </>
+                )
+              }
+            }
+        }
+    ]
+    
+
+    const options = {
+        count: users.count,
+        download: false,
+        print: false,
+        page: page,
+        selectableRows: 'none',
+        onChangePage:handleChangePage,
+        rowsPerPage:10,
+        onChangeRowsPerPage:handleChangeRowsPerPage,
+        serverSide: true,
+        textLabels: {
+            body: {
+                noMatch: 'Aucune définition trouvée.'
+            },
+            toolbar: {
+                search: 'Recherche',
+                viewColumns: 'Voir les colonnes',
+                filterTable: 'Tableau des filtres',
+              },
+              pagination: {
+                rowsPerPage: " "
+              },
+              filter: {
+                all: "TOUS",
+                title: "FILTRES",
+                reset: "REINITIALISER",
+              },
+        }
+   }
+
     return (
-        <SimpleCard title="La liste des Comptes">
-        <div className="w-full overflow-auto">
+        <>
+        <MUIDataTable
+            data={users.results}
+            title={'Liste des utilisateurs'}
+            options={options}
+            columns={columns}
+        />
+        {/* <div className="w-full overflow-auto">
             <Table className="whitespace-pre">
                 <TableHead>
                     <TableRow>
@@ -149,10 +247,10 @@ const AccountsTable = () => {
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-        </div>
+        </div> */}
         <ModifyUserDialog user= {modaluser} open={open} handleClose={() => handleClose()}/>
         <DeleteAccount user= {modaluser} open={openDelete} handleClose={() => handleClose()} />
-        </SimpleCard>
+        </>
     )
 }
 

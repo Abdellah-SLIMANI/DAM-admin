@@ -1,20 +1,11 @@
 import React ,{useState}from 'react'
-import {
-    IconButton,
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
-    Icon,
-    TablePagination,
-} from '@material-ui/core'
-import { SimpleCard } from 'app/components'
+import {IconButton,Icon,} from '@material-ui/core'
+
 import axios from 'axios'
-import { useHistory, useLocation } from 'react-router-dom'
-import { User } from '@auth0/auth0-spa-js'
+import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
 import DeleteDef from './DeleteDef'
+import MUIDataTable from "mui-datatables";
 
 const TabDeBord = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -24,7 +15,6 @@ const TabDeBord = () => {
     const [modalDef, setModalDef] = useState([])
     const history = useHistory();
     let {user} = useAuth()
-    console.log("USER NOW", user)
 
     function redirectToModify(def) {
         localStorage.setItem('modifyWord',def.titre);
@@ -33,7 +23,6 @@ const TabDeBord = () => {
     }
 
     function handleClickOpen(def) {
-        console.log("MODALUSER", def)
         setModalDef(def)
         setOpen(true)
     }  
@@ -52,14 +41,13 @@ const TabDeBord = () => {
             setDefinitions(res.data)
         })
     }, [page])
-    console.log(definitions)
+    console.log(page)
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage)
+        setPage(event)
     }
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value)
-        setPage(1)
     }
 
     const ValidateWord = (word) =>{
@@ -77,125 +65,162 @@ const TabDeBord = () => {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
-            .then(
-                (res)=> {console.log("PUT", res)}
-            ).finally(window.location.reload())
+            .then(res=> console.log(res))
     }
 
-    return (
-        <SimpleCard title="Liste des définitions">
-        <div className="w-full overflow-auto">
-            <Table className="whitespace-pre">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className="px-0">Titre</TableCell>
-                        <TableCell className="px-0">Code</TableCell>
-                        {user.role == 'Valideur' && <TableCell className="px-0">Emetteur</TableCell>}
-                        <TableCell className="px-0">Date d'émission</TableCell>
-                        <TableCell className="px-0">Statut</TableCell>
-                        <TableCell className="px-0">Version</TableCell>
-                        <TableCell className="px-0">Action</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {definitions.results && definitions.results
-                        .map((definition, index) => (
-                            <TableRow key={index}>
-                                <TableCell
-                                    className="px-0 capitalize"
-                                    align="left"
-                                    dangerouslySetInnerHTML={{__html:definition.titre}}
-                                >
-                                </TableCell>
+    
 
-                                <TableCell
-                                    className="px-0 capitalize"
-                                    align="left"
-                                >
-                                    {definition.data.codes ? definition.data.code : '--'}
-                                </TableCell>
-{                                
-                                user.role == 'Valideur' && 
-                                <TableCell
-                                    className="px-0 capitalize"
-                                    align="left"
-                                >
-                                    {definition.created_by.first_name} {definition.created_by.last_name}
-                                </TableCell>}
+    const columns = [
+        {
+         name: "",
+         label: "Titre",
+         options: {
+          sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+                <div dangerouslySetInnerHTML={{__html: value}} style={{margin: 0}}>
+                </div>
+            )}
+         }
+        },
+        {
+         name: "code",
+         label: "Code",
+         options: {
+          filter: true,
+          sort: true,
+         }
+        },
+        {
+         name: `created_by.last_name`,
+         label: "Emmeteur",
+         options: {
+          filter: true,
+          sort: true,
+         }
+        },
+        {
+         name: "date",
+         label: "Date d'émission",
+         options: {
+          filter: true,
+          sort: true,
+         }
+        },
+                {
+         name: "status",
+         label: "Statut",
+         options: {
+          filter: true,
+          sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+              return (
+                  <>
+                {value ? (
+                    value== 'soumis' ? (
+                        <small className="border-radius-4 bg-green text-white px-2 py-2px">
+                            {value}
+                        </small>
+                    ) : (
+                        <small className="border-radius-4 bg-secondary text-white px-2 py-2px">
+                            {value}
+                        </small>
+                    )
+                ) : (
+                    <small className="border-radius-4 bg-error text-white px-2 py-2px">
+                        {value}
+                    </small>
+                )}
+                </>
+              )
+          }
+         }
+        },
+                {
+         name: 'edition',
+         label: "Edition",
+         options: {
+          filter: true,
+          sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+                <div dangerouslySetInnerHTML={{__html: value}} style={{margin: 0}}>
+                </div>
+            )}
+         }
+        },
+                {
+         name: "action",
+         label: "Action",
+         options: {
+          customBodyRenderLite: (dataIndex) => {
+            return ( 
+                <>
+                <IconButton onClick={() => redirectToModify(definitions.results[dataIndex])}>
+                <Icon>edit</Icon>
+            </IconButton>
+            <IconButton>
+                <Icon color="error" onClick = {()=> handleClickOpen(definitions.results[dataIndex])}>close</Icon>
+            </IconButton>
+            <IconButton onClick={()=>ValidateWord(definitions.results[dataIndex])}>
+                <Icon className='hover-bg-green'>done</Icon>
+            </IconButton>
+            </>
+            )
+          }
+         }
+        },
+        
+       ];
 
-
-                                <TableCell
-                                    className="px-0 capitalize"
-                                    align="left"
-                                >
-                                    {definition.last_updated_date}
-                                </TableCell>
-
-                                <TableCell
-                                    className="px-0"
-                                    align="left"
-                                >
-                                    {definition.status ? (
-                                        definition.status == 'soumis' ? (
-                                            <small className="border-radius-4 bg-green text-white px-2 py-2px">
-                                                {definition.status}
-                                            </small>
-                                        ) : (
-                                            <small className="border-radius-4 bg-secondary text-white px-2 py-2px">
-                                                {definition.status}
-                                            </small>
-                                        )
-                                    ) : (
-                                        <small className="border-radius-4 bg-error text-white px-2 py-2px">
-                                            {definition.status}
-                                        </small>
-                                    )}
-                                </TableCell>
-
-
-                                <TableCell
-                                    className="px-0 capitalize"
-                                    align="left"
-                                    dangerouslySetInnerHTML={{__html:definition.data.edition}}
-                                >
-                                    {/* {definition.data.edition} */}
-                                </TableCell>
-                                <TableCell className="px-0">
-                                    <IconButton onClick={() => redirectToModify(definition)}>
-                                        <Icon>edit</Icon>
-                                    </IconButton>
-                                    <IconButton>
-                                        <Icon color="error" onClick = {()=> handleClickOpen(definition)}>close</Icon>
-                                    </IconButton>
-                                    <IconButton onClick={()=>ValidateWord(definition)}>
-                                        <Icon className='hover-bg-green'>done</Icon>
-                                    </IconButton>
-                                           
-                                </TableCell>                 
-                            </TableRow>
-                        ))}
-                </TableBody>
-            </Table>
-
-            <TablePagination
-                className="px-4"
-                component="div"
-                count={definitions.count}
-                page={page}
-                backIconButtonProps={{
-                    'aria-label': 'Previous Page',
-                }}
-                nextIconButtonProps={{
-                    'aria-label': 'Next Page',
-                }}
-                onChangePage={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
+       const options = {
+            count: definitions.count,
+            download: false,
+            print: false,
+            page: page,
+            selectableRows: 'none',
+            onChangePage:handleChangePage,
+            rowsPerPage:10,
+            onChangeRowsPerPage:handleChangeRowsPerPage,
+            serverSide: true,
+            textLabels: {
+                body: {
+                    noMatch: 'Aucune définition trouvée.'
+                },
+                toolbar: {
+                    search: 'Recherche',
+                    viewColumns: 'Voir les colonnes',
+                    filterTable: 'Tableau des filtres',
+                  },
+                  pagination: {
+                    rowsPerPage: " "
+                  },
+                  filter: {
+                    all: "TOUS",
+                    title: "FILTRES",
+                    reset: "REINITIALISER",
+                  },
+            }
+       }
+    return ( 
+        <>
+        <MUIDataTable
+            title={"Liste des définitions"}
+            data={definitions.results && definitions.results.map(item => {
+                return [
+                    item.data.titre,
+                    item.data.domaines,
+                    item.created_by.last_name+ " " +item.created_by.first_name,
+                    item.created_date,
+                    item.status,
+                    item.data.edition, 
+            ]
+            })}
+            columns={columns}
+            options={options}
             />
-        </div>
         <DeleteDef open = {open} handleClose={()=>handleClose()} def={modalDef}/>
-        </SimpleCard>
+        </>
     )
 }
 

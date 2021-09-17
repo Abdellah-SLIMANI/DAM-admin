@@ -4,30 +4,16 @@ import React, {
     useState,
 } from 'react'
 import { Redirect, useLocation } from 'react-router-dom'
-import AppContext from "app/contexts/AppContext";
 import useAuth from 'app/hooks/useAuth'
-
-const getUserRoleAuthStatus = (pathname, user, routes) => {
-  const matched = routes.find((r) => r.path === pathname);
-
-  const authenticated =
-    matched && matched.auth && matched.auth.length
-      ? matched.auth.includes(user.role)
-      : true;
-  console.log("HADI",matched, user);
-  return authenticated;
-};
 
 const AuthGuard = ({ children }) => {
     const {
         isAuthenticated,
-        user
+
     } = useAuth()
 
     const [previouseRoute, setPreviousRoute] = useState(null)
     const { pathname } = useLocation()
-
-    const { routes } = useContext(AppContext);
     // const isUserRoleAuthenticated = getUserRoleAuthStatus(pathname, user, routes);
     // let authenticated = isAuthenticated && isUserRoleAuthenticated;
 

@@ -55,7 +55,7 @@ export default function CodeAdd({value , setValue}) {
             onClose={() => {
                 setOpen(false)
             }}
-            onChange={(event, newval )=> setValue(newval.map(val => (val.code + ' (' + val.super + ')')))}
+            onChange={(event, newval )=>  setValue(newval.map(val => (val.code + ' (' + val.super + ')')))}
             getOptionSelected={(option, value) => option.code === value.code}
             getOptionLabel={(option) => option.code + " - " +option.super}
             options={options}
@@ -95,6 +95,9 @@ export default function CodeAdd({value , setValue}) {
             )}
         />
         </SimpleCard>
+        {value.map(val => <div className='m-2'><SimpleCard>
+            {val}
+        </SimpleCard></div>)}
         </div>
     )
 }
