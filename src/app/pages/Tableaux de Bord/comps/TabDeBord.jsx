@@ -65,7 +65,7 @@ const TabDeBord = () => {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
-            .then(res=> console.log(res))
+            .then(res=> res.status == 200 ? window.location.reload() : alert("server Problem") )
     }
 
     
