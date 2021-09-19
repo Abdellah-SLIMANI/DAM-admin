@@ -84,7 +84,7 @@ export default function DeleteAccount({user,open ,handleClose}) {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle id="alert-dialog-slide-title">
-                    Supression de l'utilisateur: {user.last_name} {user.first_name}
+                        Confirmez vous la suppression de l'utilisateur: {user.last_name} {user.first_name} ?
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">

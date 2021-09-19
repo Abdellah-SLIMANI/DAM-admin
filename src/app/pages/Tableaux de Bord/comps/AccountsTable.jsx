@@ -18,7 +18,7 @@ import MUIDataTable from 'mui-datatables'
 
 const AccountsTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
-    const [page, setPage] = React.useState(1)
+    const [page, setPage] = React.useState(0)
     const [users, setUsers] = useState([])
     const [modaluser, setModalUser] = useState([])
     const [open, setOpen] = React.useState(false)
