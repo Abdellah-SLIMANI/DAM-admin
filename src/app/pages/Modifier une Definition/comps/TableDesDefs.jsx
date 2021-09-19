@@ -34,8 +34,6 @@ const TableDesDefs = () => {
       }
       let query = useQuery();
 
-    console.log("THE QUERY", query.get('titre'))
-
     React.useEffect(() => { 
         if(query.get('titre') != null){
             setLoading(true)

@@ -27,7 +27,7 @@ export default function AddDefComp() {
         sigle : '',
         symbole : '',
         abreviation : '',
-        reference : '',
+        references : '',
         renvoi : '',
         edition : new Date().getFullYear().toString(),
     }
@@ -53,7 +53,7 @@ export default function AddDefComp() {
         sigle: 'Sigle',
         symbole: 'Symbole',
         abreviation: 'Abréviation',
-        reference: 'Référence',
+        references: 'Référence',
         renvoi: 'Renvoi vers les autres définitions séparées par des virgules',
         codes: 'Codes internes de spécialité',
         edition: 'Edition'
@@ -75,7 +75,7 @@ export default function AddDefComp() {
             "titre": content.titre,
             'status': isDraft ? 'brouillon': 'soumis',
             'created_by': user.id,
-            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes}
+            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes, voir: content.renvoi}
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)

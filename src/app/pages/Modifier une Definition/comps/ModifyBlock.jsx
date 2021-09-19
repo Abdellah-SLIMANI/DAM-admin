@@ -12,7 +12,7 @@ export default function ModifyBlock({value , setValue ,oldValue,fieldName}) {
         <div style={{width: '50%' ,marginInline: '0.5%'}}>
             <SimpleCard className='p-5' title='Nouvelle version'>
                 <JoditEditor
-                    value={value} 
+                    value={value.toString()} 
                     config={config}
                     tabIndex={1} 
                     onBlur={(newContent) => setValue({[fieldName]: newContent})}

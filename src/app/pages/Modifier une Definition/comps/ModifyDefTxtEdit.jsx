@@ -28,7 +28,7 @@ export default function ModifyDefTxtEdit() {
         symbole: 'Symbole',
         abreviation: 'Abréviation',
         references: 'Référence',
-        voir: 'Renvoi vers les autres définitions séparées par des virgules',
+        renvoi: 'Renvoi vers les autres définitions séparées par des virgules',
         codes: 'Codes internes de spécialité',
         edition: 'Edition'
     }
@@ -45,7 +45,7 @@ export default function ModifyDefTxtEdit() {
         symbole : '',
         abreviation : '',
         references : '',
-        voir : '',
+        renvoi : '',
         edition : new Date().getFullYear().toString(),
     }
 
@@ -135,7 +135,7 @@ export default function ModifyDefTxtEdit() {
                 symbole: checkChanges(content.symbole , oldContent.symbole),
                 abreviation: checkChanges(content.abreviation , oldContent.abreviation),
                 references: checkChanges(content.references , oldContent.references),
-                voir: checkChanges(content.voir , oldContent.voir),
+                voir: checkChanges(content.renvoi , oldContent.renvoi),
                 edition: checkChanges(content.edition , oldContent.edition),
                 definition:oldContent.definition,
                 auteurs: oldContent.auteurs,
@@ -178,7 +178,7 @@ export default function ModifyDefTxtEdit() {
                 symbole: checkChanges(content.symbole , oldContent.symbole),
                 abreviation: checkChanges(content.abreviation , oldContent.abreviation),
                 references: checkChanges(content.references , oldContent.references),
-                voir: checkChanges(content.voir , oldContent.voir),
+                voir: checkChanges(content.renvoi || content.voir , oldContent.renvoi || oldContent.voir),
                 edition: checkChanges(content.edition , oldContent.edition),
                 definition:oldContent.definition,
                 auteurs: oldContent.auteurs,
@@ -234,7 +234,7 @@ export default function ModifyDefTxtEdit() {
                             <Tab.Pane eventKey='auteurs'>
                                 <ArrayModify 
                                         value= {auteurs}
-                                        // setValue = {setAuteurs}
+                                        setValue = {setAuteurs}
                                         oldValue = {oldContent.auteurs}
                                         type = 'author'
                                     />
@@ -243,7 +243,7 @@ export default function ModifyDefTxtEdit() {
                             <Tab.Pane eventKey='synthese'>
                                 <ArrayModify 
                                         value= {synthese} 
-                                        // setValue = {setSynthese}
+                                        setValue = {setSynthese}
                                         oldValue = {oldContent.definition} 
                                         type = 'definition'
                                     />

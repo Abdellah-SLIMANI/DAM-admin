@@ -9,7 +9,7 @@ export default function TxtModify({value,setValue,fieldName}) {
         <div style={{ width: '100%'}}>
             <SimpleCard className='p-5' style={{width: '100%', marginBottom: '2rem'}}>
                 <JoditEditor
-                    value={value}
+                    value={value.toString()}
                     config={config}
                     tabIndex={1}
                     onBlur={(newContent) => setValue({[fieldName]: newContent})} // preferred to use only this option to update the content for performance reasons

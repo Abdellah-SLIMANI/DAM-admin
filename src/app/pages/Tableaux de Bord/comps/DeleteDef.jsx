@@ -35,7 +35,7 @@ export default function DeleteDef({def,open ,handleClose}) {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle id="alert-dialog-slide-title">
-                    Supression de la Definition: {def.titre}
+                    Confirmez-vous la suppression de la définition: <p dangerouslySetInnerHTML={{__html: def.titre}}></p>
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
