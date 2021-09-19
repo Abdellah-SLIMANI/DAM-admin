@@ -37,11 +37,6 @@ export default function DeleteDef({def,open ,handleClose}) {
                 <DialogTitle id="alert-dialog-slide-title">
                     Confirmez-vous la suppression de la définition: <p dangerouslySetInnerHTML={{__html: def.titre}}></p>
                 </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        Vous êtes sûr ?
-                    </DialogContentText>
-                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="error">
                         Non
