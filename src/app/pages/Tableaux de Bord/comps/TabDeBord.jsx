@@ -93,7 +93,7 @@ const TabDeBord = () => {
         },
         {
          name: `created_by.last_name`,
-         label: "Emmeteur",
+         label: "Emetteur",
          options: {
           filter: true,
           sort: true,
