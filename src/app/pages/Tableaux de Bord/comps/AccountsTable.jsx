@@ -133,7 +133,7 @@ const AccountsTable = () => {
         serverSide: true,
         textLabels: {
             body: {
-                noMatch: 'Aucune définition trouvée.'
+                noMatch: 'Aucun utilisateur trouvé.'
             },
             toolbar: {
                 search: 'Recherche',
