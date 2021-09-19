@@ -117,9 +117,11 @@ export default function ModifyDefTxtEdit() {
             }
         }
 
+        const role = user.role;
+
         let data = {
             "titre": checkChanges(content.titre , oldContent.titre),
-            'status': 'soumis',
+            'status': role == 'Valideur' ? 'valide' : 'soumis',
             'created_by': user.id,
             'data': {
                 ...content,

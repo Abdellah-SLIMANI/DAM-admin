@@ -71,15 +71,19 @@ export default function AddDefComp() {
             }
         }
 
+        
+        const role = user.role;
+        console.log("POSTED DATA",role == 'Valideur' ? (isDraft ? 'brouillon': 'valide') : (isDraft ? 'brouillon': 'soumis'))
+
         let data = {
             "titre": content.titre,
-            'status': isDraft ? 'brouillon': 'soumis',
+            'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
             'created_by': user.id,
             'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes}
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
-        .then(res => res.status == 201 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Error',res))
+        .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Error',res))
         .catch(e => console.log("Error while Posting data",e))
         .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
     }
