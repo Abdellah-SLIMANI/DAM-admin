@@ -28,7 +28,7 @@ export default function ModifyDefTxtEdit() {
         symbole: 'Symbole',
         abreviation: 'Abréviation',
         references: 'Référence',
-        renvoi: 'Renvoi vers les autres définitions séparées par des virgules',
+        voir: 'Renvoi vers les autres définitions séparées par des virgules',
         codes: 'Codes internes de spécialité',
         edition: 'Edition'
     }
@@ -45,7 +45,7 @@ export default function ModifyDefTxtEdit() {
         symbole : '',
         abreviation : '',
         references : '',
-        renvoi : '',
+        voir : '',
         edition : new Date().getFullYear().toString(),
     }
 

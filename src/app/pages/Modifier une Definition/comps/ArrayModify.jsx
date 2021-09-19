@@ -7,23 +7,23 @@ import TxtModify from 'app/pages/Ajouter une definition/comps/TxtModify';
 
 export default function ArrayModify({value,setValue,type,oldValue}) {
     const emptyHelper = type == 'author' ? {nom: '', description: ''} : type == 'definition' ? {definition: '', commentaire: ''} : null
-    const setActualItem = (item,index) => {
-        setValue(value.reduce((previous , current ,itemIndex) =>{
-            if (itemIndex == index){
-                return [...previous , item]
-            }
-            return [...previous , current]
-        },[]))
-    }
-    useEffect(()=>{ 
-        setValue([...value, ...oldValue.map(e => emptyHelper)]) 
-    },[])
+    // const setActualItem = (item,index) => {
+    //     setValue(value.reduce((previous , current ,itemIndex) =>{
+    //         if (itemIndex == index){
+    //             return [...previous , item]
+    //         }
+    //         return [...previous , current]
+    //     },[]))
+    // }
+    // useEffect(()=>{ 
+    //     setValue([...value, ...oldValue.map(e => emptyHelper)]) 
+    // },[])
     return (
         <>
-            {value.length && value.map((item , index) =>(
+            {oldValue.map((item , index) =>(
                     <ModifyOneItem 
                     actualItem={item} 
-                    setActualItem={setActualItem} 
+                    // setActualItem={setActualItem} 
                     actualIndex = {index} 
                     type= {type} 
                     oldValue={oldValue} 
@@ -53,15 +53,15 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem, type , oldValue ,v
                             variant= 'outlined'
                             className='w-full'
                             name = 'nom'
-                            value={localItem}
-                            onChange = {(event) => setlocalItem(event.target.value)}
-                            onBlur = {(event) => setActualItem({...actualItem , nom: localItem} , actualIndex)}
+                            value={''}
+                            // onChange = {(event) => setlocalItem(event.target.value)}
+                            // onBlur = {(event) => setActualItem({...actualItem , nom: localItem} , actualIndex)}
                             />
                             <p className='mt-5'>{`Description de l'auteur ${actualIndex+1}`}</p>
                             <JoditEditor
-                            value={actualItem.description} 
+                            value={""} 
                             config={ReadOnly}
-                            onBlur={(newContent) => setActualItem({...actualItem, description:newContent},actualIndex)}
+                            // onBlur={(newContent) => setActualItem({...actualItem, description:newContent},actualIndex)}
                             />
                         </SimpleCard>
                     </div>
@@ -95,17 +95,17 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem, type , oldValue ,v
                     <SimpleCard title="Nouvelle Version">
                     <p>{`Definition ${actualIndex+1}`}</p>
                         <JoditEditor
-                                value={actualItem.definition} 
+                                value={""} 
                                 config={ReadOnly}
                                 tabIndex={1}
-                                onBlur = {(newContent) => {setActualItem({...actualItem, definition:newContent},actualIndex)}}
+                                // onBlur = {(newContent) => {setActualItem({...actualItem, definition:newContent},actualIndex)}}
                             />
                         <p className='mt-5'>{`Commentaire ${actualIndex+1}`}</p>
                             <JoditEditor
-                                value={actualItem.commentaire} 
+                                value={""} 
                                 config={ReadOnly}
                                 tabIndex={1}
-                                onBlur={(newContent) => {setActualItem({...actualItem, commentaire:newContent},actualIndex)}}
+                                // onBlur={(newContent) => {setActualItem({...actualItem, commentaire:newContent},actualIndex)}}
                             />
                     </SimpleCard>
                 </div>

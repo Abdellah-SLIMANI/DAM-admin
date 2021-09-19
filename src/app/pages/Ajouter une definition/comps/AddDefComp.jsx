@@ -17,9 +17,9 @@ export default function AddDefComp() {
     const history = useHistory();
     const initContent = {
         titre : '',
-        genre : '',
-        terminologie : '',
-        anglais : '',
+        s_cat : '',
+        terminologia_anatomica : '',
+        traduction_en : '',
         etymologie : '',
         synonyme : '',
         antonyme : '',
@@ -28,7 +28,7 @@ export default function AddDefComp() {
         symbole : '',
         abreviation : '',
         references : '',
-        renvoi : '',
+        voir : '',
         edition : new Date().getFullYear().toString(),
     }
     const [loadingS, setLoadingS] = useState(false)
@@ -41,9 +41,9 @@ export default function AddDefComp() {
 
     const mapEventkeyToTitle = {
         titre: 'Titre',
-        genre: 'Genre',
-        terminologie: 'Terminologie (anatomica ou embryologica)',
-        anglais: 'Traduction anglais',
+        s_cat: 'Genre',
+        terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
+        traduction_en: 'Traduction anglais',
         synthese: 'Synthèse et développement',
         auteurs: 'Auteurs',
         etymologie: 'Etymologie',
@@ -54,7 +54,7 @@ export default function AddDefComp() {
         symbole: 'Symbole',
         abreviation: 'Abréviation',
         references: 'Référence',
-        renvoi: 'Renvoi vers les autres définitions séparées par des virgules',
+        voir: 'Renvoi vers les autres définitions séparées par des virgules',
         codes: 'Codes internes de spécialité',
         edition: 'Edition'
     }
@@ -75,7 +75,7 @@ export default function AddDefComp() {
             "titre": content.titre,
             'status': isDraft ? 'brouillon': 'soumis',
             'created_by': user.id,
-            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes, voir: content.renvoi}
+            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes}
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
