@@ -112,29 +112,6 @@ const JwtLogin = () => {
                                     validators={['required']}
                                     errorMessages={['Ce champ est obligatoire!']}
                                 />
-                                {/* <FormControlLabel
-                                    className="mb-3 min-w-288"
-                                    name="agreement"
-                                    onChange={handleChange}
-                                    control={
-                                        <Checkbox
-                                            size="small"
-                                            onChange={({
-                                                target: { checked },
-                                            }) =>
-                                                handleChange({
-                                                    target: {
-                                                        name: 'agreement',
-                                                        value: checked,
-                                                    },
-                                                })
-                                            }
-                                            checked={userInfo.agreement || true}
-                                        />
-                                    }
-                                    label="Remeber me"
-                                /> */}
-
                                 {message && (
                                     <p className="text-error">{message}</p>
                                 )}
@@ -158,15 +135,6 @@ const JwtLogin = () => {
                                             />
                                         )}
                                     </div>
-                                    {/* <span className="mr-2 ml-5">or</span>
-                                    <Button
-                                        className="capitalize"
-                                        onClick={() =>
-                                            history.push('/session/signup')
-                                        }
-                                    >
-                                        Sign up
-                                    </Button> */}
                                 </div>
                                 <Button
                                     className="text-primary"

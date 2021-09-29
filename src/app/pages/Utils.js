@@ -63,3 +63,12 @@ export const ReadOnly = {
     autofocus: true,
     width: '100%',
 }
+
+export const isContainingObject = (object,array) => {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === object) {
+            return true;
+        }
+    }
+    return false;
+}

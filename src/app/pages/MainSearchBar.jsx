@@ -4,9 +4,8 @@ import { TextField, CircularProgress } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import images from 'dictionnaireImages/images'
 import { useHistory, useLocation } from 'react-router-dom'
-import './search.css'
 
-export default function AsyncAutocomplete() {
+export default function MainSearchBar({handleSearch}) {
     const [open, setOpen] = React.useState(false)
     const [defs, setDefs] = React.useState([])
     const [value, setValue] = React.useState('')
@@ -14,14 +13,6 @@ export default function AsyncAutocomplete() {
     const [inputValue, setInputValue] = React.useState('');
     const history = useHistory()
     let location = useLocation();
-
-   function handleSearch(word){
-       if(word != null){
-        let queryString = "titre=" + word;
-        localStorage.setItem('modifyWord',word)
-        history.push(`/modifier-une-definition/?${queryString}`);
-       }
-    }
 
     React.useEffect(() => {
         setLoading(true)
@@ -42,8 +33,6 @@ export default function AsyncAutocomplete() {
     }, [open])
 
     return (
-        
-
         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
             <img src={images.logoDicMaxi} alt="" className='m-auto'/>
             <div className=' m-auto' style={{width: '40%',transform: 'translate(0px, 100%)'}}>

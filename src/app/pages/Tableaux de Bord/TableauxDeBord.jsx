@@ -8,7 +8,6 @@ export default function TableauxDeBord() {
 
     const {user} = useAuth()
     return (
-        <MatxSuspense>
         <div className='m-10'>
             {
                 user.role == 'Administrateur'?
@@ -17,6 +16,5 @@ export default function TableauxDeBord() {
                 <TabDeBord />
             }
         </div>
-        </MatxSuspense>
     )
 }

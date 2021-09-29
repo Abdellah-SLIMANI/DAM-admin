@@ -5,25 +5,29 @@ import { Button, TextField } from '@material-ui/core';
 import { ReadOnly, config } from 'app/pages/Utils';
 import TxtModify from 'app/pages/Ajouter une definition/comps/TxtModify';
 
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+
 export default function ArrayModify({value,setValue,type,oldValue}) {
     const emptyHelper = type == 'author' ? {nom: '', description: ''} : type == 'definition' ? {definition: '', commentaire: ''} : null
-    // const setActualItem = (item,index) => {
-    //     setValue(value.reduce((previous , current ,itemIndex) =>{
-    //         if (itemIndex == index){
-    //             return [...previous , item]
-    //         }
-    //         return [...previous , current]
-    //     },[]))
-    // }
-    // useEffect(()=>{ 
-    //     setValue([...value, ...oldValue.map(e => emptyHelper)]) 
-    // },[])
+    const setActualItem = (item,index) => {
+        setValue(value.reduce((previous , current ,itemIndex) =>{
+            if (itemIndex == index){
+                return [...previous , item]
+            }
+            return [...previous , current]
+        },[]))
+    }
+    useEffect(()=>{ 
+        setValue([...value, ...oldValue.map(e => emptyHelper)]) 
+    },[])
     return (
         <>
-            {oldValue.map((item , index) =>(
+            {value && value.length  && value.map((item , index) =>(
                     <ModifyOneItem 
                     actualItem={item} 
-                    // setActualItem={setActualItem} 
+                    setActualItem={setActualItem} 
                     actualIndex = {index} 
                     type= {type} 
                     oldValue={oldValue} 
@@ -53,16 +57,17 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem, type , oldValue ,v
                             variant= 'outlined'
                             className='w-full'
                             name = 'nom'
-                            value={''}
-                            // onChange = {(event) => setlocalItem(event.target.value)}
-                            // onBlur = {(event) => setActualItem({...actualItem , nom: localItem} , actualIndex)}
+                            value={localItem}
+                            onChange = {(event) => setlocalItem(event.target.value)}
+                            onBlur = {(event) => setActualItem({...actualItem , nom: localItem} , actualIndex)}
                             />
                             <p className='mt-5'>{`Description de l'auteur ${actualIndex+1}`}</p>
-                            <JoditEditor
-                            value={""} 
-                            config={ReadOnly}
-                            // onBlur={(newContent) => setActualItem({...actualItem, description:newContent},actualIndex)}
-                            />
+                            <CKEditor 
+                            editor={ClassicEditor}
+                            data={actualItem.description}
+                            defaultLanguage = 'fr'
+                            onBlur={(event,editor) => {setActualItem({...actualItem, description:editor.getData()},actualIndex)}} // preferred to use only this option to update the content for performance reasons
+                        />
                         </SimpleCard>
                     </div>
                     {/* Old Values of the author array */}
@@ -78,12 +83,11 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem, type , oldValue ,v
                                     disabled
                                 /> 
                                 <p className='mt-5'>{`Description de l'auteur ${actualIndex+1}`}</p>
-                                <JoditEditor
-                                value={oldValue[actualIndex].description} 
-                                config={config}
-                                tabIndex={1}
-                                
-                                />
+                                        <CKEditor
+                                        editor={ClassicEditor}
+                                        data={oldValue[actualIndex].description} 
+                                        disabled={true}
+                                    />
                                 </SimpleCard>
                     </div>
                 </div>
@@ -94,35 +98,34 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem, type , oldValue ,v
                 <div style={{width: '50%' ,marginInline: '0.5%'}}>
                     <SimpleCard title="Nouvelle Version">
                     <p>{`Definition ${actualIndex+1}`}</p>
-                        <JoditEditor
-                                value={""} 
-                                config={ReadOnly}
-                                tabIndex={1}
-                                // onBlur = {(newContent) => {setActualItem({...actualItem, definition:newContent},actualIndex)}}
-                            />
+                        <CKEditor 
+                            editor={ClassicEditor}
+                            data={actualItem.definition}
+                            defaultLanguage = 'fr'
+                            onBlur={(event,editor) => {setActualItem({...actualItem, definition:editor.getData()},actualIndex)}} // preferred to use only this option to update the content for performance reasons
+                        />
                         <p className='mt-5'>{`Commentaire ${actualIndex+1}`}</p>
-                            <JoditEditor
-                                value={""} 
-                                config={ReadOnly}
-                                tabIndex={1}
-                                // onBlur={(newContent) => {setActualItem({...actualItem, commentaire:newContent},actualIndex)}}
-                            />
+                        <CKEditor 
+                            editor={ClassicEditor}
+                            data={actualItem.commentaire}
+                            onBlur={(event,editor) => {setActualItem({...actualItem, commentaire:editor.getData()},actualIndex)}} // preferred to use only this option to update the content for performance reasons
+                        />
                     </SimpleCard>
                 </div>
                 {/* old values of the defs array */}
                 <div style={{width: '50%' ,marginInline: '0.5%'}}>   
                         <SimpleCard title="Version en cours" >
                             <p>{`Definition ${actualIndex+1}`}</p>
-                            <JoditEditor
-                                value={oldValue[actualIndex].definition} 
-                                config={ReadOnly}
-                                tabIndex={1}
+                            <CKEditor
+                                editor={ClassicEditor}
+                                data={oldValue[actualIndex].definition} 
+                                disabled={true}
                             />
                             <p className='mt-5'>{`Commentaire ${actualIndex+1}`}</p>
-                            <JoditEditor
-                                value={oldValue[actualIndex].commentaire} 
-                                config={ReadOnly}
-                                tabIndex={1}
+                            <CKEditor
+                                editor={ClassicEditor}
+                                data={oldValue[actualIndex].commentaire} 
+                                disabled={true}
                             />
                         </SimpleCard>
                 </div>

@@ -1,24 +1,18 @@
 import React, { useEffect,useState } from 'react'
 import {
     Icon,
-    IconButton,
     MenuItem,
     Avatar,
     useMediaQuery,
     Hidden,
 } from '@material-ui/core'
-import { MatxMenu, MatxSearchBox } from 'app/components'
-import NotificationBar from '../../NotificationBar/NotificationBar'
+import { MatxMenu} from 'app/components'
 import { Link } from 'react-router-dom'
-import ShoppingCart from '../../ShoppingCart/ShoppingCart'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
 import useSettings from 'app/hooks/useSettings'
-import { NotificationProvider } from 'app/contexts/NotificationContext'
 import images from 'dictionnaireImages/images'
-import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
-import { AddBoxOutlined, CreateOutlined, PeopleAltOutlined } from '@material-ui/icons'
 import axios from 'axios'
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -123,18 +117,17 @@ const Layout1Topbar = () => {
             <div className={clsx({ 'topbar-hold': true, fixed: fixed })}>
                 <div className="flex justify-between items-center h-full">
                     <div className="flex">
-                        {/* <IconButton
-                            onClick={handleSidebarToggle}
-                            className="hide-on-pc"
-                        >
-                            <Icon>menu</Icon>
-                        </IconButton> */}
                         <img src={images.logoDicMaxi} alt="" className={classes.myLogo}/>
 
+                    <MatxMenu
+                            menuButton={
+                                'Gestion des definition'
+                            }
+                            
+                        >
                         {
                             console.log("MENU ITEMS", menuItems ),
-                            menuItems && menuItems.map((item) => 
-                                
+                            menuItems.map((item) => 
                                 <MenuItem className={classes.topBarMenuItem}>      
                                 <Link className={classes.menuItem} to={item.path}>
                                     <Icon style={{marginRight: '5%'}}> {item.icone}</Icon> 
@@ -143,6 +136,39 @@ const Layout1Topbar = () => {
                             </MenuItem>
                             )
                         }
+                            <MenuItem className={classes.topBarMenuItem}>      
+                                <Link className={classes.menuItem} to={'/supprimer-une-definition'}>
+                                    <Icon style={{marginRight: '5%'}}> delete</Icon> 
+                                            <span> Supprimer une definition </span>
+                                </Link>
+                            </MenuItem>
+                        </MatxMenu>
+                        <MatxMenu
+                            menuButton={
+                                'Gestion des Auteurs'
+                            }
+                            
+                        >
+                            <MenuItem>      
+                                <Link className={classes.menuItem} to="/">
+                                    <Icon> dashboard </Icon>
+                                    <span className="pl-4"> Tableau de bord des auteurs </span>
+                                </Link>
+                            </MenuItem>
+                            <MenuItem>      
+                                <Link className={classes.menuItem} to="/">
+                                    <Icon> create </Icon>
+                                    <span className="pl-4"> Ajouter un Auteur </span>
+                                </Link>
+                            </MenuItem>
+                            <MenuItem
+                                onClick={logout}
+                                className={classes.menuItem}
+                            >
+                                <Icon> add</Icon>
+                                <span className="pl-4"> Modifier un auteur  </span>
+                            </MenuItem>
+                        </MatxMenu>
                     </div>
                     <div className="flex items-center">
                         {/* <MatxSearchBox /> */}

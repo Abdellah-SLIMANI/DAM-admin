@@ -11,10 +11,11 @@ import useAuth from 'app/hooks/useAuth';
 import { useStyles } from '@material-ui/pickers/views/Calendar/Day';
 import ArrayModify from './ArrayModify'
 import DomaineModify from './DomaineModify'
+import ModifySearchArray from './ModifySearchArray'
 
 export default function ModifyDefTxtEdit() {
     const mapEventkeyToTitle = {
-        titre: 'Titre',
+        titre: 'Entrée',
         s_cat: 'Genre',
         terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
         traduction_en: 'Traduction anglais',
@@ -38,14 +39,10 @@ export default function ModifyDefTxtEdit() {
         terminologia_anatomica : '',
         traduction_en : '',
         etymologie : '',
-        synonyme : '',
-        antonyme : '',
-        homonyme : '',
         sigle : '',
         symbole : '',
         abreviation : '',
         references : '',
-        voir : '',
         edition : new Date().getFullYear().toString(),
     }
 
@@ -56,13 +53,15 @@ export default function ModifyDefTxtEdit() {
     const [auteurs, setAuteurs] = useState([])
     const [synthese, setSynthese] = useState([])
     const [wordId,setWordID] = useState('')
+    const [voir, setVoir] = useState([])   
+    const [synonyme, setSynonyme] = useState([])
+    const [antonyme, setAntonyme] = useState([])
+    const [homonyme, setHomonyme] = useState([])
     const {user} = useAuth()
     const history = useHistory();
     const classes = useStyles()
     const [content, setContent] = useState(initContent)
     console.log("OLD CONTENT" , oldContent , auteurs,synthese)
-    
-
 
     const handleSetValue = (k) =>{
         setContent({...content, ...k})
@@ -109,6 +108,17 @@ export default function ModifyDefTxtEdit() {
         }
     }
 
+    function checkArrayChange(newArray,oldArray){
+            console.log('what json stringify new',JSON.stringify(newArray),'\nwhat json stringify old',JSON.stringify(oldArray, '\nwhat at last', JSON.stringify(newArray) == JSON.stringify(oldArray)))
+           if(JSON.stringify(newArray) == JSON.stringify(oldArray) || newArray == []){
+               console.log("what old",oldArray)
+               return oldArray
+        }
+        console.log("what new",newArray)
+        return newArray
+    }
+    console.log("HELLO")
+
     function soummetre(){
         setLoadingS(true)
         let config = {
@@ -139,8 +149,8 @@ export default function ModifyDefTxtEdit() {
                 references: checkChanges(content.references , oldContent.references),
                 voir: checkChanges(content.renvoi , oldContent.renvoi),
                 edition: checkChanges(content.edition , oldContent.edition),
-                definition:oldContent.definition,
-                auteurs: oldContent.auteurs,
+                definition:checkArrayChange(synthese,oldContent.definition),
+                auteurs: checkArrayChange(auteurs,oldContent.auteurs),
                 domaines:checkChanges(codes, oldContent.domaines)
             }
         }
@@ -152,7 +162,6 @@ export default function ModifyDefTxtEdit() {
         })
         
     }
-
     function draft(){
 
         console.log(content)
@@ -173,17 +182,17 @@ export default function ModifyDefTxtEdit() {
                 terminologia_anatomica: checkChanges(content.terminologia_anatomica , oldContent.terminologia_anatomica),
                 traduction_en: checkChanges(content.traduction_en , oldContent.traduction_en),
                 etymologie: checkChanges(content.etymologie , oldContent.etymologie),
-                synonyme: checkChanges(content.synonyme , oldContent.synonyme),
-                antonyme: checkChanges(content.antonyme , oldContent.antonyme),
-                homonyme: checkChanges(content.homonyme , oldContent.homonyme),
+                synonyme: checkChanges(synonyme , oldContent.synonyme),
+                antonyme: checkChanges(antonyme , oldContent.antonyme),
+                homonyme: checkChanges(homonyme, oldContent.homonyme),
                 sigle: checkChanges(content.sigle , oldContent.sigle),
                 symbole: checkChanges(content.symbole , oldContent.symbole),
                 abreviation: checkChanges(content.abreviation , oldContent.abreviation),
                 references: checkChanges(content.references , oldContent.references),
-                voir: checkChanges(content.renvoi || content.voir , oldContent.renvoi || oldContent.voir),
+                voir: checkChanges(voir, oldContent.voir),
                 edition: checkChanges(content.edition , oldContent.edition),
-                definition:oldContent.definition,
-                auteurs: oldContent.auteurs,
+                definition:checkArrayChange(synthese,oldContent.definition),
+                auteurs: checkArrayChange(auteurs,oldContent.auteurs),
                 domaines:checkChanges(codes, oldContent.domaines)
             }
         }
@@ -208,7 +217,7 @@ export default function ModifyDefTxtEdit() {
             <div className= 'd-flex justify-content-between mb-3'>
             <h4>Remplissez les champs ci-dessous pour modifier une définition.</h4>
                 <div>
-                    <Button className='text-white' variant='contained' color= 'primary' disabled={loadingB} type="submit" onClick={()=>{draft()}}>{loadingB &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Enregistrer comme brouillon</Button>
+                    <Button className='text-white' variant='contained' color= 'primary' type="submit" onClick={()=>{draft()}}>Enregistrer comme brouillon</Button>
                     <Button className='bg-green text-white' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
                 </div>
             </div>
@@ -240,6 +249,37 @@ export default function ModifyDefTxtEdit() {
                                         oldValue = {oldContent.auteurs}
                                         type = 'author'
                                     />
+                            </Tab.Pane>
+
+                            <Tab.Pane eventKey='synonyme'>
+                                <ModifySearchArray
+                                    oldValue={oldContent.synonyme}
+                                    value={synonyme}
+                                    setValue={setSynonyme}
+                                />
+                            </Tab.Pane>
+
+                            <Tab.Pane eventKey='antonyme'>
+                                <ModifySearchArray
+                                    oldValue={oldContent.antonyme}
+                                    value={antonyme}
+                                    setValue={setAntonyme}
+                                />
+                            </Tab.Pane>
+                            <Tab.Pane eventKey='homonyme'>
+                                <ModifySearchArray 
+                                    oldValue={oldContent.homonyme}
+                                    value={homonyme}
+                                    setValue={setHomonyme}
+                                />
+                            </Tab.Pane>
+
+                            <Tab.Pane eventKey='voir'>
+                                <ModifySearchArray 
+                                    oldValue={oldContent.voir}
+                                    value={voir}
+                                    setValue={setVoir}
+                                />
                             </Tab.Pane>
 
                             <Tab.Pane eventKey='synthese'>

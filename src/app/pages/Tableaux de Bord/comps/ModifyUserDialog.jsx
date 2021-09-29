@@ -13,19 +13,36 @@ import {
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
 import { Autocomplete } from '@material-ui/lab'
 import axios from 'axios'
+import { useHistory } from 'react-router'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
 export default function ModifyUserDialog({user,open ,handleClose}) {
-    const [currentUser, setCurrentUser] = useState(user)
+    const history = useHistory();
+    const [currentUser, setCurrentUser] = useState({
+        last_name: '',
+        first_name: '',
+        email: '',
+        groups: ''
+    })
+
+    useEffect(() => {
+        console.log("user inside useEffect",user)
+        setCurrentUser({
+            last_name: user.last_name,
+            first_name: user.first_name,
+            email: user.email,
+            groups: user.groups
+        })
+    }, [user])
     
     const handleFormSubmit = async (event) => {
         try {
-            axios.put('http://13.36.215.163:8000/api/administration/user/'+user.id+'/', user ,)
-            .then(res=> console.log("RES IN POSTING USER", res))
-            .finally(handleClose)
+            axios.put('http://13.36.215.163:8000/api/administration/user/'+user.id+'/', currentUser ,{headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
+            .then(res=> res.statusText === 'OK' ? window.location.reload() : alert("Server Problem"))
+
         } catch (e) {
             console.log(e)
         }
@@ -42,8 +59,6 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
             label: 'Utilisateur'
         }
     ]
-    
-    console.log("USER CHANGING", currentUser)
     return (
         <div>
             <Dialog
@@ -62,16 +77,15 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
             <Grid container className='flex flex-column justify-center items-center w-full'>
-                        <ValidatorForm onSubmit={handleFormSubmit} style={{width: '100%'}}>
+                        <ValidatorForm style={{width: '100%'}}>
                             <TextValidator
                                 className="mb-6 w-full"
                                 variant="outlined"
                                 size="small"
                                 label="Nom"
-                                onChange={(event) => user.last_name = event.target.value}
+                                value={currentUser.last_name === null || currentUser.last_name === undefined ? '' : currentUser.last_name}
+                                onChange={(event) => setCurrentUser({...currentUser, last_name:event.target.value})}
                                 type="text"
-                                name="last_name"
-                                value={user.last_name === null || user.last_name === undefined ? '' : user.last_name}
                                 validators={['required']}
                                 errorMessages={[
                                     'Ce champ est obligatoire!',
@@ -82,10 +96,10 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                                 variant="outlined"
                                 size="small"
                                 label="Prenom"
-                                onChange={(event) => user.first_name = event.target.value}
                                 type="text"
                                 name="first_name"
-                                value={user.first_name === null || user.first_name === undefined ? '' : user.first_name}
+                                value={currentUser.first_name === null || currentUser.first_name === undefined ? '' : currentUser.first_name}
+                                onChange={(event) => setCurrentUser({...currentUser, first_name:event.target.value})}
                                 validators={['required']}
                                 errorMessages={[
                                     'Ce champ est obligatoire!',
@@ -96,10 +110,11 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                                     variant="outlined"
                                     size="small"
                                     label="Email"
-                                    onChange={(event) => user.email = event.target.value}
+
                                     type="email"
                                     name="email"
-                                    value={user.email === null || user.email === undefined ? '' : user.email}
+                                    value={currentUser.email === null || currentUser.email === undefined ? '' : currentUser.email}
+                                    onChange={(event) => setCurrentUser({...currentUser, email:event.target.value})}
                                     validators={['required', 'isEmail']}
                                     errorMessages={[
                                         'Ce champ est obligatoire!',
@@ -109,12 +124,13 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                                 <Autocomplete
                                     className="mb-6 w-full"
                                     options={suggestions}
-                                    getOptionLabel={(option) => option.label}
+                                    getOptionLabel={(option) => option.label || ''}
                                     name= 'groups'
-                                    inputValue={user.groups === null || user.groups === undefined ? '' : user.groups}
+                                    inputValue={currentUser.groups}
                                     onInputChange={(event, newInputValue) => {
-                                        // setUserInfo({...userInfo ,role:newInputValue});
+                                        setCurrentUser({...currentUser ,groups:newInputValue});
                                       }}
+                                      defaultValue={currentUser.groups}
                                     renderInput={(params) => (
                                         <TextField
                                         validators={['required']}
@@ -124,8 +140,8 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                                             {...params}
                                             label="Role"
                                             variant="outlined"
+                                            value={currentUser.groups}
                                             name= 'groups'
-                                            value={user.groups === null || user.groups === undefined ? '' : user.groups}
                                             type= 'text'
                                             fullWidth
                                         />   

@@ -10,7 +10,7 @@ import useAuth from 'app/hooks/useAuth';
 import { useHistory } from 'react-router-dom';
 import CodeAdd from './CodeAdd';
 import AuthorAdd from './AuthorAdd';
-
+import SearchAdd from './SearchAdd';
 
 export default function AddDefComp() {
     const {user} = useAuth()
@@ -21,14 +21,10 @@ export default function AddDefComp() {
         terminologia_anatomica : '',
         traduction_en : '',
         etymologie : '',
-        synonyme : '',
-        antonyme : '',
-        homonyme : '',
         sigle : '',
         symbole : '',
         abreviation : '',
         references : '',
-        voir : '',
         edition : new Date().getFullYear().toString(),
     }
     const [loadingS, setLoadingS] = useState(false)
@@ -37,14 +33,18 @@ export default function AddDefComp() {
     const [codes, setCodes] = useState([])
     const [auteurs, setAuteurs] = useState([])
     const [synthese, setSynthese] = useState([])
+    const [synonyme, setSynonyme] = useState([])
+    const [antonyme, setAntonyme] = useState([])
+    const [homonyme, setHomonyme] = useState([])
+    const [voir, setVoir] = useState([])
     const [content, setContent] = useState(initContent)
 
     const mapEventkeyToTitle = {
-        titre: 'Titre',
+        titre: 'Entrée',
         s_cat: 'Genre',
         terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
         traduction_en: 'Traduction anglais',
-        synthese: 'Synthèse et développement',
+        synthese: 'Définition et complément',
         auteurs: 'Auteurs',
         etymologie: 'Etymologie',
         synonyme: 'Synonyme',
@@ -54,7 +54,7 @@ export default function AddDefComp() {
         symbole: 'Symbole',
         abreviation: 'Abréviation',
         references: 'Référence',
-        voir: 'Renvoi vers les autres définitions séparées par des virgules',
+        voir: 'Voir aussi',
         codes: 'Codes internes de spécialité',
         edition: 'Edition'
     }
@@ -73,13 +73,11 @@ export default function AddDefComp() {
 
         
         const role = user.role;
-        console.log("POSTED DATA",role == 'Valideur' ? (isDraft ? 'brouillon': 'valide') : (isDraft ? 'brouillon': 'soumis'))
-
         let data = {
             "titre": content.titre,
             'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
             'created_by': user.id,
-            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes}
+            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes,synonyme:synonyme,antonyme: antonyme,voir: voir,homonyme:homonyme}
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
@@ -121,6 +119,33 @@ export default function AddDefComp() {
                                 <TxtModify value= {content[key]} setValue = {handleSetValue} fieldName={key} />
                             </Tab.Pane>
                         ))}
+
+                            <Tab.Pane eventKey='synonyme'>
+                                <SearchAdd 
+                                    value={synonyme}
+                                    setValue={setSynonyme}
+                                />
+                            </Tab.Pane>
+
+                            <Tab.Pane eventKey='antonyme'>
+                                <SearchAdd 
+                                    value={antonyme}
+                                    setValue={setAntonyme}
+                                />
+                            </Tab.Pane>
+                            <Tab.Pane eventKey='homonyme'>
+                                <SearchAdd 
+                                    value={homonyme}
+                                    setValue={setHomonyme}
+                                />
+                            </Tab.Pane>
+
+                            <Tab.Pane eventKey='voir'>
+                                <SearchAdd 
+                                    value={voir}
+                                    setValue={setVoir}
+                                />
+                            </Tab.Pane>
 
                             <Tab.Pane eventKey='auteurs'>
                                 <AuthorAdd 

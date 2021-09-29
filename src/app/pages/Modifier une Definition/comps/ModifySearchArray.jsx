@@ -1,30 +1,25 @@
 import fetch from 'cross-fetch'
 import React, { useState } from 'react'
-import { TextField, CircularProgress } from '@material-ui/core'
+import { TextField, CircularProgress, Snackbar } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import images from 'dictionnaireImages/images'
 import { useHistory, useLocation } from 'react-router-dom'
-import './search.css'
+import { SimpleCard } from 'app/components'
 
-export default function AsyncAutocomplete() {
+export default function ModifySearchArray({value,setValue,oldValue}) {
     const [open, setOpen] = React.useState(false)
     const [defs, setDefs] = React.useState([])
-    const [value, setValue] = React.useState('')
     const [loading, setLoading] = React.useState(false)
     const [inputValue, setInputValue] = React.useState('');
-    const history = useHistory()
-    let location = useLocation();
 
+    console.log(value)
    function handleSearch(word){
        if(word != null){
-        let queryString = "titre=" + word;
-        localStorage.setItem('modifyWord',word)
-        history.push(`/modifier-une-definition/?${queryString}`);
+            setValue([...value, {id:word.id,titre:word.titre}])
        }
     }
 
     React.useEffect(() => {
-        setLoading(true)
+        console.log("VALUEEEEE",value)
         ;(async () => {
             const response = await fetch(
                 `http://13.36.215.163:8000/api/elastic/search/?titre=${inputValue}`
@@ -33,20 +28,14 @@ export default function AsyncAutocomplete() {
                 setDefs(defs)
         })()
 
-    }, [inputValue,location.pathname])
+    }, [inputValue])
 
-    React.useEffect(() => {
-        if (!open) {
-            setDefs([])
-        }
-    }, [open])
-
-    return (
-        
-
-        <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
-            <img src={images.logoDicMaxi} alt="" className='m-auto'/>
-            <div className=' m-auto' style={{width: '40%',transform: 'translate(0px, 100%)'}}>
+    console.log("VALUE", value, '\nOld VAlue',oldValue)
+    return (     
+        <>
+        <div className='searchContainer m-auto p-5 d-flex' >
+            <div className=' m-auto w-full'>
+            <SimpleCard title='Nouvelle Version'>
             <Autocomplete
               open={open}
               onOpen={() => {
@@ -59,8 +48,7 @@ export default function AsyncAutocomplete() {
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
               }}
-              value={value}
-              onChange= {(event, newval) => handleSearch(newval && newval.titre)}
+              onChange= {(event, newval) => handleSearch(newval)}
               getOptionSelected={(def,value) => (def.titre ==+ value.titre) }
               getOptionLabel={(def) => def.titre || "" }
               options={defs}
@@ -77,12 +65,6 @@ export default function AsyncAutocomplete() {
                           ...params.InputProps,
                           endAdornment: (
                               <React.Fragment>
-                                  {loading ? (
-                                      <CircularProgress
-                                          color="inherit"
-                                          size={20}
-                                      />
-                                  ) : null}
                                   {params.InputProps.endAdornment}
                               </React.Fragment>
                           ),
@@ -90,7 +72,24 @@ export default function AsyncAutocomplete() {
                   />
               )}
           />
+          </SimpleCard>
             </div>
+                <div className=' m-auto w-full'>
+                <SimpleCard title='Version en cours'>
+                <TextField
+                className='w-full'
+                    value={oldValue.map(word => word.titre + "-")}
+                    variant='outlined'
+                    disabled
+                    />
+                    </SimpleCard>
+                </div>
+
         </div>
+                    {value.map(val => <div className='m-2'>
+                    <SimpleCard>
+                        {val.titre}
+                    </SimpleCard></div>)}
+        </>
     )
 }

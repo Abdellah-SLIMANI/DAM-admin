@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
-import { Card, Grid, Button, Snackbar, CircularProgress } from '@material-ui/core'
+import React, { useState,useEffect } from 'react'
+import { Card, Grid, Button } from '@material-ui/core'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import axios from 'axios'
+import { useHistory, useLocation } from 'react-router-dom'
+
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     cardHolder: {
@@ -15,45 +17,50 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
         borderRadius: 12,
         margin: '1rem',
     },
-    buttonProgress: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
-    },
 }))
 
-const ForgotPassword = () => {
-    const [state, setState] = useState({})
-    const [loading, setLoading]= useState(false)
-    const [snackBarState, setSnackBarState] = React.useState({
-        open: false,
-        vertical: 'top',
-        horizontal: 'center',
-      });
-
-    const { vertical, horizontal, open } = snackBarState;
+const ResetPassword = () => {
+    const [state, setState] = useState({
+        password: '',
+        resetPassword: ''
+    })
     const classes = useStyles()
+    console.log(state)
 
     const handleChange = ({ target: { name, value } }) => {
         setState({
-            ...state,
+          ...state,
             [name]: value,
         })
     }
+
+    function useQuery() {
+        return new URLSearchParams(useLocation().search);
+      }
+      let query = useQuery();
+      let token = query.get('token')
+      console.log("TOKEN",token)
+      useEffect(() => {
+        ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
+            if (value !== state.password) {
+                return false;
+            }
+            return true;
+        });
+      }, [state.password])
+
     const handleFormSubmit = (event) => {
-        axios.post("http://13.36.215.163:8000/password_reset/", state)
-        .then(res=>  ( res.statusText === "OK" ? setSnackBarState({...snackBarState, open:true}): alert("problem happend on request")))
-        .finally(setLoading(false))
+        const body = {
+            password : state.password,
+            token: token
+        }
+
+        console.log("BODY",body)
+        axios.post("http://13.36.215.163:8000/password_reset/confirm/", body)
+        .then(res=> console.log(res))
     }
 
-    const handleClose = () => {
-        setState({ ...state, open: false });
-      };
-    
 
-    let { email } = state
 
     return (
         <div
@@ -75,31 +82,40 @@ const ForgotPassword = () => {
                     </Grid>
                     <Grid item lg={7} md={7} sm={7} xs={12}>
                         <div className="p-8 h-full bg-light-gray relative">
-                            <ValidatorForm onSubmit={() => (handleFormSubmit, setLoading(true))}>
+                            <ValidatorForm onSubmit={handleFormSubmit}>
                                 <TextValidator
                                     className="mb-6 w-full"
                                     variant="outlined"
-                                    label="Email"
+                                    label="Mot de passe"
                                     onChange={handleChange}
-                                    type="email"
-                                    name="email"
+                                    type="password"
+                                    name="password"
                                     size="small"
-                                    value={email || ''}
-                                    validators={['required', 'isEmail']}
+                                    value={state.password || ''}
+                                    validators={['required']}
                                     errorMessages={[
                                         'Ce champ est obligatoire',
-                                        "L'email n'est pas valide",
                                     ]}
+                                />
+                                <TextValidator
+                                    className="mb-6 w-full"
+                                    variant="outlined"
+                                    label="Confirmer votre mot de passe"
+                                    onChange={handleChange}
+                                    type="password"
+                                    name="resetPassword"
+                                    size="small"
+                                    value={state.resetPassword}
+                                    validators={['isPasswordMatch', 'required']}
+                                    errorMessages={['Veuillez utiliser le même mot de passe', 'Ce champ est obligatoire']}
                                 />
                                 <div className="flex items-center">
                                     <Button
                                         variant="contained"
                                         color="primary"
                                         type="submit"
-                                        disabled={loading}
                                     >
-                                        {loading && <CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>}
-                                        Réinitialiser le mot de passe
+                                        Confirmer
                                     </Button>
                                     <span className="ml-4 mr-2">ou</span>
                                     <Link to="/session/signin">
@@ -113,15 +129,8 @@ const ForgotPassword = () => {
                     </Grid>
                 </Grid>
             </Card>
-            <Snackbar
-                anchorOrigin={{ vertical, horizontal }}
-                open={open}
-                onClose={handleClose}
-                message="Vérifiez votre E-mail pour le lien de réinitialisation du mot de passe "
-                key={vertical + horizontal}
-            />
         </div>
     )
 }
 
-export default ForgotPassword
+export default ResetPassword

@@ -26,6 +26,10 @@ const administrationRoutes = [
         path: '/modifier-une-definition-write',
         component: React.lazy(() => import('../../pages/Modifier une Definition/ModifyDefWriting')),
         auth: authRoles.sa
+    },
+    {
+        path: '/supprimer-une-definition',
+        component: React.lazy(() => import('../../pages/Supprimer une definition/DeleteDef')),
     }
     // ModifyDefWriting
 ]
