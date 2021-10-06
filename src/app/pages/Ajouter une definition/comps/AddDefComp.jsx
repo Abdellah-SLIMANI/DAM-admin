@@ -87,7 +87,7 @@ export default function AddDefComp() {
     }
 
     return (
-        <div className = 'adminPageContainer'>
+        <div className = 'adminPageContainer mt-5'>
             <div className= 'mainArea addWordContainer'>
             <div className= 'd-flex justify-content-between mb-3'>
                 <h4>Remplissez les champs ci-dessous pour ajouter une définition.</h4>

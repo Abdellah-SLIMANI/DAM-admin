@@ -78,7 +78,7 @@ export default function ModifySearchArray({value,setValue,oldValue}) {
                 <SimpleCard title='Version en cours'>
                 <TextField
                 className='w-full'
-                    value={oldValue.map(word => word.titre + "-")}
+                    value={Array.isArray(oldValue) && oldValue.map(word => word.titre + "-")}
                     variant='outlined'
                     disabled
                     />
@@ -86,7 +86,7 @@ export default function ModifySearchArray({value,setValue,oldValue}) {
                 </div>
 
         </div>
-                    {value.map(val => <div className='m-2'>
+                    {Array.isArray(value) && value.map(val => <div className='m-2'>
                     <SimpleCard>
                         {val.titre}
                     </SimpleCard></div>)}

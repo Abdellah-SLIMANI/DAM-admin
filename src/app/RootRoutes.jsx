@@ -11,6 +11,7 @@ import dragAndDropRoute from './views/Drag&Drop/DragAndDropRoute'
 import formsRoutes from './views/forms/FormsRoutes'
 import mapRoutes from './views/map/MapRoutes'
 import accountsRoutes from './pages/AccountsRoutes'
+import authorRoutes from './pages/AuthorsRoutes'
 
 const redirectRoute = [
     {
@@ -27,6 +28,7 @@ const errorRoute = [
 ]
 
 const routes = [
+    ...authorRoutes,
     ...administrationRoutes,
     ...accountsRoutes,
     ...materialRoutes,

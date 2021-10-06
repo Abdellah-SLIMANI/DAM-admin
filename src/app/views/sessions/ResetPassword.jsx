@@ -60,8 +60,6 @@ const ResetPassword = () => {
         .then(res=> console.log(res))
     }
 
-
-
     return (
         <div
             className={clsx(

@@ -48,9 +48,7 @@ function AddOneItem({actualItem,actualIndex,setActualItem, type}){
     return (
         <div style={{ width: '100%', marginBottom: '3rem'}}>
             <div style={{ marginBottom: '1rem'}}>
-            
                 {
-                    
                     type == 'author' ? 
                     <SimpleCard title={`Nom de l'auteur ${actualIndex+1}`} >
                     <TextField 

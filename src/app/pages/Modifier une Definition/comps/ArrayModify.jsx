@@ -11,6 +11,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function ArrayModify({value,setValue,type,oldValue}) {
     const emptyHelper = type == 'author' ? {nom: '', description: ''} : type == 'definition' ? {definition: '', commentaire: ''} : null
+    const ajouterItem = () => {
+        setValue([...value, emptyHelper])
+    }
     const setActualItem = (item,index) => {
         setValue(value.reduce((previous , current ,itemIndex) =>{
             if (itemIndex == index){
@@ -24,7 +27,7 @@ export default function ArrayModify({value,setValue,type,oldValue}) {
     },[])
     return (
         <>
-            {value && value.length  && value.map((item , index) =>(
+            {value && value.map((item , index) =>(
                     <ModifyOneItem 
                     actualItem={item} 
                     setActualItem={setActualItem} 
@@ -79,13 +82,13 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem, type , oldValue ,v
                                     variant= 'outlined'
                                     className='w-full'
                                     name = 'nom'
-                                    value={oldValue[actualIndex].nom}
+                                    value={oldValue[actualIndex] && oldValue[actualIndex].nom}
                                     disabled
                                 /> 
                                 <p className='mt-5'>{`Description de l'auteur ${actualIndex+1}`}</p>
                                         <CKEditor
                                         editor={ClassicEditor}
-                                        data={oldValue[actualIndex].description} 
+                                        data={oldValue[actualIndex] && oldValue[actualIndex].description} 
                                         disabled={true}
                                     />
                                 </SimpleCard>
@@ -118,13 +121,13 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem, type , oldValue ,v
                             <p>{`Definition ${actualIndex+1}`}</p>
                             <CKEditor
                                 editor={ClassicEditor}
-                                data={oldValue[actualIndex].definition} 
+                                data={oldValue[actualIndex] && oldValue[actualIndex].definition} 
                                 disabled={true}
                             />
                             <p className='mt-5'>{`Commentaire ${actualIndex+1}`}</p>
                             <CKEditor
                                 editor={ClassicEditor}
-                                data={oldValue[actualIndex].commentaire} 
+                                data={oldValue[actualIndex] && oldValue[actualIndex].commentaire} 
                                 disabled={true}
                             />
                         </SimpleCard>

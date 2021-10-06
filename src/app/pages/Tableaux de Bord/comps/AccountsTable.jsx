@@ -15,6 +15,7 @@ import axios from 'axios'
 import ModifyUserDialog from './ModifyUserDialog'
 import DeleteAccount from './DeleteAccount'
 import MUIDataTable from 'mui-datatables'
+import Breadcrumb from 'app/components/Breadcrumb/Breadcrumb'
 
 const AccountsTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -153,6 +154,12 @@ const AccountsTable = () => {
 
     return (
         <>
+        <Breadcrumb
+                    routeSegments={[
+                        { name: 'Gestion des utilisateurs', path: '/tableaux-de-bord' },
+                        { name: 'Tableaux de bord des Utilisateurs' },
+                    ]}
+            />
         <MUIDataTable
             data={users.results}
             title={'Liste des utilisateurs'}

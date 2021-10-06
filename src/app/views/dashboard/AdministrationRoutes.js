@@ -12,11 +12,6 @@ const administrationRoutes = [
         component: React.lazy(() => import('../../pages/Ajouter une definition/AddDef')),
         auth: authRoles.sa,
     },
-    // {
-    //     path: '/chercher-une-definition',
-    //     component: React.lazy(() => import('../../pages/Chercher une definition/ChercherDef')),
-    //     auth: authRoles.sa
-    // },
     {
         path: '/modifier-une-definition',
         component: React.lazy(() => import('../../pages/Modifier une Definition/SearchDef')),
@@ -29,9 +24,8 @@ const administrationRoutes = [
     },
     {
         path: '/supprimer-une-definition',
-        component: React.lazy(() => import('../../pages/Supprimer une definition/DeleteDef')),
+        component: React.lazy(() => import('../../pages/Supprimer une definition/DeleteElasticDef')),
     }
-    // ModifyDefWriting
 ]
 
 export default administrationRoutes

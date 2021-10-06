@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { Card, Grid, Button, Snackbar, CircularProgress } from '@material-ui/core'
+import { Card, Grid, Button, CircularProgress } from '@material-ui/core'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import axios from 'axios'
+import images from 'dictionnaireImages/images'
+import SnackBar from 'app/pages/Components/SnackBar'
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     cardHolder: {
@@ -27,13 +29,16 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 const ForgotPassword = () => {
     const [state, setState] = useState({})
     const [loading, setLoading]= useState(false)
+    const [open, setOpen] = useState(false)
+    const [message, setMessage] = useState('')
+    const [variant, setVariant] = useState('')
     const [snackBarState, setSnackBarState] = React.useState({
         open: false,
         vertical: 'top',
         horizontal: 'center',
       });
 
-    const { vertical, horizontal, open } = snackBarState;
+    const { vertical, horizontal } = snackBarState;
     const classes = useStyles()
 
     const handleChange = ({ target: { name, value } }) => {
@@ -42,10 +47,26 @@ const ForgotPassword = () => {
             [name]: value,
         })
     }
+
+    const onApiCallSuccess = () => {
+        setOpen(true)
+        setLoading(true)
+        setVariant('success')
+        setMessage('Email sent to ur email to change password')
+    }
+
+    const onApiCallFailure = () => {
+        setOpen(true)
+        setLoading(false)
+        setVariant('error')
+        setMessage("some sort of error happend")
+    }
+    
     const handleFormSubmit = (event) => {
+        // setOpen(true)
         axios.post("http://13.36.215.163:8000/password_reset/", state)
-        .then(res=>  ( res.statusText === "OK" ? setSnackBarState({...snackBarState, open:true}): alert("problem happend on request")))
-        .finally(setLoading(false))
+        .then(res=>  ( res.statusText === "OK" ? onApiCallSuccess : onApiCallFailure))
+        .finally(setState({...state, email: ''}))
     }
 
     const handleClose = () => {
@@ -68,14 +89,14 @@ const ForgotPassword = () => {
                         <div className="p-8 flex justify-center items-center h-full">
                             <img
                                 className="w-full"
-                                src="/assets/images/illustrations/dreamer.svg"
+                                src={images.logoDicMaxi}
                                 alt=""
                             />
                         </div>
                     </Grid>
                     <Grid item lg={7} md={7} sm={7} xs={12}>
                         <div className="p-8 h-full bg-light-gray relative">
-                            <ValidatorForm onSubmit={() => (handleFormSubmit, setLoading(true))}>
+                            <ValidatorForm onSubmit={handleFormSubmit} id='form'>
                                 <TextValidator
                                     className="mb-6 w-full"
                                     variant="outlined"
@@ -106,20 +127,18 @@ const ForgotPassword = () => {
                                         <Button className="capitalize">
                                             Se Connecter
                                         </Button>
+
                                     </Link>
                                 </div>
+                                {/* <Button className="capitalize" onClick={()=>setOpen(true)}>
+                                            tst
+                                        </Button> */}
                             </ValidatorForm>
                         </div>
                     </Grid>
                 </Grid>
             </Card>
-            <Snackbar
-                anchorOrigin={{ vertical, horizontal }}
-                open={open}
-                onClose={handleClose}
-                message="Vérifiez votre E-mail pour le lien de réinitialisation du mot de passe "
-                key={vertical + horizontal}
-            />
+            {/* <SnackBar open={open} variant={variant} message={message} setOpen={setOpen}/> */}
         </div>
     )
 }

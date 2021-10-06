@@ -16,23 +16,19 @@ import {
 import { SimpleCard } from 'app/components'
 import axios from 'axios'
 import { useHistory, useLocation } from 'react-router-dom'
-import DeleteElasticModal from './DeleteElasticModal'
 
-const DeleteDefinition = () => {
+const ListeDesAuteurs = () => {
     const [open, setOpen] = React.useState(false)
     const [currentWord, setCurrentWord] = useState({})
-    const [definitions, setDefinitions] = useState([])
+    const [authors, setAuthors] = useState([])
     const history = useHistory();
     const [loading, setLoading] = useState(false)
 
-    function handleClose(){
-        setOpen(false)
-    }
-
-    function handleDeleteClick(word){
-        setOpen(true)
-        setCurrentWord(word)
-    }
+    function redirectToModify(author) {
+        localStorage.setItem('modifyAuthor',author.Nom);
+        let queryString = "nom=" + author.Nom;
+        history.push(`/modifier-un-auteur-write/?${queryString}`);
+      }
 
       function useQuery() {
         return new URLSearchParams(useLocation().search);
@@ -40,21 +36,21 @@ const DeleteDefinition = () => {
       let query = useQuery();
 
     React.useEffect(() => { 
-        if(query.get('titre') != null){
+        if(query.get('nom') != null){
             setLoading(true)
-            axios.get(`http://13.36.215.163:8000/api/elastic/search/?titre=${query.get('titre')}`)
+            axios.get(`http://13.36.215.163:8000/api/elastic/auteur/?nom=${query.get('nom')}`)
             .then(res => {
                 console.log(res.data)
-                setDefinitions(res.data)
+                setAuthors(res.data)
             })
             .finally(() => {setLoading(false)})
         }
-    }, [query.get('titre')])
-    console.log(definitions)
+    }, [query.get('nom')])
+    console.log("Authors",authors)
     
     return (
         <>
-                                {!!definitions.length && loading && (
+                                {!!authors.length && loading && (
                                     <div className='m-auto' style={{height: '50vh',transform: 'translate(0,10%)', textAlign: 'center'}}>
                                     <CircularProgress
                                         color="inherit"
@@ -63,8 +59,8 @@ const DeleteDefinition = () => {
                                     </div>
                                 )}
                                        <div className='grid'>
-                     {definitions && definitions
-                        .map((definition, index) => (
+                     {authors && authors
+                        .map((author, index) => (
 
                 <Card
                     className="flex flex-wrap flex-row justify-between items-center p-sm-24 bg-paper m-10"
@@ -76,15 +72,15 @@ const DeleteDefinition = () => {
                         {/* <Icon>group</Icon> */}
                         <div className="ml-3 flex-column">
                         <h6 className="m-0 mt-1 text-primary font-medium">
-                                {definition.titre}
+                                {author.Nom}
                             </h6>
-                            <small>{definition.definition.map(def => def.definition)}</small>
-                            <small className="text-muted">{definition.edition}</small>
+                            <small className="text-muted">{author.Prenom}</small>
+                            <small className="text-muted">{author.biographie}</small>
                         </div>
                     </div>
                     <Tooltip title="View Details" placement="top">
-                        <IconButton onClick={()=>{handleDeleteClick(definition)}}>
-                            <Icon>delete</Icon>
+                        <IconButton onClick={()=>{redirectToModify(author)}}>
+                            <Icon>create</Icon>
                         </IconButton>
                     </Tooltip>
                     </div>
@@ -92,9 +88,8 @@ const DeleteDefinition = () => {
 
              ))}
              </div>
-             <DeleteElasticModal open = {open} handleClose={()=>handleClose()} def={currentWord}/>
             </>
     )
 }
 
-export default DeleteDefinition
+export default ListeDesAuteurs

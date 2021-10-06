@@ -53,6 +53,15 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
             // color: palette.text.secondary
         },
     },
+    dropDownMenu: {
+        width: 'max-content',
+        fontWeight: 'light',
+        color: 'gray',
+        marginLeft: '1.5rem',
+        display: 'flex',
+        alignItems: 'center',
+        cursor: 'pointer'
+    },
     menuItem: {
         display: 'flex',
         alignItems: 'center',
@@ -118,57 +127,46 @@ const Layout1Topbar = () => {
                 <div className="flex justify-between items-center h-full">
                     <div className="flex">
                         <img src={images.logoDicMaxi} alt="" className={classes.myLogo}/>
-
-                    <MatxMenu
-                            menuButton={
-                                'Gestion des definition'
+                    <div className='flex items-center'>
+                            {
+                                console.log("MENU ITEMS", menuItems),
+                                user.role == 'Valideur' ? menuItems.map(item => (
+                                <MatxMenu
+                                    menuButton={
+                                        <div className={classes.dropDownMenu}>
+                                            <Icon>{item.icone}</Icon>
+                                            <span className="pl-4">{item.title}</span>
+                                        </div>
+                                    }
+                                >
+                                    {
+                                        item.submenus.map(subItem => (
+                                            <MenuItem>
+                                                <Link className={classes.menuItem} to = {subItem.path}>
+                                                    <Icon>{subItem.icone}</Icon>
+                                                    <span className="pl-4">{subItem.title}</span>
+                                                </Link>
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </MatxMenu>
+                                )) : user.role == 'Administrateur' ? menuItems.map(item => (
+                                                <MenuItem>
+                                                    <Link className={classes.menuItem} to = {item.path}>
+                                                        <Icon>{item.icone}</Icon>
+                                                        <span className="pl-4">{item.title}</span>
+                                                    </Link>
+                                                </MenuItem>
+                                            )) : menuItems.map((item) => 
+                                            <MenuItem className={classes.topBarMenuItem}>      
+                                            <Link className={classes.menuItem} to={item.path}>
+                                                <Icon style={{marginRight: '5%'}}> {item.icone}</Icon> 
+                                                        <span> {item.title} </span>
+                                            </Link>
+                                        </MenuItem>
+                                        )
                             }
-                            
-                        >
-                        {
-                            console.log("MENU ITEMS", menuItems ),
-                            menuItems.map((item) => 
-                                <MenuItem className={classes.topBarMenuItem}>      
-                                <Link className={classes.menuItem} to={item.path}>
-                                    <Icon style={{marginRight: '5%'}}> {item.icone}</Icon> 
-                                            <span> {item.title} </span>
-                                </Link>
-                            </MenuItem>
-                            )
-                        }
-                            <MenuItem className={classes.topBarMenuItem}>      
-                                <Link className={classes.menuItem} to={'/supprimer-une-definition'}>
-                                    <Icon style={{marginRight: '5%'}}> delete</Icon> 
-                                            <span> Supprimer une definition </span>
-                                </Link>
-                            </MenuItem>
-                        </MatxMenu>
-                        <MatxMenu
-                            menuButton={
-                                'Gestion des Auteurs'
-                            }
-                            
-                        >
-                            <MenuItem>      
-                                <Link className={classes.menuItem} to="/">
-                                    <Icon> dashboard </Icon>
-                                    <span className="pl-4"> Tableau de bord des auteurs </span>
-                                </Link>
-                            </MenuItem>
-                            <MenuItem>      
-                                <Link className={classes.menuItem} to="/">
-                                    <Icon> create </Icon>
-                                    <span className="pl-4"> Ajouter un Auteur </span>
-                                </Link>
-                            </MenuItem>
-                            <MenuItem
-                                onClick={logout}
-                                className={classes.menuItem}
-                            >
-                                <Icon> add</Icon>
-                                <span className="pl-4"> Modifier un auteur  </span>
-                            </MenuItem>
-                        </MatxMenu>
+                        </div>
                     </div>
                     <div className="flex items-center">
                         {/* <MatxSearchBox /> */}

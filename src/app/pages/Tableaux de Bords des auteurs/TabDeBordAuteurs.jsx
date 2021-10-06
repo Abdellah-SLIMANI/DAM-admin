@@ -4,23 +4,23 @@ import {IconButton,Icon,} from '@material-ui/core'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
-import DeleteDef from './DeleteDef'
 import MUIDataTable from "mui-datatables";
-import Breadcrumb from 'app/components/Breadcrumb/Breadcrumb'
+import { Breadcrumb } from 'app/components'
 
-const TabDeBord = () => {
+const TabDeBordAuteurs = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
     const [open, setOpen] = React.useState(false)
     const [page, setPage] = React.useState(0)
-    const [definitions, setDefinitions] = useState([])
+    const [authors, setAuthors] = useState([])
     const [modalDef, setModalDef] = useState([])
     const history = useHistory();
     let {user} = useAuth()
 
     function redirectToModify(def) {
-        localStorage.setItem('modifyWord',def.titre);
-        let queryString = "titre=" + def.titre;
-        history.push(`/modifier-une-definition-write/?${queryString}`);
+        console.log("HEEEEEEEEEEEE",def)
+        localStorage.setItem('modifyAuthor',def.nom);
+        let queryString = "nom=" + def.nom;
+        history.push(`/modifier-un-auteur-write/?${queryString}`);
     }
 
     function handleClickOpen(def) {
@@ -33,13 +33,13 @@ const TabDeBord = () => {
     }
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/article/?page='+page , {
+        axios.get('http://13.36.215.163:8000/api/administration/auteur/' , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
         .then(res => {
-            console.log(res.data)
-            setDefinitions(res.data)
+            console.log("DAAAAAAAAAATA",res.data)
+            setAuthors(res.data)
         })
     }, [page])
     console.log(page)
@@ -68,9 +68,6 @@ const TabDeBord = () => {
             }})
             .then(res=> res.status == 200 ? window.location.reload() : alert("server Problem") )
     }
-
-    
-
     const columns = [
         {
             name: "action",
@@ -98,8 +95,8 @@ const TabDeBord = () => {
             }
         },
         {
-         name: "",
-         label: "Titre",
+         name: "nom",
+         label: "Nom",
          options: {
           sort: true,
           customBodyRender: (value, tableMeta, updateValue) => {
@@ -110,24 +107,24 @@ const TabDeBord = () => {
          }
         },
         {
-         name: "code",
-         label: "Code",
+         name: "prenom",
+         label: "Prénom",
          options: {
           filter: true,
           sort: true,
          }
         },
         {
-         name: `created_by.last_name`,
-         label: "Emetteur",
+         name: 'naissance',
+         label: "Date de naissance",
          options: {
           filter: true,
           sort: true,
          }
         },
         {
-         name: "date",
-         label: "Date d'émission",
+         name: "deces",
+         label: "Date de décès",
          options: {
           filter: true,
           sort: true,
@@ -162,33 +159,20 @@ const TabDeBord = () => {
           }
          }
         },
-                {
-         name: 'edition',
-         label: "Edition",
-         options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value, tableMeta, updateValue) => {
-            return (
-                <div dangerouslySetInnerHTML={{__html: value}} style={{margin: 0}}>
-                </div>
-            )}
-         }
-        },
-                {
+        {
          name: "action",
          label: "Action",
          options: {
           customBodyRenderLite: (dataIndex) => {
             return ( 
                 <>
-                <IconButton onClick={() => redirectToModify(definitions.results[dataIndex])}>
+                <IconButton onClick={() => redirectToModify(authors.results[dataIndex])}>
                 <Icon>edit</Icon>
             </IconButton>
             <IconButton>
-                <Icon color="error" onClick = {()=> handleClickOpen(definitions.results[dataIndex])}>close</Icon>
+                <Icon color="error" onClick = {()=> handleClickOpen(authors.results[dataIndex])}>close</Icon>
             </IconButton>
-            <IconButton onClick={()=>ValidateWord(definitions.results[dataIndex])}>
+            <IconButton onClick={()=>ValidateWord(authors.results[dataIndex])}>
                 <Icon className='hover-bg-green'>done</Icon>
             </IconButton>
             </>
@@ -200,7 +184,7 @@ const TabDeBord = () => {
        ];
 
        const options = {
-            count: definitions.count,
+            count: authors.count,
             download: false,
             print: false,
             page: page,
@@ -211,7 +195,7 @@ const TabDeBord = () => {
             serverSide: true,
             textLabels: {
                 body: {
-                    noMatch: 'Aucune définition trouvée.'
+                    noMatch: 'Aucun auteur trouvé.'
                 },
                 toolbar: {
                     search: 'Recherche',
@@ -229,34 +213,23 @@ const TabDeBord = () => {
             }
        }
     return ( 
-        <>
-        <Breadcrumb 
-                            routeSegments={[
-                                { name: 'Gestion des Definitions', path: '/tableaux-de-bord' },
-                                { name: 'Tableaux de bord des Definitions' },
-                            ]}
-        />
-        <div className='mt-5'>                
+        <div className='p-10'>
+            <div className='mb-5'>
+                <Breadcrumb
+                        routeSegments={[
+                            { name: 'Gestion des auteurs', path: '/tableaux-de-bord-auteurs' },
+                            { name: 'Tableau de bord des auteurs' },
+                        ]}
+                    />
+            </div>
         <MUIDataTable
-            title={"Liste des définitions"}
-            data={definitions.results && definitions.results.map(item => {
-                return [
-                    item.action,
-                    item.data.titre,
-                    item.data.domaines,
-                    item.created_by.last_name+ " " +item.created_by.first_name,
-                    item.created_date,
-                    item.status,
-                    item.data.edition, 
-            ]
-            })}
+            title={"Liste des auteurs"}
+            data={authors.results && authors.results}
             columns={columns}
             options={options}
             />
-            </div>
-        <DeleteDef open = {open} handleClose={()=>handleClose()} def={modalDef}/>
-        </>
+        </div>
     )
 }
 
-export default TabDeBord
+export default TabDeBordAuteurs

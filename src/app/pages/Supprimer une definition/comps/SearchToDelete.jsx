@@ -5,7 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import images from 'dictionnaireImages/images'
 import { useHistory, useLocation } from 'react-router-dom'
 
-export default function MainSearchBar({handleSearch}) {
+export default function AsyncAutocomplete() {
     const [open, setOpen] = React.useState(false)
     const [defs, setDefs] = React.useState([])
     const [value, setValue] = React.useState('')
@@ -13,6 +13,13 @@ export default function MainSearchBar({handleSearch}) {
     const [inputValue, setInputValue] = React.useState('');
     const history = useHistory()
     let location = useLocation();
+
+   function handleSearch(word){
+       if(word != null){
+        let queryString = "titre=" + word;
+        history.push(`/supprimer-une-definition/?${queryString}`);
+       }
+    }
 
     React.useEffect(() => {
         setLoading(true)
@@ -33,6 +40,8 @@ export default function MainSearchBar({handleSearch}) {
     }, [open])
 
     return (
+        
+
         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
             <img src={images.logoDicMaxi} alt="" className='m-auto'/>
             <div className=' m-auto' style={{width: '40%',transform: 'translate(0px, 100%)'}}>
