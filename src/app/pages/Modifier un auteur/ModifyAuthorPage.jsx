@@ -7,14 +7,15 @@ import {  useHistory, useLocation } from 'react-router-dom';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useLastLocation } from 'react-router-last-location';
 import useAuth from 'app/hooks/useAuth';
-import { useStyles } from '@material-ui/pickers/views/Calendar/Day';
-import SearchAdd from '../Ajouter une definition/comps/SearchAdd'
+import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
-import TxtModify from '../Ajouter une definition/comps/TxtModify'
-import AjouterBiblio from '../Ajouter un auteur/comps/AjouterBiblio'
 import DateFnsUtils from '@date-io/date-fns'
 import moment from 'moment'
 import { Breadcrumb } from 'app/components'
+import ModifyBlock from '../Modifier une Definition/comps/ModifyBlock'
+import ModifierBiblio from './comps/ModifierBiblio'
+import ModifySearchArray from '../Modifier une Definition/comps/ModifySearchArray'
+import DateModify from './comps/DateModify'
 
 export default function ModifyDefTxtEdit() {
     const mapEventkeyToTitle = {
@@ -42,10 +43,10 @@ export default function ModifyDefTxtEdit() {
     const classes = useStyles()
     const [content, setContent] = useState(initContent)
     const [naissance, setNaissance] = React.useState(
-        new Date('2014-08-18')
+        new Date()
     )
     const [deces, setDeces] = React.useState(
-        new Date('2014-08-18')
+        new Date()
     )
 
     function handleNaissanceChange(date) {
@@ -66,24 +67,22 @@ export default function ModifyDefTxtEdit() {
 
     let query = useQuery();
     const lastLocation = useLastLocation()
-    
 
     lastLocation && localStorage.setItem('LastPath',lastLocation.pathname);
     const previousPath = localStorage.getItem('LastPath');
-    const url = (previousPath == "/Tableaux-de-bord-auteurs/" || previousPath == "/Tableaux-de-bord-auteurs") ? 'http://13.36.215.163:8000/api/administration/auteur/?nom=' : 'http://13.36.215.163:8000/api/elastic/search/?nom='
+    const url = (previousPath == "/Tableaux-de-bord-auteurs/" || previousPath == "/Tableaux-de-bord-auteurs") ? 'http://13.36.215.163:8000/api/administration/auteur/?nom=' : 'http://13.36.215.163:8000/api/elastic/auteur/?nom='
     const putUrl = (previousPath == "/Tableaux-de-bord-auteurs/" || previousPath == "/Tableaux-de-bord-auteurs") ? 'http://13.36.215.163:8000/api/administration/auteur/'+wordId+'/' : 'http://13.36.215.163:8000/api/elastic/auteur/'+oldContent.id
 
     function func(res) {
             if((previousPath == "/Tableaux-de-bord-auteurs/" || previousPath == "/Tableaux-de-bord-auteurs")){
-                // res && res.data.find((word) => {
-                //     setOldContent(word.data)
-                //     setWordID(word.id)
-                // })
-                // console.log("RRRRRRRRRRRRRES",res)
+                res && res.data.results.find((word) => {
+                    setOldContent(word)
+                    setWordID(word.id)
+                })
             }
             else{
                 res && res.data.find((word) => {
-                    if(word.titre === query.get('nom')){
+                    if(word.Nom === query.get('nom')){
                         setOldContent(word)
                     }
                 })
@@ -102,7 +101,7 @@ export default function ModifyDefTxtEdit() {
         }
     }
 
-    console.log("OLD CONTENT AUHTOR",oldContent)
+    console.log("OLD CONTENT AUHTOR",oldContent, "\nBibliographie",bibliographie)
     function checkArrayChange(newArray,oldArray){
             console.log('what json stringify new',JSON.stringify(newArray),'\nwhat json stringify old',JSON.stringify(oldArray, '\nwhat at last', JSON.stringify(newArray) == JSON.stringify(oldArray)))
            if(JSON.stringify(newArray) == JSON.stringify(oldArray) || newArray == []){
@@ -114,8 +113,8 @@ export default function ModifyDefTxtEdit() {
     }
     console.log("HELLO")
 
-    function soummetre(){
-        setLoadingS(true)
+    function soummetre({isDraft = false} = {}){
+        isDraft ? setLoadingB(true) : setLoadingS(true)
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -125,13 +124,22 @@ export default function ModifyDefTxtEdit() {
         const role = user.role;
 
         let data = {
+                'created_by': user.id,
+                "action": url == "http://13.36.215.163:8000/api/elastic/auteur/?nom=" ? "Modification" : "Creation",
+                'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
+                "Nom": checkChanges(content.nom,oldContent.nom),
+                "prenom": checkChanges(content.prenom,oldContent.prenom),
+                "biographie": checkChanges(content.biographie,oldContent.biographie),
+                "bibliographie": checkArrayChange(bibliographie,oldContent.bibliographie),
+                "naissance": checkChanges(naissance,oldContent.naissance),
+                "deces": checkChanges(deces,oldContent.deces),
+                "liens" : checkArrayChange(liens,oldContent.liens)
         }
         
         axios.put(putUrl, data ,config)
-        .then(res => res.status == 200 ? history.push(`/Tableaux-de-bord-auteurs/`) : window.alert('Server Response',res))
-        .finally(()=>{
-            setLoadingS(false)
-        })
+        .then(res => res.statusText == "OK" ? history.push(`/Tableaux-de-bord-auteurs/`) : window.alert('Server Error',res))
+        .catch(e => console.log("Error while Posting data",e))
+        .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
         
     }
     function draft(){
@@ -144,10 +152,15 @@ export default function ModifyDefTxtEdit() {
             }
         }
         let data = {
-            "titre": checkChanges(content.titre , oldContent.titre),
-            'status': 'brouillon',
             'created_by': user.id,
-        }
+            "action": url == "http://13.36.215.163:8000/api/elastic/auteur/?nom=" ? "Modification" : "Creation",
+            'status': 'brouillon',
+            ...content,
+            "bibliographie": bibliographie,
+            "naissance": naissance,
+            "deces": deces,
+            "liens" : liens
+    }
 
         axios.put(putUrl, data ,config)
             .then(res => (
@@ -180,7 +193,7 @@ export default function ModifyDefTxtEdit() {
                 </div>
             </div>
             <Card>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="titre" unmountOnExit={true}>
+            <Tab.Container id="left-tabs-example" defaultActiveKey="Nom" unmountOnExit={true}>
                 <Row className='p-10'>
                     <Col sm={3}>
                     <Nav variant="pills" className="flex-column">
@@ -196,49 +209,39 @@ export default function ModifyDefTxtEdit() {
                         </Nav>
                     </Col>
                     <Col sm={9}>
-                    {/* <Tab.Content>
+                    <Tab.Content>
                         { Object.keys(initContent).map(key => (
                             <Tab.Pane eventKey={key}>
-                                <TxtModify value= {content[key]} setValue = {handleSetValue} fieldName={key} />
+                                <ModifyBlock value= {content[key]} setValue = {handleSetValue} fieldName={key} oldValue={oldContent[key]}/>
                             </Tab.Pane>
                         ))}
                             <Tab.Pane eventKey='bibliographie'>
-                                <AjouterBiblio value= {bibliographie} setValue = {setBibliographie}/>
+                                <ModifierBiblio value= {bibliographie} setValue = {setBibliographie} oldValue={oldContent.bibliographie}/>
                             </Tab.Pane>
-                            <Tab.Pane eventKey='deces'>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <KeyboardDatePicker
-                            margin="normal"
-                            id="mui-pickers-date"
-                            label="Date picker"
-                            format="MM/dd/yyyy"
-                            value={deces}
-                            onChange={handleDecesChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
-                        />         
-                        </MuiPickersUtilsProvider>                   
-                        </Tab.Pane>
+                            <Tab.Pane eventKey='deces'>  
+                                <DateModify 
+                                    value={deces}
+                                    setValue={handleDecesChange}
+                                    oldValue={oldContent.deces}
+                                    label={'Date de décès'}
+                                />            
+                            </Tab.Pane>
                             <Tab.Pane eventKey='naissance'>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <KeyboardDatePicker
-                            margin="normal"
-                            id="mui-pickers-date"
-                            label="Date picker"
-                            format="MM/dd/yyyy"
-                            value={naissance}
-                            onChange={handleNaissanceChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
-                        />
-                        </MuiPickersUtilsProvider>   
+                            <DateModify 
+                                    value={naissance}
+                                    setValue={handleNaissanceChange}
+                                    oldValue={oldContent.naissance}
+                                    label={'Date de naissance'}
+                                />     
                             </Tab.Pane>
                             <Tab.Pane eventKey='lien'>
-                                <SearchAdd value= {liens} setValue = {setLiens}/>
+                                <ModifySearchArray 
+                                    value={liens}
+                                    setValue={setLiens}
+                                    oldValue={oldContent.liens}
+                                />
                             </Tab.Pane>
-                    </Tab.Content> */}
+                    </Tab.Content>
                     </Col>
                 </Row>
                 </Tab.Container>

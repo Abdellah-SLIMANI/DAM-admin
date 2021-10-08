@@ -4,9 +4,9 @@ import {IconButton,Icon,} from '@material-ui/core'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
-import DeleteDef from './DeleteDef'
 import MUIDataTable from "mui-datatables";
 import Breadcrumb from 'app/components/Breadcrumb/Breadcrumb'
+import DeleteItem from 'app/pages/Components/DeleteItem'
 
 const TabDeBord = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -254,7 +254,13 @@ const TabDeBord = () => {
             options={options}
             />
             </div>
-        <DeleteDef open = {open} handleClose={()=>handleClose()} def={modalDef}/>
+            <DeleteItem 
+                open = {open}
+                handleClose={()=>handleClose()}
+                item={modalDef}
+                message='Confirmez-vous la suppression de la définition:'
+                url='http://13.36.215.163:8000/api/administration/article/'
+            />
         </>
     )
 }

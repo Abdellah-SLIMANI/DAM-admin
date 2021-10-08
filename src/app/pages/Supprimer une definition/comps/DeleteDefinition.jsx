@@ -17,6 +17,7 @@ import { SimpleCard } from 'app/components'
 import axios from 'axios'
 import { useHistory, useLocation } from 'react-router-dom'
 import DeleteElasticModal from './DeleteElasticModal'
+import DeleteItem from 'app/pages/Components/DeleteItem'
 
 const DeleteDefinition = () => {
     const [open, setOpen] = React.useState(false)
@@ -92,7 +93,13 @@ const DeleteDefinition = () => {
 
              ))}
              </div>
-             <DeleteElasticModal open = {open} handleClose={()=>handleClose()} def={currentWord}/>
+             <DeleteItem
+                open = {open}
+                handleClose={()=>handleClose()}
+                item={currentWord}
+                message="Confirmez-vous la suppression définitive de la définition:"
+                url='http://13.36.215.163:8000/api/administration/delete_article_es/'
+             />
             </>
     )
 }

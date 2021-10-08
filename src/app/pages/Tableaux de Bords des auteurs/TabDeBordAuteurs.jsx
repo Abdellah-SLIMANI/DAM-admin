@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
 import MUIDataTable from "mui-datatables";
 import { Breadcrumb } from 'app/components'
+import DeleteItem from '../Components/DeleteItem'
 
 const TabDeBordAuteurs = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -222,11 +223,18 @@ const TabDeBordAuteurs = () => {
                         ]}
                     />
             </div>
-        <MUIDataTable
-            title={"Liste des auteurs"}
-            data={authors.results && authors.results}
-            columns={columns}
-            options={options}
+                <MUIDataTable
+                    title={"Liste des auteurs"}
+                    data={authors.results && authors.results}
+                    columns={columns}
+                    options={options}
+                />
+            <DeleteItem 
+                open = {open}
+                handleClose={()=>handleClose()}
+                item={modalDef}
+                message="Confirmez-vous la suppression de l'auteur:"
+                url='http://13.36.215.163:8000/api/administration/auteur/'
             />
         </div>
     )

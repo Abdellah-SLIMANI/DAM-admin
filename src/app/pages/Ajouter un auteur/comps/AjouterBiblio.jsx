@@ -36,7 +36,7 @@ function AddOneItem({actualItem,actualIndex,setActualItem}){
                     editor={ClassicEditor}
                     defaultlanguage='fr'
                     data={actualItem.toString()}
-                    onBlur={(event,editor) => setActualItem({actualItem: editor.getData()}, actualIndex)} // preferred to use only this option to update the content for performance reasons
+                    onBlur={(event,editor) => setActualItem(editor.getData(), actualIndex)} // preferred to use only this option to update the content for performance reasons
                 />
                 </SimpleCard> 
             </div>

@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch'
-import React, { useState } from 'react'
-import { TextField, CircularProgress, Snackbar } from '@material-ui/core'
+import React, { useEffect, useState } from 'react'
+import { TextField, CircularProgress, Snackbar, Icon } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useHistory, useLocation } from 'react-router-dom'
 import { SimpleCard } from 'app/components'
@@ -11,7 +11,6 @@ export default function ModifySearchArray({value,setValue,oldValue}) {
     const [loading, setLoading] = React.useState(false)
     const [inputValue, setInputValue] = React.useState('');
 
-    console.log(value)
    function handleSearch(word){
        if(word != null){
             setValue([...value, {id:word.id,titre:word.titre}])
@@ -28,7 +27,7 @@ export default function ModifySearchArray({value,setValue,oldValue}) {
                 setDefs(defs)
         })()
 
-    }, [inputValue])
+    }, [inputValue,value])
 
     console.log("VALUE", value, '\nOld VAlue',oldValue)
     return (     
@@ -86,10 +85,33 @@ export default function ModifySearchArray({value,setValue,oldValue}) {
                 </div>
 
         </div>
-                    {Array.isArray(value) && value.map(val => <div className='m-2'>
-                    <SimpleCard>
-                        {val.titre}
-                    </SimpleCard></div>)}
+        <ShowWords value={value}/>
+        </>
+    )
+}
+
+const ShowWords = ({value}) => {
+    const [, updateState] = React.useState();
+    const forceUpdate = React.useCallback(() => updateState({}), []);
+    function removeWord(word){
+        const index = value.indexOf(word)
+        if(index > -1){
+            value.splice(index, 1)
+        }
+        forceUpdate()
+    }
+
+    useEffect(() => {
+    }, [value])
+    return(
+        <>
+        {value.map(val => <div className='m-2'>
+        <SimpleCard>
+            <div className='d-flex' style={{justifyContent: 'space-between'}}>
+                <div>{val.titre}</div>
+                <div onClick={() => removeWord(val)} style={{cursor:'pointer'}}><Icon>highlight_off</Icon></div>
+            </div>
+        </SimpleCard></div>)}
         </>
     )
 }
