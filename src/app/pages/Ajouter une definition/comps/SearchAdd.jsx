@@ -1,10 +1,6 @@
-import fetch from 'cross-fetch'
 import React from 'react'
-import { TextField} from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
 import { SimpleCard } from 'app/components'
 import SearchBar from '../../Components/SearchBar'
-
 
 export default function SearchAdd({value,setValue}) {
    function handleSearch(word){

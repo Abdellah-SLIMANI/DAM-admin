@@ -69,7 +69,7 @@ export default function AddAccountForm() {
                         <ValidatorForm onSubmit={handleFormSubmit}>
                             <TextValidator
                                 className="mb-6 w-full"
-                                variant="outlined"
+                                // variant="outlined"
                                 size="small"
                                 label="Nom"
                                 onChange={handleChange}
@@ -83,7 +83,7 @@ export default function AddAccountForm() {
                             />
                         <TextValidator
                                 className="mb-6 w-full"
-                                variant="outlined"
+                                // variant="outlined"
                                 size="small"
                                 label="Prenom"
                                 onChange={handleChange}
@@ -97,7 +97,7 @@ export default function AddAccountForm() {
                             />
                                <TextValidator
                                     className="mb-6 w-full"
-                                    variant="outlined"
+                                    // variant="outlined"
                                     size="small"
                                     label="Email"
                                     onChange={handleChange}
@@ -127,7 +127,7 @@ export default function AddAccountForm() {
                                         ]}
                                             {...params}
                                             label="Role"
-                                            variant="outlined"
+                                            // variant="outlined"
                                             name= 'role'
                                             value={userInfo.role}
                                             type= 'text'

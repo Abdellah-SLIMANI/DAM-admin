@@ -64,7 +64,7 @@ export default function CodeAdd({value , setValue}) {
             renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
                     <Chip
-                        variant="outlined"
+                        // variant="outlined"
                         label={option.code + " - " + option.super}
                         {...getTagProps({ index })}
                     />
@@ -76,7 +76,7 @@ export default function CodeAdd({value , setValue}) {
                     {...params}
                     label="Liste des domaines"
                     fullWidth
-                    variant="outlined"
+                    // variant="outlined"
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (

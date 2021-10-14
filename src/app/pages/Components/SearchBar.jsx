@@ -59,7 +59,7 @@ export default function AsyncAutocomplete(props) {
                       label={props.label}
                       fullWidth
                       className ='bg-white'
-                      variant="outlined"
+                    //   variant='outlined'
                       InputProps={{
                           ...params.InputProps,
                           endAdornment: (

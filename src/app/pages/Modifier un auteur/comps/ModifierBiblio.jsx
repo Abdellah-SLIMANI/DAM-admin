@@ -1,12 +1,7 @@
 import { SimpleCard } from 'app/components'
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect} from 'react'
 import JoditEditor from "jodit-react";
-import { Button, TextField } from '@material-ui/core';
 import { ReadOnly, config } from 'app/pages/Utils';
-import TxtModify from 'app/pages/Ajouter une definition/comps/TxtModify';
-
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 export default function ModifierBiblio({value,setValue,type,oldValue}) {
@@ -19,7 +14,7 @@ export default function ModifierBiblio({value,setValue,type,oldValue}) {
         },[]))
     }
     useEffect(()=>{ 
-        setValue([...value, ...oldValue.map(e => "")]) 
+        oldValue && setValue([...value, ...oldValue.map(e => "")]) 
     },[])
     console.log("VALUE",value)
     return (
@@ -47,22 +42,21 @@ function ModifyOneItem({actualIndex,setActualItem , oldValue ,value}){
                 <div style={{width: '50%' ,marginInline: '0.5%'}}>
                     <SimpleCard title="Nouvelle Version">
                     <p>{`Bibliographie ${actualIndex+1}`}</p>
-                        <CKEditor 
-                            editor={ClassicEditor}
-                            data={value[actualIndex]}
-                            defaultLanguage = 'fr'
-                            onBlur={(event,editor) => {setActualItem(editor.getData(),actualIndex)}} // preferred to use only this option to update the content for performance reasons
-                        />
+                             <JoditEditor 
+                                value={value[actualIndex]}
+                                config={config}
+                                onBlur={(newContent) => {setActualItem(newContent,actualIndex)}} // preferred to use only this option to update the content for performance reasons
+                            />
                     </SimpleCard>
                 </div>
                 {/* old values of the defs array */}
                 <div style={{width: '50%' ,marginInline: '0.5%'}}>   
                         <SimpleCard title="Version en cours" >
                             <p>{`Bibliographie ${actualIndex+1}`}</p>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                data={oldValue[actualIndex]} 
-                                disabled={true}
+
+                            <JoditEditor 
+                                value={oldValue[actualIndex]}
+                                config={ReadOnly}
                             />
                         </SimpleCard>
                 </div>

@@ -25,6 +25,7 @@ const ResetPassword = () => {
         resetPassword: ''
     })
     const classes = useStyles()
+    const history = useHistory()
     console.log(state)
 
     const handleChange = ({ target: { name, value } }) => {
@@ -57,7 +58,7 @@ const ResetPassword = () => {
 
         console.log("BODY",body)
         axios.post("http://13.36.215.163:8000/password_reset/confirm/", body)
-        .then(res=> console.log(res))
+        .then(res=> res.statusText == "OK" ? history.push(`/session/login`) : alert('error'))
     }
 
     return (
@@ -83,7 +84,7 @@ const ResetPassword = () => {
                             <ValidatorForm onSubmit={handleFormSubmit}>
                                 <TextValidator
                                     className="mb-6 w-full"
-                                    variant="outlined"
+                                    // variant="outlined"
                                     label="Mot de passe"
                                     onChange={handleChange}
                                     type="password"
@@ -97,7 +98,7 @@ const ResetPassword = () => {
                                 />
                                 <TextValidator
                                     className="mb-6 w-full"
-                                    variant="outlined"
+                                    // variant="outlined"
                                     label="Confirmer votre mot de passe"
                                     onChange={handleChange}
                                     type="password"

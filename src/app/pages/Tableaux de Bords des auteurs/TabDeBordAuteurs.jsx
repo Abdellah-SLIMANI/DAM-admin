@@ -113,6 +113,11 @@ const TabDeBordAuteurs = () => {
          options: {
           filter: true,
           sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+                <div dangerouslySetInnerHTML={{__html: value}} style={{margin: 0}}>
+                </div>
+            )}
          }
         },
         {
@@ -121,6 +126,11 @@ const TabDeBordAuteurs = () => {
          options: {
           filter: true,
           sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+                <div dangerouslySetInnerHTML={{__html: value}} style={{margin: 0}}>
+                </div>
+            )}
          }
         },
         {
@@ -129,6 +139,11 @@ const TabDeBordAuteurs = () => {
          options: {
           filter: true,
           sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+                <div dangerouslySetInnerHTML={{__html: value}} style={{margin: 0}}>
+                </div>
+            )}
          }
         },
                 {
@@ -214,15 +229,7 @@ const TabDeBordAuteurs = () => {
             }
        }
     return ( 
-        <div className='p-10'>
-            <div className='mb-5'>
-                <Breadcrumb
-                        routeSegments={[
-                            { name: 'Gestion des auteurs', path: '/tableaux-de-bord-auteurs' },
-                            { name: 'Tableau de bord des auteurs' },
-                        ]}
-                    />
-            </div>
+        <>
                 <MUIDataTable
                     title={"Liste des auteurs"}
                     data={authors.results && authors.results}
@@ -236,7 +243,7 @@ const TabDeBordAuteurs = () => {
                 message="Confirmez-vous la suppression de l'auteur:"
                 url='http://13.36.215.163:8000/api/administration/auteur/'
             />
-        </div>
+        </>
     )
 }
 

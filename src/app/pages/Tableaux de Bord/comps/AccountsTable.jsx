@@ -154,12 +154,12 @@ const AccountsTable = () => {
 
     return (
         <>
-        <Breadcrumb
+        {/* <Breadcrumb
                     routeSegments={[
                         { name: 'Gestion des utilisateurs', path: '/tableaux-de-bord' },
                         { name: 'Tableaux de bord des Utilisateurs' },
                     ]}
-            />
+            /> */}
         <MUIDataTable
             data={users.results}
             title={'Liste des utilisateurs'}

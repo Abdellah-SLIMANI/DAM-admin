@@ -82,7 +82,7 @@ export default function AddDefComp() {
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
         .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Error',res))
-        .catch(e => console.log("Error while Posting data",e))
+        .catch(res => console.log("Error while Posting data",res))
         .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
     }
 

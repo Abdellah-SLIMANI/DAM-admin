@@ -19,7 +19,7 @@ export default function ModifyDefTxtEdit() {
         s_cat: 'Genre',
         terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
         traduction_en: 'Traduction anglais',
-        synthese: 'Synthèse et développement',
+        synthese: 'Définition et complément',
         auteurs: 'Auteurs',
         etymologie: 'Etymologie',
         synonyme: 'Synonyme',
@@ -29,7 +29,7 @@ export default function ModifyDefTxtEdit() {
         symbole: 'Symbole',
         abreviation: 'Abréviation',
         references: 'Référence',
-        voir: 'Renvoi vers les autres définitions séparées par des virgules',
+        voir: 'Voir aussi',
         codes: 'Codes internes de spécialité',
         edition: 'Edition'
     }
@@ -52,7 +52,7 @@ export default function ModifyDefTxtEdit() {
     const [codes, setCodes] = useState([])
     const [auteurs, setAuteurs] = useState([])
     const [synthese, setSynthese] = useState([])
-    const [wordId,setWordID] = useState('')
+    const [word,setWord] = useState('')
     const [voir, setVoir] = useState([])   
     const [synonyme, setSynonyme] = useState([])
     const [antonyme, setAntonyme] = useState([])
@@ -61,7 +61,7 @@ export default function ModifyDefTxtEdit() {
     const history = useHistory();
     const classes = useStyles()
     const [content, setContent] = useState(initContent)
-    console.log("OLD CONTENT" , oldContent , auteurs,synthese)
+    console.log("OLD CONTENT" , oldContent , '\nWORD', word)
 
     const handleSetValue = (k) =>{
         setContent({...content, ...k})
@@ -78,19 +78,22 @@ export default function ModifyDefTxtEdit() {
     lastLocation && localStorage.setItem('LastPath',lastLocation.pathname);
     const previousPath = localStorage.getItem('LastPath');
     const url = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/article/?titre=' : 'http://13.36.215.163:8000/api/elastic/search/?titre='
-    const putUrl = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/article/'+wordId+'/' : 'http://13.36.215.163:8000/api/elastic/search/?id='+oldContent.id
+    const putUrl = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/article/'+word.id+'/' : 'http://13.36.215.163:8000/api/administration/article/'
 
     function func(res) {
             if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
                 res && res.data.results.find((word) => {
-                    setOldContent(word.data)
-                    setWordID(word.id)
+                    if(word.titre === query.get('titre')){
+                        setOldContent(word.data)
+                        setWord(word)
+                    }
                 })
             }
             else{
                 res && res.data.find((word) => {
                     if(word.titre === query.get('titre')){
                         setOldContent(word)
+                        setWord(word.id)
                     }
                 })
             }
@@ -128,10 +131,12 @@ export default function ModifyDefTxtEdit() {
         }
 
         const role = user.role;
+        const actionChecker = word.action
 
         let data = {
             "titre": checkChanges(content.titre , oldContent.titre),
             'status': role == 'Valideur' ? 'valide' : 'soumis',
+            "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
             'created_by': user.id,
             'data': {
                 ...content,
@@ -155,11 +160,24 @@ export default function ModifyDefTxtEdit() {
             }
         }
         
-        axios.put(putUrl, data ,config)
-        .then(res => res.status == 200 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res))
-        .finally(()=>{
-            setLoadingS(false)
-        })
+        if(previousPath == '/modifier-une-definition/'){
+            axios.post(putUrl, data ,config)
+            .then(res => (
+                res.statusText == "Created" ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+            ))
+            .finally(()=>{
+                setLoadingB(false)
+            })
+        }
+        else {
+            axios.put(putUrl, data ,config)
+            .then(res => (
+                res.status == 200 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+            ))
+            .finally(()=>{
+                setLoadingB(false)
+            })
+        }
         
     }
     function draft(){
@@ -171,9 +189,11 @@ export default function ModifyDefTxtEdit() {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
+        const actionChecker = word.action
         let data = {
             "titre": checkChanges(content.titre , oldContent.titre),
             'status': 'brouillon',
+            "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
             'created_by': user.id,
             'data': {
                 ...content,
@@ -197,13 +217,25 @@ export default function ModifyDefTxtEdit() {
             }
         }
 
-        axios.put(putUrl, data ,config)
+        if(previousPath == '/modifier-une-definition/'){
+            axios.post(putUrl, data ,config)
+            .then(res => (
+                res.statusText == "Created" ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+            ))
+            .finally(()=>{
+                setLoadingB(false)
+            })
+        }
+        else {
+            axios.put(putUrl, data ,config)
             .then(res => (
                 res.status == 200 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
             ))
             .finally(()=>{
                 setLoadingB(false)
             })
+        }
+
     }
 
     useEffect(() => {
@@ -217,8 +249,8 @@ export default function ModifyDefTxtEdit() {
             <div className= 'd-flex justify-content-between mb-3'>
             <h4>Remplissez les champs ci-dessous pour modifier une définition.</h4>
                 <div>
-                    <Button className='text-white' variant='contained' color= 'primary' type="submit" onClick={()=>{draft()}}>Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
+                    <Button className='text-white mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{draft()}}>Enregistrer comme brouillon</Button>
+                    <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
                 </div>
             </div>
             <Tab.Container id="left-tabs-example" defaultActiveKey="titre" unmountOnExit={true}>
@@ -242,14 +274,14 @@ export default function ModifyDefTxtEdit() {
                         </Tab.Pane>
                     </Tab.Content>                        
                     ))}
-                            <Tab.Pane eventKey='auteurs'>
+                            {/* <Tab.Pane eventKey='auteurs'>
                                 <ArrayModify 
                                         value= {auteurs}
                                         setValue = {setAuteurs}
                                         oldValue = {oldContent.auteurs}
                                         type = 'author'
                                     />
-                            </Tab.Pane>
+                            </Tab.Pane> */}
 
                             <Tab.Pane eventKey='synonyme'>
                                 <ModifySearchArray

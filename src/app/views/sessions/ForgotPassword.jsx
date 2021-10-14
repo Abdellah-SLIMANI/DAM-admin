@@ -31,7 +31,7 @@ const ForgotPassword = () => {
     const [loading, setLoading]= useState(false)
     const [open, setOpen] = useState(false)
     const [message, setMessage] = useState('')
-    const [variant, setVariant] = useState('')
+    const [severity, setSeverity] = useState('')
     const [snackBarState, setSnackBarState] = React.useState({
         open: false,
         vertical: 'top',
@@ -51,26 +51,26 @@ const ForgotPassword = () => {
     const onApiCallSuccess = () => {
         setOpen(true)
         setLoading(true)
-        setVariant('success')
-        setMessage('Email sent to ur email to change password')
+        setSeverity('success')
+        setMessage('Nous vous avons envoyé un e-mail pour réinitialiser votre mot de passe.')
     }
 
     const onApiCallFailure = () => {
         setOpen(true)
-        setLoading(false)
-        setVariant('error')
-        setMessage("some sort of error happend")
+        setLoading(true)
+        setSeverity('error')
+        setMessage("Une erreur s'est produite, réessayez ")
     }
     
     const handleFormSubmit = (event) => {
-        // setOpen(true)
         axios.post("http://13.36.215.163:8000/password_reset/", state)
-        .then(res=>  ( res.statusText === "OK" ? onApiCallSuccess : onApiCallFailure))
-        .finally(setState({...state, email: ''}))
+        .then(res=>  ( res.statusText === "OK" ? onApiCallSuccess() : onApiCallFailure()))
+        .catch((e)=> (onApiCallFailure(),console.log(e)))
+        .finally(() => (setState({...state, email: ''}),setLoading(false)))
     }
 
     const handleClose = () => {
-        setState({ ...state, open: false });
+        setOpen(false)
       };
     
 
@@ -130,15 +130,17 @@ const ForgotPassword = () => {
 
                                     </Link>
                                 </div>
-                                {/* <Button className="capitalize" onClick={()=>setOpen(true)}>
-                                            tst
-                                        </Button> */}
                             </ValidatorForm>
                         </div>
                     </Grid>
                 </Grid>
             </Card>
-            {/* <SnackBar open={open} variant={variant} message={message} setOpen={setOpen}/> */}
+            <SnackBar 
+                open={open}
+                severity={severity}
+                message={message}
+                handleClose={()=> handleClose}
+            />
         </div>
     )
 }

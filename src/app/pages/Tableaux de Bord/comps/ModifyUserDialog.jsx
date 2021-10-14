@@ -28,6 +28,12 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
         groups: ''
     })
 
+    const getRoleLabel = (label) => {
+        if(currentUser.groups == label){
+            return label
+        }
+    }
+
     useEffect(() => {
         console.log("user inside useEffect",user)
         setCurrentUser({
@@ -37,6 +43,8 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
             groups: user.groups
         })
     }, [user])
+
+    
     
     const handleFormSubmit = async (event) => {
         try {
@@ -80,7 +88,7 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                         <ValidatorForm style={{width: '100%'}}>
                             <TextValidator
                                 className="mb-6 w-full"
-                                variant="outlined"
+                                // variant="outlined"
                                 size="small"
                                 label="Nom"
                                 value={currentUser.last_name === null || currentUser.last_name === undefined ? '' : currentUser.last_name}
@@ -93,7 +101,7 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                             />
                         <TextValidator
                                 className="mb-6 w-full"
-                                variant="outlined"
+                                // variant="outlined"
                                 size="small"
                                 label="Prenom"
                                 type="text"
@@ -107,7 +115,7 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                             />
                                <TextValidator
                                     className="mb-6 w-full"
-                                    variant="outlined"
+                                    // variant="outlined"
                                     size="small"
                                     label="Email"
 
@@ -130,7 +138,6 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                                     onInputChange={(event, newInputValue) => {
                                         setCurrentUser({...currentUser ,groups:newInputValue});
                                       }}
-                                      defaultValue={currentUser.groups}
                                     renderInput={(params) => (
                                         <TextField
                                         validators={['required']}
@@ -138,15 +145,15 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
                                             'Ce champ est obligatoire!',
                                         ]}
                                             {...params}
-                                            label="Role"
-                                            variant="outlined"
+                                            label={currentUser.groups || 'Role'}
+                                            // variant="outlined"
                                             value={currentUser.groups}
                                             name= 'groups'
                                             type= 'text'
                                             fullWidth
                                         />   
                                     )}
-                                />
+                                /> 
                         </ValidatorForm>
                 </Grid>
                     </DialogContentText>

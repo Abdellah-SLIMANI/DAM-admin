@@ -130,8 +130,8 @@ const Layout1Topbar = () => {
                     <div className='flex items-center'>
                             {
                                 console.log("MENU ITEMS", menuItems),
-                                user.role == 'Valideur' ? menuItems.map(item => (
-                                <MatxMenu
+                                user.role != 'Administrateur' ? menuItems.map(item => (
+                                (item.title != 'Tableau de bord' ? <MatxMenu
                                     menuButton={
                                         <div className={classes.dropDownMenu}>
                                             <Icon>{item.icone}</Icon>
@@ -149,22 +149,21 @@ const Layout1Topbar = () => {
                                             </MenuItem>
                                         ))
                                     }
-                                </MatxMenu>
-                                )) : user.role == 'Administrateur' ? menuItems.map(item => (
+                                </MatxMenu> :  <MenuItem>
+                                                <Link className={classes.dropDownMenu} to = {item.path}>
+                                                    <Icon>{item.icone}</Icon>
+                                                    <span className="pl-4">{item.title}</span>
+                                                </Link>
+                                            </MenuItem>
+                                    )
+                                )) : menuItems.map(item => (
                                                 <MenuItem>
                                                     <Link className={classes.menuItem} to = {item.path}>
                                                         <Icon>{item.icone}</Icon>
                                                         <span className="pl-4">{item.title}</span>
                                                     </Link>
                                                 </MenuItem>
-                                            )) : menuItems.map((item) => 
-                                            <MenuItem className={classes.topBarMenuItem}>      
-                                            <Link className={classes.menuItem} to={item.path}>
-                                                <Icon style={{marginRight: '5%'}}> {item.icone}</Icon> 
-                                                        <span> {item.title} </span>
-                                            </Link>
-                                        </MenuItem>
-                                        )
+                                            )) 
                             }
                         </div>
                     </div>

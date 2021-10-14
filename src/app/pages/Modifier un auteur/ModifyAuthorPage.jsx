@@ -8,30 +8,13 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useLastLocation } from 'react-router-last-location';
 import useAuth from 'app/hooks/useAuth';
 import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
-import DateFnsUtils from '@date-io/date-fns'
-import moment from 'moment'
 import { Breadcrumb } from 'app/components'
 import ModifyBlock from '../Modifier une Definition/comps/ModifyBlock'
 import ModifierBiblio from './comps/ModifierBiblio'
 import ModifySearchArray from '../Modifier une Definition/comps/ModifySearchArray'
-import DateModify from './comps/DateModify'
+import { mapAuthorEventkeysToTitles, AuthorInitContent } from '../Utils'
 
 export default function ModifyDefTxtEdit() {
-    const mapEventkeyToTitle = {
-        nom: 'Nom',
-        prenom: 'Prénom',
-        biographie : 'Biographie',
-        bibliographie: 'Bibliographie',
-        naissance: 'Date de naissance',
-        deces: 'Date de décès',
-        lien: 'Liens vers les définitions',
-    }
-    const initContent = {
-        nom : '',
-        prenom : '',
-        biographie : '',
-    }
     const [oldContent, setOldContent] = useState({})
     const [loadingS, setLoadingS] = useState(false)
     const [loadingB, setLoadingB] = useState(false)
@@ -41,22 +24,7 @@ export default function ModifyDefTxtEdit() {
     const {user} = useAuth()
     const history = useHistory();
     const classes = useStyles()
-    const [content, setContent] = useState(initContent)
-    const [naissance, setNaissance] = React.useState(
-        new Date()
-    )
-    const [deces, setDeces] = React.useState(
-        new Date()
-    )
-
-    function handleNaissanceChange(date) {
-        setNaissance(moment(date).format("YYYY-MM-DD"))
-    }
-
-    function handleDecesChange(date){
-        setDeces(moment(date).format("YYYY-MM-DD"))
-    }
-
+    const [content, setContent] = useState(AuthorInitContent)
     const handleSetValue = (k) =>{
         setContent({...content, ...k})
     }
@@ -122,8 +90,10 @@ export default function ModifyDefTxtEdit() {
         }
 
         const role = user.role;
+        const actionChecker = oldContent.action
 
         let data = {
+                "action": actionChecker ? actionChecker : (previousPath.includes('modifier-un-auteur') ? "Modification" : "Creation"),
                 'created_by': user.id,
                 "action": url == "http://13.36.215.163:8000/api/elastic/auteur/?nom=" ? "Modification" : "Creation",
                 'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
@@ -131,45 +101,56 @@ export default function ModifyDefTxtEdit() {
                 "prenom": checkChanges(content.prenom,oldContent.prenom),
                 "biographie": checkChanges(content.biographie,oldContent.biographie),
                 "bibliographie": checkArrayChange(bibliographie,oldContent.bibliographie),
-                "naissance": checkChanges(naissance,oldContent.naissance),
-                "deces": checkChanges(deces,oldContent.deces),
+                "naissance": checkChanges(content.naissance,oldContent.naissance),
+                "deces": checkChanges(content.deces,oldContent.deces),
                 "liens" : checkArrayChange(liens,oldContent.liens)
         }
-        
-        axios.put(putUrl, data ,config)
-        .then(res => res.statusText == "OK" ? history.push(`/Tableaux-de-bord-auteurs/`) : window.alert('Server Error',res))
-        .catch(e => console.log("Error while Posting data",e))
-        .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
-        
-    }
-    function draft(){
-
-        console.log(content)
-        setLoadingB(true)
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
-        let data = {
-            'created_by': user.id,
-            "action": url == "http://13.36.215.163:8000/api/elastic/auteur/?nom=" ? "Modification" : "Creation",
-            'status': 'brouillon',
-            ...content,
-            "bibliographie": bibliographie,
-            "naissance": naissance,
-            "deces": deces,
-            "liens" : liens
-    }
-
-        axios.put(putUrl, data ,config)
+        if(previousPath.includes('modifier-un-auteur')) {
+            axios.post(putUrl, data ,config)
+            // .then(res => res.statusText == "Created" ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Error',res))
+            .then(res => console.log("RES",res))
+            .catch(e => console.log("Error while Posting data",e))
+            .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
+        }else {
+            axios.put(putUrl, data ,config)
             .then(res => (
-                res.status == 200 ? history.push(`/Tableaux-de-bord-auteurs/`) : window.alert('Server Response',res)
+                res.status == 200 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
             ))
             .finally(()=>{
                 setLoadingB(false)
             })
+        }
+
+        
     }
+    // function draft(){
+
+    //     console.log(content)
+    //     setLoadingB(true)
+    //     let config = {
+    //         headers: {
+    //             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    //         }
+    //     }
+    //     let data = {
+    //         'created_by': user.id,
+    //         "action": url == "http://13.36.215.163:8000/api/elastic/auteur/?nom=" ? "Modification" : "Creation",
+    //         'status': 'brouillon',
+    //         ...content,
+    //         "bibliographie": bibliographie,
+    //         "naissance": naissance,
+    //         "deces": deces,
+    //         "liens" : liens
+    // }
+
+    //     axios.put(putUrl, data ,config)
+    //         .then(res => (
+    //             res.status == 200 ? history.push(`/Tableaux-de-bord-auteurs/`) : window.alert('Server Response',res)
+    //         ))
+    //         .finally(()=>{
+    //             setLoadingB(false)
+    //         })
+    // }
 
     useEffect(() => {
          axios.get(url+query.get('nom'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
@@ -188,20 +169,20 @@ export default function ModifyDefTxtEdit() {
             <div className= 'd-flex justify-content-between mb-3'>
                 <h4>Remplissez les champs ci-dessous pour ajouter un auteur.</h4>
                 <div>
-                <Button className='text-white' variant='contained' color= 'primary' disabled={loadingB} type="submit" onClick={()=>{soummetre({isDraft: true})}}>{loadingB &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
+                <Button className='text-white mr-2' variant='contained' color= 'primary' disabled={loadingB} type="submit" onClick={()=>{soummetre({isDraft: true})}}>{loadingB &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Enregistrer comme brouillon</Button>
+                    <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
                 </div>
             </div>
             <Card>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="Nom" unmountOnExit={true}>
+            <Tab.Container id="left-tabs-example" defaultActiveKey="nom" unmountOnExit={true}>
                 <Row className='p-10'>
                     <Col sm={3}>
                     <Nav variant="pills" className="flex-column">
                         {
-                            Object.keys(mapEventkeyToTitle).map(key => (
+                            Object.keys(mapAuthorEventkeysToTitles).map(key => (
                             <Card className='m-1'> 
                                 <Nav.Item>
-                                    <Nav.Link eventKey={key}>{mapEventkeyToTitle[key]}</Nav.Link>
+                                    <Nav.Link eventKey={key}>{mapAuthorEventkeysToTitles[key]}</Nav.Link>
                                 </Nav.Item>
                             </Card>
                             ))
@@ -210,29 +191,13 @@ export default function ModifyDefTxtEdit() {
                     </Col>
                     <Col sm={9}>
                     <Tab.Content>
-                        { Object.keys(initContent).map(key => (
+                        { Object.keys(AuthorInitContent).map(key => (
                             <Tab.Pane eventKey={key}>
                                 <ModifyBlock value= {content[key]} setValue = {handleSetValue} fieldName={key} oldValue={oldContent[key]}/>
                             </Tab.Pane>
                         ))}
                             <Tab.Pane eventKey='bibliographie'>
                                 <ModifierBiblio value= {bibliographie} setValue = {setBibliographie} oldValue={oldContent.bibliographie}/>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='deces'>  
-                                <DateModify 
-                                    value={deces}
-                                    setValue={handleDecesChange}
-                                    oldValue={oldContent.deces}
-                                    label={'Date de décès'}
-                                />            
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='naissance'>
-                            <DateModify 
-                                    value={naissance}
-                                    setValue={handleNaissanceChange}
-                                    oldValue={oldContent.naissance}
-                                    label={'Date de naissance'}
-                                />     
                             </Tab.Pane>
                             <Tab.Pane eventKey='lien'>
                                 <ModifySearchArray 

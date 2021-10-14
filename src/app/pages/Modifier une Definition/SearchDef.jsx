@@ -10,7 +10,7 @@ export default function ModifyDef (){
     // const word = localStorage.getItem("SearchedWord")
     const url = 'http://13.36.215.163:8000/api/elastic/search/?titre='
         function handleSearch(word){
-           if(word.titre != null){
+           if(word != null){
             let queryString = "titre=" + word.titre;
             localStorage.setItem('modifyWord',word.titre)
             history.push(`/modifier-une-definition/?${queryString}`);

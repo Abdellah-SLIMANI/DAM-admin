@@ -72,3 +72,21 @@ export const isContainingObject = (object,array) => {
     }
     return false;
 }
+
+export const  AuthorInitContent = {
+    nom : '',
+    prenom : '',
+    biographie : '',
+    naissance: '',
+    deces: ''
+}
+
+export const mapAuthorEventkeysToTitles = {
+    nom: 'Nom',
+    prenom: 'Prénom',
+    biographie : 'Biographie',
+    bibliographie: 'Bibliographie',
+    naissance: 'Année de naissance',
+    deces: 'Année de décès',
+    lien: 'Liens vers les définitions',
+}

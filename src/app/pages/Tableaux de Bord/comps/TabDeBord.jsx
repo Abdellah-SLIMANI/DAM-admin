@@ -1,11 +1,9 @@
 import React ,{useState}from 'react'
 import {IconButton,Icon,} from '@material-ui/core'
-
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
 import MUIDataTable from "mui-datatables";
-import Breadcrumb from 'app/components/Breadcrumb/Breadcrumb'
 import DeleteItem from 'app/pages/Components/DeleteItem'
 
 const TabDeBord = () => {
@@ -78,7 +76,7 @@ const TabDeBord = () => {
             options: {
              filter: true,
              sort: true,
-             customBodyRender: (value, tableMeta, updateValue) => {
+             customBodyRender: (value) => {
                 return (
                     <>
                   {value ? (
@@ -229,38 +227,30 @@ const TabDeBord = () => {
             }
        }
     return ( 
-        <>
-        <Breadcrumb 
-                            routeSegments={[
-                                { name: 'Gestion des Definitions', path: '/tableaux-de-bord' },
-                                { name: 'Tableaux de bord des Definitions' },
-                            ]}
-        />
-        <div className='mt-5'>                
-        <MUIDataTable
-            title={"Liste des définitions"}
-            data={definitions.results && definitions.results.map(item => {
-                return [
-                    item.action,
-                    item.data.titre,
-                    item.data.domaines,
-                    item.created_by.last_name+ " " +item.created_by.first_name,
-                    item.created_date,
-                    item.status,
-                    item.data.edition, 
-            ]
-            })}
-            columns={columns}
-            options={options}
-            />
-            </div>
-            <DeleteItem 
-                open = {open}
-                handleClose={()=>handleClose()}
-                item={modalDef}
-                message='Confirmez-vous la suppression de la définition:'
-                url='http://13.36.215.163:8000/api/administration/article/'
-            />
+        <>      
+                <MUIDataTable
+                    title={"Liste des définitions"}
+                    data={definitions.results && definitions.results.map(item => {
+                        return [
+                            item.action,
+                            item.data.titre,
+                            item.data.domaines,
+                            item.created_by.last_name+ " " + item.created_by.first_name,
+                            item.created_date,
+                            item.status,
+                            item.data.edition, 
+                    ]
+                    })}
+                    columns={columns}
+                    options={options}
+                    />
+                    <DeleteItem 
+                        open = {open}
+                        handleClose={()=>handleClose()}
+                        item={modalDef}
+                        message='Confirmez-vous la suppression de la définition:'
+                        url='http://13.36.215.163:8000/api/administration/article/'
+                    />
         </>
     )
 }

@@ -2,7 +2,6 @@ import fetch from 'cross-fetch'
 import React, { useEffect, useState } from 'react'
 import { TextField, CircularProgress, Snackbar, Icon } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { useHistory, useLocation } from 'react-router-dom'
 import { SimpleCard } from 'app/components'
 
 export default function ModifySearchArray({value,setValue,oldValue}) {
