@@ -4,7 +4,7 @@ import SearchBar from '../../Components/SearchBar'
 export default function AuthorsAddSearchBar() {
     function handleSearch(word){
         if(word != null){
-             setValue([...value, {id:word.id,nom:word.Nom}])
+             setValue([...value, {id:word.id,nom:word.nom}])
         }
      }
      return (     

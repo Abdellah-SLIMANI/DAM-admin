@@ -10,9 +10,24 @@ import { useHistory } from 'react-router-dom';
 import AjouterBiblio from './comps/AjouterBiblio';
 import SearchAdd from '../Ajouter une definition/comps/SearchAdd';
 import { Breadcrumb } from 'app/components';
-import {mapAuthorEventkeysToTitles,AuthorInitContent} from '../Utils'
-
 export default function AddDefComp() {
+    const  AuthorInitContent = {
+        nom : '',
+        prenom : '',
+        biographie : '',
+        naissance: '',
+        deces: ''
+    }
+    
+    const mapAuthorEventkeysToTitles = {
+        nom: 'Nom',
+        prenom: 'Prénom',
+        biographie : 'Biographie',
+        bibliographie: 'Bibliographie',
+        naissance: 'Année de naissance',
+        deces: 'Année de décès',
+        lien: 'Liens vers les définitions',
+    }
     const {user} = useAuth()
     const history = useHistory();
     const [loadingS, setLoadingS] = useState(false)
@@ -21,6 +36,7 @@ export default function AddDefComp() {
     const [liens, setLiens] = useState([])
     const [bibliographie, setBibliographie] = useState([])
     const [content, setContent] = useState(AuthorInitContent)
+
 
     const handleSetValue = (k) =>{
         setContent({...content, ...k})
@@ -43,7 +59,7 @@ export default function AddDefComp() {
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/auteur/", data ,config)
-        .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord-auteurs/`) : window.alert('Server Error',res))
+        .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Error',res))
         .catch(e => console.log("Error while Posting data",e))
         .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
     }

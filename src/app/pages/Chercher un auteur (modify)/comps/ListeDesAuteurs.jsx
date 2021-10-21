@@ -25,8 +25,8 @@ const ListeDesAuteurs = () => {
     const [loading, setLoading] = useState(false)
 
     function redirectToModify(author) {
-        localStorage.setItem('modifyAuthor',author.Nom);
-        let queryString = "nom=" + author.Nom;
+        localStorage.setItem('modifyAuthor',author.nom);
+        let queryString = "nom=" + author.nom;
         history.push(`/modifier-un-auteur-write/?${queryString}`);
       }
 
@@ -72,7 +72,7 @@ const ListeDesAuteurs = () => {
                         {/* <Icon>group</Icon> */}
                         <div className="ml-3 flex-column">
                         <h6 className="m-0 mt-1 text-primary font-medium">
-                                {author.Nom}
+                                {author.nom}
                             </h6>
                             <small className="text-muted">{author.Prenom}</small>
                             <small className="text-muted">{author.biographie}</small>

@@ -61,7 +61,6 @@ export default function ModifyDefTxtEdit() {
     const history = useHistory();
     const classes = useStyles()
     const [content, setContent] = useState(initContent)
-    console.log("OLD CONTENT" , oldContent , '\nWORD', word)
 
     const handleSetValue = (k) =>{
         setContent({...content, ...k})
@@ -84,6 +83,7 @@ export default function ModifyDefTxtEdit() {
             if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
                 res && res.data.results.find((word) => {
                     if(word.titre === query.get('titre')){
+                        console.log("WORD INSIDE POSTGres",word)
                         setOldContent(word.data)
                         setWord(word)
                     }
@@ -92,8 +92,9 @@ export default function ModifyDefTxtEdit() {
             else{
                 res && res.data.find((word) => {
                     if(word.titre === query.get('titre')){
+                        console.log("WORD INSIDE Elastic",word)
                         setOldContent(word)
-                        setWord(word.id)
+                        setWord(word)
                     }
                 })
             }
@@ -110,18 +111,14 @@ export default function ModifyDefTxtEdit() {
             return val
         }
     }
+    console.log("OLD CONTENT" , oldContent , '\nWORD', word)
 
     function checkArrayChange(newArray,oldArray){
-            console.log('what json stringify new',JSON.stringify(newArray),'\nwhat json stringify old',JSON.stringify(oldArray, '\nwhat at last', JSON.stringify(newArray) == JSON.stringify(oldArray)))
            if(JSON.stringify(newArray) == JSON.stringify(oldArray) || newArray == []){
-               console.log("what old",oldArray)
                return oldArray
         }
-        console.log("what new",newArray)
         return newArray
     }
-    console.log("HELLO")
-
     function soummetre(){
         setLoadingS(true)
         let config = {
@@ -138,6 +135,7 @@ export default function ModifyDefTxtEdit() {
             'status': role == 'Valideur' ? 'valide' : 'soumis',
             "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
             'created_by': user.id,
+            "elastic_id" : oldContent.id ? oldContent.id : "",
             'data': {
                 ...content,
                 titre: checkChanges(content.titre , oldContent.titre),
@@ -156,14 +154,15 @@ export default function ModifyDefTxtEdit() {
                 edition: checkChanges(content.edition , oldContent.edition),
                 definition:checkArrayChange(synthese,oldContent.definition),
                 auteurs: checkArrayChange(auteurs,oldContent.auteurs),
-                domaines:checkChanges(codes, oldContent.domaines)
+                domaines:checkChanges(codes, oldContent.domaines),
             }
         }
         
         if(previousPath == '/modifier-une-definition/'){
+            console.log("WHAT URL?", putUrl)
             axios.post(putUrl, data ,config)
             .then(res => (
-                res.statusText == "Created" ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+                res.statusText == "OK" ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
             ))
             .finally(()=>{
                 setLoadingB(false)
@@ -172,7 +171,7 @@ export default function ModifyDefTxtEdit() {
         else {
             axios.put(putUrl, data ,config)
             .then(res => (
-                res.status == 200 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+                res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response 2',res)
             ))
             .finally(()=>{
                 setLoadingB(false)
@@ -181,8 +180,6 @@ export default function ModifyDefTxtEdit() {
         
     }
     function draft(){
-
-        console.log(content)
         setLoadingB(true)
         let config = {
             headers: {
@@ -195,6 +192,7 @@ export default function ModifyDefTxtEdit() {
             'status': 'brouillon',
             "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
             'created_by': user.id,
+            "elastic_id" : oldContent.id ? oldContent.id : "",
             'data': {
                 ...content,
                 titre: checkChanges(content.titre , oldContent.titre),
@@ -213,14 +211,14 @@ export default function ModifyDefTxtEdit() {
                 edition: checkChanges(content.edition , oldContent.edition),
                 definition:checkArrayChange(synthese,oldContent.definition),
                 auteurs: checkArrayChange(auteurs,oldContent.auteurs),
-                domaines:checkChanges(codes, oldContent.domaines)
+                domaines:checkChanges(codes, oldContent.domaines),
             }
         }
 
         if(previousPath == '/modifier-une-definition/'){
             axios.post(putUrl, data ,config)
             .then(res => (
-                res.statusText == "Created" ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+                res.statusText == "Created" ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
             ))
             .finally(()=>{
                 setLoadingB(false)
@@ -229,7 +227,7 @@ export default function ModifyDefTxtEdit() {
         else {
             axios.put(putUrl, data ,config)
             .then(res => (
-                res.status == 200 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+                res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
             ))
             .finally(()=>{
                 setLoadingB(false)

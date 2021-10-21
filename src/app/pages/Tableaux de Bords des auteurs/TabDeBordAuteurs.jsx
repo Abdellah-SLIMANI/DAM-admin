@@ -1,6 +1,5 @@
 import React ,{useState}from 'react'
 import {IconButton,Icon,} from '@material-ui/core'
-
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
@@ -53,17 +52,18 @@ const TabDeBordAuteurs = () => {
     }
 
     const ValidateWord = (word) =>{
+        console.log("00",word)
         let data = user.role == 'Utilisateur' ? {
-            titre: word.titre,
+            ...word,
+            created_by: user.id,
             status: 'soumis',
-            data: word.data
         } : 
         {
-            titre: word.titre,
+            ...word,
+            created_by: user.id,
             status: 'valide',
-            data: word.data
         }
-        axios.put('http://13.36.215.163:8000/api/administration/article/'+word.id+'/' , data , {
+        axios.put('http://13.36.215.163:8000/api/administration/auteur/'+word.id+'/' , data , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})

@@ -20,7 +20,6 @@ export default function ModifyDefTxtEdit() {
     const [loadingB, setLoadingB] = useState(false)
     const [liens, setLiens] = useState([])
     const [bibliographie, setBibliographie] = useState([])
-    const [wordId,setWordID] = useState('')
     const {user} = useAuth()
     const history = useHistory();
     const classes = useStyles()
@@ -38,19 +37,18 @@ export default function ModifyDefTxtEdit() {
 
     lastLocation && localStorage.setItem('LastPath',lastLocation.pathname);
     const previousPath = localStorage.getItem('LastPath');
-    const url = (previousPath == "/Tableaux-de-bord-auteurs/" || previousPath == "/Tableaux-de-bord-auteurs") ? 'http://13.36.215.163:8000/api/administration/auteur/?nom=' : 'http://13.36.215.163:8000/api/elastic/auteur/?nom='
-    const putUrl = (previousPath == "/Tableaux-de-bord-auteurs/" || previousPath == "/Tableaux-de-bord-auteurs") ? 'http://13.36.215.163:8000/api/administration/auteur/'+wordId+'/' : 'http://13.36.215.163:8000/api/elastic/auteur/'+oldContent.id
+    const url = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/auteur/?nom=' : 'http://13.36.215.163:8000/api/elastic/auteur/?nom='
+    const putUrl = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/auteur/'+oldContent.id+'/' : 'http://13.36.215.163:8000/api/administration/auteur/'
 
     function func(res) {
-            if((previousPath == "/Tableaux-de-bord-auteurs/" || previousPath == "/Tableaux-de-bord-auteurs")){
+            if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
                 res && res.data.results.find((word) => {
                     setOldContent(word)
-                    setWordID(word.id)
                 })
             }
             else{
                 res && res.data.find((word) => {
-                    if(word.Nom === query.get('nom')){
+                    if(word.nom === query.get('nom')){
                         setOldContent(word)
                     }
                 })
@@ -91,30 +89,29 @@ export default function ModifyDefTxtEdit() {
 
         const role = user.role;
         const actionChecker = oldContent.action
-
         let data = {
+                "elastic_id" : oldContent.id ? oldContent.id : "",
                 "action": actionChecker ? actionChecker : (previousPath.includes('modifier-un-auteur') ? "Modification" : "Creation"),
                 'created_by': user.id,
-                "action": url == "http://13.36.215.163:8000/api/elastic/auteur/?nom=" ? "Modification" : "Creation",
                 'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
-                "Nom": checkChanges(content.nom,oldContent.nom),
+                "nom": checkChanges(content.nom,oldContent.nom),
                 "prenom": checkChanges(content.prenom,oldContent.prenom),
                 "biographie": checkChanges(content.biographie,oldContent.biographie),
                 "bibliographie": checkArrayChange(bibliographie,oldContent.bibliographie),
                 "naissance": checkChanges(content.naissance,oldContent.naissance),
                 "deces": checkChanges(content.deces,oldContent.deces),
-                "liens" : checkArrayChange(liens,oldContent.liens)
+                "liens" : checkArrayChange(liens,oldContent.liens),
         }
         if(previousPath.includes('modifier-un-auteur')) {
             axios.post(putUrl, data ,config)
-            // .then(res => res.statusText == "Created" ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Error',res))
-            .then(res => console.log("RES",res))
+            .then(res => res.statusText == "Created" ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Error',res))
             .catch(e => console.log("Error while Posting data",e))
             .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
         }else {
             axios.put(putUrl, data ,config)
             .then(res => (
-                res.status == 200 ? history.push(`/Tableaux-de-bord/`) : window.alert('Server Response',res)
+                res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Response',res),
+                console.log("RESSSSS",res)
             ))
             .finally(()=>{
                 setLoadingB(false)
@@ -123,35 +120,8 @@ export default function ModifyDefTxtEdit() {
 
         
     }
-    // function draft(){
 
-    //     console.log(content)
-    //     setLoadingB(true)
-    //     let config = {
-    //         headers: {
-    //             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-    //         }
-    //     }
-    //     let data = {
-    //         'created_by': user.id,
-    //         "action": url == "http://13.36.215.163:8000/api/elastic/auteur/?nom=" ? "Modification" : "Creation",
-    //         'status': 'brouillon',
-    //         ...content,
-    //         "bibliographie": bibliographie,
-    //         "naissance": naissance,
-    //         "deces": deces,
-    //         "liens" : liens
-    // }
-
-    //     axios.put(putUrl, data ,config)
-    //         .then(res => (
-    //             res.status == 200 ? history.push(`/Tableaux-de-bord-auteurs/`) : window.alert('Server Response',res)
-    //         ))
-    //         .finally(()=>{
-    //             setLoadingB(false)
-    //         })
-    // }
-
+    console.log("THE URL SEAESHED AT ", url+query.get('nom'))
     useEffect(() => {
          axios.get(url+query.get('nom'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
             .then(response => (func(response)))

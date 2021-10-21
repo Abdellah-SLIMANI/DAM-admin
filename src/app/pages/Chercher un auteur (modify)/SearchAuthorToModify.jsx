@@ -19,7 +19,7 @@ export default function DeleteElasticDef(){
 
      function handleSearch(word){
         if(word != null){
-         let queryString = "nom=" + word.Nom;
+         let queryString = "nom=" + word.nom;
          history.push(`/modifier-un-auteur/?${queryString}`);
         }
      }
@@ -72,8 +72,8 @@ export default function DeleteElasticDef(){
               }}
               value={value}
               onChange= {(event, newval) => (handleSearch(newval))}
-              getOptionSelected={(author,value) => (author.Nom ==+ value.Nom) }
-              getOptionLabel={(author) => author.Nom || "" }
+              getOptionSelected={(author,value) => (author.nom ==+ value.nom) }
+              getOptionLabel={(author) => author.nom || "" }
               options={authors}
               loading={loading}
               noOptionsText = 'Aucun auteur'

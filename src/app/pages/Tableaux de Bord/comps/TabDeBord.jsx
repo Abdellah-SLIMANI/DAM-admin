@@ -7,6 +7,8 @@ import MUIDataTable from "mui-datatables";
 import DeleteItem from 'app/pages/Components/DeleteItem'
 
 const TabDeBord = () => {
+    const [, updateState] = React.useState();
+    const forceUpdate = React.useCallback(() => updateState({}), []);
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
     const [open, setOpen] = React.useState(false)
     const [page, setPage] = React.useState(0)
@@ -30,6 +32,8 @@ const TabDeBord = () => {
         setOpen(false)
     }
 
+    const count = definitions.count
+
     React.useEffect(() => {
         axios.get('http://13.36.215.163:8000/api/administration/article/?page='+page , {
             headers: {
@@ -39,8 +43,7 @@ const TabDeBord = () => {
             console.log(res.data)
             setDefinitions(res.data)
         })
-    }, [page])
-    console.log(page)
+    }, [count,page])
 
     const handleChangePage = (event, newPage) => {
         setPage(event)
