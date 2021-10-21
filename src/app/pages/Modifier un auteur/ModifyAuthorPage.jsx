@@ -104,7 +104,7 @@ export default function ModifyDefTxtEdit() {
         }
         if(previousPath.includes('modifier-un-auteur')) {
             axios.post(putUrl, data ,config)
-            .then(res => res.statusText == "Created" ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Error',res))
+            .then(res => res.statusText == "Created" || res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Error',res))
             .catch(e => console.log("Error while Posting data",e))
             .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
         }else {

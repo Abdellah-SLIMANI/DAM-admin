@@ -13,8 +13,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function DeleteItem({item ,open ,handleClose,message,url}) {
     const handleFormSubmit = async () => {
         try {
-            axios.delete(url+item.id, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
-            .then(res=> res.status == 204 ? window.location.reload() : alert("problem occured"))
+            axios.delete(url+item.id+'/', {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
+            .then(res=> res.status == 204 || res.status == 200 ? window.location.reload() : alert("problem occured"))
         } catch (e) {
             console.log(e)
         }

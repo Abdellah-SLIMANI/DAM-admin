@@ -22,6 +22,11 @@ const authorRoutes = [
         component: React.lazy(()=> import('./Modifier un auteur/ModifyAuthorPage')),
         auth: authRoles.sa
     },
+    {
+        path: '/supprimer-un-auteur',
+        component: React.lazy(()=> import('./supprimer un auteur/supprimer un auteur')),
+        auth: authRoles.sa
+    },
 ]
 
 export default authorRoutes

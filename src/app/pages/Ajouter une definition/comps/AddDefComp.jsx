@@ -45,7 +45,7 @@ export default function AddDefComp() {
         terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
         traduction_en: 'Traduction anglais',
         synthese: 'Définition et complément',
-        auteurs: 'Auteurs',
+        // auteurs: 'Auteurs',
         etymologie: 'Etymologie',
         synonyme: 'Synonyme',
         antonyme: 'Antonyme',
@@ -146,14 +146,14 @@ export default function AddDefComp() {
                                     setValue={setVoir}
                                 />
                             </Tab.Pane>
-
+{/* 
                             <Tab.Pane eventKey='auteurs'>
                                 <AuthorAdd 
                                         value= {auteurs} 
                                         setValue = {setAuteurs}
                                         type = 'author'
                                     />
-                            </Tab.Pane>
+                            </Tab.Pane> */}
 
                             <Tab.Pane eventKey='synthese'>
                                 <AuthorAdd 

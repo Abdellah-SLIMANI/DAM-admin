@@ -2,6 +2,8 @@ import { SimpleCard } from 'app/components'
 import React, { useEffect, useState } from 'react'
 import JoditEditor from "jodit-react";
 import { ReadOnly, config } from 'app/pages/Utils';
+import { Button } from 'react-bootstrap';
+import RedoIcon from '@material-ui/icons/Redo';
 
 export default function ArrayModify({value,setValue,type,oldValue}) {
     const emptyHelper =  {definition: '', commentaire: ''} 
@@ -80,7 +82,7 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem , oldValue}){
                         </SimpleCard>
                 </div>
             </div>
-            {/* <Button onClick={()=>{ oldValue[actualIndex] = {definition:localDefintion, commentaire:localComment}}} style={{background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button> */}
+            <Button onClick={()=>{setActualItem({definition:oldValue[actualIndex].definition, commentaire:oldValue[actualIndex].commentaire}, actualIndex)}} style={{background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button>
             </div>
     </div>
     )

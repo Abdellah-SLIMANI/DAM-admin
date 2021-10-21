@@ -20,7 +20,7 @@ export default function ModifyDefTxtEdit() {
         terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
         traduction_en: 'Traduction anglais',
         synthese: 'Définition et complément',
-        auteurs: 'Auteurs',
+        // auteurs: 'Auteurs',
         etymologie: 'Etymologie',
         synonyme: 'Synonyme',
         antonyme: 'Antonyme',
@@ -134,7 +134,7 @@ export default function ModifyDefTxtEdit() {
             "titre": checkChanges(content.titre , oldContent.titre),
             'status': role == 'Valideur' ? 'valide' : 'soumis',
             "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
-            'created_by': user.id,
+            'created_by': oldContent.created_by ? oldContent.created_by : user.id,
             "elastic_id" : oldContent.id ? oldContent.id : "",
             'data': {
                 ...content,
@@ -191,7 +191,7 @@ export default function ModifyDefTxtEdit() {
             "titre": checkChanges(content.titre , oldContent.titre),
             'status': 'brouillon',
             "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
-            'created_by': user.id,
+            'created_by': oldContent.created_by ? oldContent.created_by : user.id,
             "elastic_id" : oldContent.id ? oldContent.id : "",
             'data': {
                 ...content,
