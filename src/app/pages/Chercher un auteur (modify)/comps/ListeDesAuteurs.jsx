@@ -71,11 +71,10 @@ const ListeDesAuteurs = () => {
                     <div className="flex items-center">
                         {/* <Icon>group</Icon> */}
                         <div className="ml-3 flex-column">
-                        <h6 className="m-0 mt-1 text-primary font-medium">
-                                {author.nom}
+                        <h6 className="m-0 mt-1 text-primary font-medium" dangerouslySetInnerHTML={{__html: author.nom}}>
                             </h6>
-                            <small className="text-muted">{author.Prenom}</small>
-                            <small className="text-muted">{author.biographie}</small>
+                            <small className="text-muted" dangerouslySetInnerHTML={{__html: author.prenom}}></small>
+                            <small className="text-muted" dangerouslySetInnerHTML={{__html: author.biographie}}></small>
                         </div>
                     </div>
                     <Tooltip title="View Details" placement="top">

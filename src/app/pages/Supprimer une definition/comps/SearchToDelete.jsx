@@ -70,7 +70,7 @@ export default function AsyncAutocomplete() {
                       label="Saisir le titre de la définition"
                       fullWidth
                       className ='bg-white'
-                      variant="outlined"
+                    //   variant="outlined"
                       InputProps={{
                           ...params.InputProps,
                           endAdornment: (

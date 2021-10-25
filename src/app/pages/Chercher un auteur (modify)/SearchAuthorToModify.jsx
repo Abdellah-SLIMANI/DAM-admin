@@ -47,8 +47,8 @@ export default function DeleteElasticDef(){
                 <div className='pt-10 pl-10'>
                 <Breadcrumb
                     routeSegments={[
-                        { name: 'Gestion des definitions', path: '/tableaux-de-bord' },
-                        { name: 'Supprimer une definition' },
+                        { name: 'Gestion des auteurs', path: '/tableaux-de-bord' },
+                        { name: 'Modifier un auteur' },
                     ]}
                 />
                 </div>
@@ -83,7 +83,7 @@ export default function DeleteElasticDef(){
                       label="Saisir le nom de l'auteur"
                       fullWidth
                       className ='bg-white'
-                      variant="outlined"
+                    //   variant="outlined"
                       InputProps={{
                           ...params.InputProps,
                           endAdornment: (

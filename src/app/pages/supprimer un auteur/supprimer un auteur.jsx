@@ -5,6 +5,7 @@ import images from 'dictionnaireImages/images'
 import DeleteAuthor from './comps/DeleteAuthors'
 import { Autocomplete } from '@material-ui/lab'
 import { CircularProgress, TextField } from '@material-ui/core'
+import { Breadcrumb } from 'app/components'
 
 
 export default function DeleteElasticAuthor(){
@@ -42,6 +43,14 @@ export default function DeleteElasticAuthor(){
 
         return (
             <div>
+                <div className='pt-10 pl-10'>
+                <Breadcrumb
+                    routeSegments={[
+                        { name: 'Gestion des auteurs', path: '/tableaux-de-bord' },
+                        { name: 'supprimer un auteur' },
+                    ]}
+                />
+                </div>
                 <div className='mt-5'>
                     <img src={images.livre} style={{width: '100vw'}}/>
                     <div style={{transform: 'translate(0,-125%)', width: '40%', margin: 'auto'}}>
