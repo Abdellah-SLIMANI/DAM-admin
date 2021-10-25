@@ -90,7 +90,7 @@ export default function ModifyDefTxtEdit() {
         const role = user.role;
         const actionChecker = oldContent.action
         let data = {
-                "elastic_id" : oldContent.id ? oldContent.id : "",
+                "elastic_id" : oldContent.elastic_id ? oldContent.elastic_id : "",
                 "action": actionChecker ? actionChecker : (previousPath.includes('modifier-un-auteur') ? "Modification" : "Creation"),
                 'created_by': user.id,
                 'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',

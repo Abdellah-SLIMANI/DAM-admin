@@ -82,6 +82,9 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem , oldValue}){
                         </SimpleCard>
                 </div>
             </div>
+            {/* This Line Meant to be a button for the defintions to get the oldValue onCLick
+             */}
+            {/* {setActuaItem({defintion:oldValue[actualIndex].definition, commentaire:oldValue[actualIndex].commentaire},actualIndex)}  */}
             <Button onClick={()=>{setActualItem({definition:oldValue[actualIndex].definition, commentaire:oldValue[actualIndex].commentaire}, actualIndex)}} style={{background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button>
             </div>
     </div>
