@@ -55,7 +55,7 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem , oldValue}){
                             value={localDefintion}
                             onBlur={(newContent) => (setLocalDefintion(newContent))}
                         />
-                        <p className='mt-5'>{`Commentaire ${actualIndex+1}`}</p>
+                        <p className='mt-5'>{`Complément ${actualIndex+1}`}</p>
                         <JoditEditor 
                             config={config}
                             tabIndex={1}
@@ -73,7 +73,7 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem , oldValue}){
                                     tabIndex={1}
                                     value={oldValue[actualIndex] && oldValue[actualIndex].definition}
                                 />
-                            <p className='mt-5'>{`Commentaire ${actualIndex+1}`}</p>
+                            <p className='mt-5'>{`Complément ${actualIndex+1}`}</p>
                             <JoditEditor 
                                     config={ReadOnly}
                                     tabIndex={1}

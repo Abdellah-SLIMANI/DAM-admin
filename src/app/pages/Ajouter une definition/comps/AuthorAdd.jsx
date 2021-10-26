@@ -55,7 +55,7 @@ function AddOneItem({actualItem,actualIndex,setActualItem, type}){
                 </SimpleCard>
             </div>
 
-                <SimpleCard className='p-5' style={{width: '100%', marginBottom: '2rem'}} title={`Commentaire ${actualIndex+1}`}>
+                <SimpleCard className='p-5' style={{width: '100%', marginBottom: '2rem'}} title={`Complément ${actualIndex+1}`}>
                     <JoditEditor
                     value={actualItem.commentaire} 
                     config={config}

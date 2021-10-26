@@ -21,7 +21,7 @@ export default function TableauxDeBord() {
                 <AccountsTable />
                 :
                 <>
-                <Tabs defaultActiveKey={tableaux} className="mb-3" unmountOnExit onSelect={(eventKey)=>{history.push(`/Tableaux-de-bord/?tableaux=${eventKey}`)}}>
+                <Tabs defaultActiveKey={tableaux ? tableaux : "definitions"} className="mb-3" unmountOnExit onSelect={(eventKey)=>{history.push(`/Tableaux-de-bord/?tableaux=${eventKey}`)}}>
                     <Tab eventKey="definitions" title="Definitions">
                         <TabDeBord />
                     </Tab>
