@@ -33,7 +33,7 @@ const TabDeBordAuteurs = () => {
     }
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/auteur/' , {
+        axios.get('http://13.36.215.163:8000/api/administration/auteur/?page='+page+'&page_size='+rowsPerPage , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
@@ -41,14 +41,14 @@ const TabDeBordAuteurs = () => {
             console.log("DAAAAAAAAAATA",res.data)
             setAuthors(res.data)
         })
-    }, [page])
+    }, [page,rowsPerPage])
     console.log(page)
 
     const handleChangePage = (event, newPage) => {
         setPage(event)
     }
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value)
+    const handleChangeRowsPerPage = (event,newRPP) => {
+        setRowsPerPage(event)
     }
 
     const ValidateWord = (word) =>{
@@ -206,7 +206,7 @@ const TabDeBordAuteurs = () => {
             page: page,
             selectableRows: 'none',
             onChangePage:handleChangePage,
-            rowsPerPage:10,
+            rowsPerPage:rowsPerPage,
             onChangeRowsPerPage:handleChangeRowsPerPage,
             serverSide: true,
             textLabels: {

@@ -42,19 +42,19 @@ const AccountsTable = () => {
     }
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/user/?page='+page, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
+        axios.get('http://13.36.215.163:8000/api/administration/user/?page='+page+'&page_size='+rowsPerPage, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
         .then(res => {
             console.log("USERS DATA",res.data)
             setUsers(res.data)
         })
-    }, [page])
+    }, [page,rowsPerPage])
     console.log("USRES",users.results)
 
     const handleChangePage = (event, newPage) => {
         setPage(event)
     }
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value)
+    const handleChangeRowsPerPage = (event,newRPP) => {
+        setRowsPerPage(event)
     }
 
 
@@ -64,7 +64,7 @@ const AccountsTable = () => {
             label: 'Prénom',
             options: {
              filter: true,
-             sort: false
+             sort: true
             }
         },
         {
@@ -72,7 +72,7 @@ const AccountsTable = () => {
             label: 'Nom',
             options: {
              filter: true,
-             sort: false
+             sort: true
             }
         },
         {
@@ -80,7 +80,7 @@ const AccountsTable = () => {
             label: 'Email',
             options: {
              filter: true,
-             sort: false
+             sort: true
             }
         },
         {
@@ -88,7 +88,7 @@ const AccountsTable = () => {
             label: 'Rôle',
             options: {
              filter: true,
-             sort: false
+             sort: true
             }
         },
         {
@@ -96,7 +96,7 @@ const AccountsTable = () => {
             label: 'Date de création',
             options: {
              filter: true,
-             sort: false
+             sort: true
             }
         },
         {
@@ -129,7 +129,7 @@ const AccountsTable = () => {
         page: page,
         selectableRows: 'none',
         onChangePage:handleChangePage,
-        rowsPerPage:10,
+        rowsPerPage:rowsPerPage,
         onChangeRowsPerPage:handleChangeRowsPerPage,
         serverSide: true,
         textLabels: {

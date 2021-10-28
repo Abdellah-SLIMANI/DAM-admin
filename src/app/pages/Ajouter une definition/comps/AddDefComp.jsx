@@ -71,13 +71,13 @@ export default function AddDefComp() {
             }
         }
 
-        
+        console.log("Bread",{...content , auteurs:auteurs, definition:synthese, domaines: codes,synonyme:synonyme,antonyme: antonyme, voir: voir,homonyme:homonyme})
         const role = user.role;
         let data = {
             "titre": content.titre,
             'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
             'created_by': user.id,
-            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes,synonyme:synonyme,antonyme: antonyme,voir: voir,homonyme:homonyme}
+            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes,synonyme:synonyme,antonyme: antonyme, voir: voir,homonyme:homonyme}
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
@@ -146,15 +146,6 @@ export default function AddDefComp() {
                                     setValue={setVoir}
                                 />
                             </Tab.Pane>
-{/* 
-                            <Tab.Pane eventKey='auteurs'>
-                                <AuthorAdd 
-                                        value= {auteurs} 
-                                        setValue = {setAuteurs}
-                                        type = 'author'
-                                    />
-                            </Tab.Pane> */}
-
                             <Tab.Pane eventKey='synthese'>
                                 <AuthorAdd 
                                         value= {synthese} 

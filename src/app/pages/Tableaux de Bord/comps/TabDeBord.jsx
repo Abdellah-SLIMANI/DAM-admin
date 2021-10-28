@@ -32,10 +32,8 @@ const TabDeBord = () => {
         setOpen(false)
     }
 
-    const count = definitions.count
-
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/article/?page='+page , {
+        axios.get('http://13.36.215.163:8000/api/administration/article/?page='+page+'&page_size='+rowsPerPage  , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
@@ -43,13 +41,13 @@ const TabDeBord = () => {
             console.log(res.data)
             setDefinitions(res.data)
         })
-    }, [count,page])
+    }, [page,rowsPerPage])
 
     const handleChangePage = (event, newPage) => {
         setPage(event)
     }
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value)
+    const handleChangeRowsPerPage = (event,newRPP) => {
+        setRowsPerPage(event)
     }
 
     const ValidateWord = (word) =>{
@@ -207,7 +205,7 @@ const TabDeBord = () => {
             page: page,
             selectableRows: 'none',
             onChangePage:handleChangePage,
-            rowsPerPage:10,
+            rowsPerPage:rowsPerPage,
             onChangeRowsPerPage:handleChangeRowsPerPage,
             serverSide: true,
             textLabels: {
