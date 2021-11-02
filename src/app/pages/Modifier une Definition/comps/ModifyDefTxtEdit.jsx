@@ -20,7 +20,6 @@ export default function ModifyDefTxtEdit() {
         terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
         traduction_en: 'Traduction anglais',
         synthese: 'Définition et complément',
-        // auteurs: 'Auteurs',
         etymologie: 'Etymologie',
         synonyme: 'Synonyme',
         antonyme: 'Antonyme',
@@ -72,12 +71,14 @@ export default function ModifyDefTxtEdit() {
 
     let query = useQuery();
     const lastLocation = useLastLocation()
-    
+
 
     lastLocation && localStorage.setItem('LastPath',lastLocation.pathname);
     const previousPath = localStorage.getItem('LastPath');
-    const url = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/article/?titre=' : 'http://13.36.215.163:8000/api/elastic/search/?titre='
-    const putUrl = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/article/'+word.id+'/' : 'http://13.36.215.163:8000/api/administration/article/'
+    const isTabDeBordThePreviousPath = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord");
+    
+    const url = isTabDeBordThePreviousPath ? 'http://13.36.215.163:8000/api/administration/article/?titre=' : 'http://13.36.215.163:8000/api/elastic/search/?titre='
+    const putUrl = isTabDeBordThePreviousPath ? 'http://13.36.215.163:8000/api/administration/article/'+word.id+'/' : 'http://13.36.215.163:8000/api/administration/article/'
 
     function func(res) {
             if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
@@ -272,15 +273,6 @@ export default function ModifyDefTxtEdit() {
                         </Tab.Pane>
                     </Tab.Content>                        
                     ))}
-                            {/* <Tab.Pane eventKey='auteurs'>
-                                <ArrayModify 
-                                        value= {auteurs}
-                                        setValue = {setAuteurs}
-                                        oldValue = {oldContent.auteurs}
-                                        type = 'author'
-                                    />
-                            </Tab.Pane> */}
-
                             <Tab.Pane eventKey='synonyme'>
                                 <ModifySearchArray
                                     oldValue={oldContent.synonyme}

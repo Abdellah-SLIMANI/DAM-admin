@@ -1,19 +1,22 @@
 import React ,{useState}from 'react'
-import {IconButton,Icon,} from '@material-ui/core'
+import {IconButton,Icon, FormControlLabel, TextField, FormGroup, Chip,} from '@material-ui/core'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
 import MUIDataTable from "mui-datatables";
 import DeleteItem from 'app/pages/Components/DeleteItem'
+import { FormLabel } from 'react-bootstrap'
 
 const TabDeBord = () => {
-    const [, updateState] = React.useState();
-    const forceUpdate = React.useCallback(() => updateState({}), []);
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
     const [open, setOpen] = React.useState(false)
     const [page, setPage] = React.useState(0)
     const [definitions, setDefinitions] = useState([])
     const [modalDef, setModalDef] = useState([])
+    const [action, setAction] = useState('')
+    const [orderName, setOrderName] = useState('')
+    const [orderDirection, setOrderDirection] = useState('')
+    const [searchText, setSearchText] = useState('')
     const history = useHistory();
     let {user} = useAuth()
 
@@ -31,9 +34,12 @@ const TabDeBord = () => {
     function handleClose(){
         setOpen(false)
     }
+    
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/article/?page='+page+'&page_size='+rowsPerPage  , {
+        const urlWithSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&titre='+searchText+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName 
+        const urlWithoutSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName
+        axios.get(searchText == null ? urlWithoutSearch : urlWithSearch, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
@@ -41,7 +47,7 @@ const TabDeBord = () => {
             console.log(res.data)
             setDefinitions(res.data)
         })
-    }, [page,rowsPerPage])
+    }, [page,action,orderName,orderDirection,rowsPerPage,searchText])
 
     const handleChangePage = (event, newPage) => {
         setPage(event)
@@ -72,34 +78,40 @@ const TabDeBord = () => {
 
     const columns = [
         {
-            name: "action",
+            name: "type",
             label: "Type",
             options: {
              filter: true,
+             filterType: 'checkbox',
+             filterOptions: ['Creation','Modification','Reprise'],
              sort: true,
              customBodyRender: (value) => {
                 return (
                     <>
-                  {value ? (
-                      value == 'Creation' ? (
+                  {
+                      value == 'Creation' ? 
                           <small className="border-radius-4 bg-green text-white px-2 py-2px">
                               Création 
                           </small>
-                      ) : (
+                       : value == 'Modification' ?
                           <small className="border-radius-4 bg-secondary text-white px-2 py-2px">
                               Modification 
                           </small>
-                      )
-                  ) : (null)}
+                      
+                    :   <small className="border-radius-4 bg-primary text-white px-2 py-2px">
+                              Reprise 
+                          </small>
+                    }
                   </>
                 )
             }
             }
         },
         {
-         name: "",
+         name: "titre",
          label: "Titre",
          options: {
+        filter: false,
           sort: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             return (
@@ -112,23 +124,70 @@ const TabDeBord = () => {
          name: "code",
          label: "Code",
          options: {
-          filter: true,
+          filter: false,
           sort: true,
+          customBodyRender: (value) => {
+            return Array.isArray(value) ? value.map( (val, key) => {
+                return <Chip label={val} key={key} />;
+            }) : <>{value}</>;
+        }
          }
         },
         {
-         name: `created_by.last_name`,
+         name: `emetteur`,
          label: "Emetteur",
          options: {
-          filter: true,
+          filter: false,
           sort: true,
          }
         },
         {
-         name: "date",
+         name: "date_emission",
          label: "Date d'émission",
          options: {
           filter: true,
+          filterType: 'custom',
+          customFilterListOptions: {
+            render: v => {
+              if (v[0] && v[1]) {
+                return [`Min Age: ${v[0]}`, `Max Age: ${v[1]}`];
+              } else if (v[0] && v[1] && !this.state.ageFilterChecked) {
+                return `Min Age: ${v[0]}, Max Age: ${v[1]}`;
+              } else if (v[0]) {
+                return `Min Age: ${v[0]}`;
+              } else if (v[1]) {
+                return `Max Age: ${v[1]}`;
+              }
+              return false;
+            },
+            filterOptions:{
+                display: (filterList, onChange, index, column) => (
+                    <div>
+                      <FormLabel>Age</FormLabel>
+                      <FormGroup row>
+                        <TextField
+                          label="min"
+                          value={filterList[index][0] || ''}
+                          onChange={event => {
+                            filterList[index][0] = event.target.value;
+                            onChange(filterList[index], index, column);
+                          }}
+                          style={{ width: '45%', marginRight: '5%' }}
+                        />
+                        <TextField
+                          label="max"
+                        //   value={filterList[index][1] || ''}
+                        //   onChange={event => {
+                        //     filterList[index][1] = event.target.value;
+                        //     onChange(filterList[index], index, column);
+                        //   }}
+                          style={{ width: '45%' }}
+                        />
+                      </FormGroup>
+                    </div>
+                  ),
+            },
+        },
           sort: true,
          }
         },
@@ -136,13 +195,15 @@ const TabDeBord = () => {
          name: "status",
          label: "Statut",
          options: {
-          filter: true,
-          sort: true,
+            filter: true,
+            filterType: 'checkbox',
+            filterOptions: ['soumis','brouillon'],
+            sort: true,
           customBodyRender: (value, tableMeta, updateValue) => {
               return (
                   <>
                 {value ? (
-                    value== 'soumis' ? (
+                    value == 'soumis' ? (
                         <small className="border-radius-4 bg-green text-white px-2 py-2px">
                             {value}
                         </small>
@@ -152,7 +213,7 @@ const TabDeBord = () => {
                         </small>
                     )
                 ) : (
-                    <small className="border-radius-4 bg-error text-white px-2 py-2px">
+                    <small className="border-radius-4 bg-blue text-white px-2 py-2px">
                         {value}
                     </small>
                 )}
@@ -165,7 +226,7 @@ const TabDeBord = () => {
          name: 'edition',
          label: "Edition",
          options: {
-          filter: true,
+          filter: false,
           sort: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             return (
@@ -178,6 +239,8 @@ const TabDeBord = () => {
          name: "action",
          label: "Action",
          options: {
+            filter: false,
+            sort: false,
           customBodyRenderLite: (dataIndex) => {
             return ( 
                 <>
@@ -197,7 +260,6 @@ const TabDeBord = () => {
         },
         
        ];
-
        const options = {
             count: definitions.count,
             download: false,
@@ -207,7 +269,25 @@ const TabDeBord = () => {
             onChangePage:handleChangePage,
             rowsPerPage:rowsPerPage,
             onChangeRowsPerPage:handleChangeRowsPerPage,
+            jumpToPage: true,
             serverSide: true,
+            onTableChange: (action, tableState) => {
+                console.log('onTableChange Action',action,'\nonTableChange state',tableState)
+                switch (action) {
+                    case 'sort':
+                        setOrderName(tableState.sortOrder.name)
+                        setOrderDirection(tableState.sortOrder.direction)
+                        break;
+                    case 'search':
+                        setSearchText(tableState.searchText)
+                        break;
+                    default:
+                        break;
+                }
+            },
+            onFilterChange: (changedColumn, filterList) => {
+                console.log("FILTER VALUES",changedColumn, filterList);
+              },
             textLabels: {
                 body: {
                     noMatch: 'Aucune définition trouvée.'
