@@ -117,7 +117,7 @@ export default function ModifyDefTxtEdit() {
             return val
         }
     }
-    console.log("OLD CONTENT" , oldContent , '\nWORD', word)
+    console.log("OLD CONTENT" , oldContent , '\nSYNTHESE', synthese)
 
     function checkArrayChange(newArray,oldArray){
            if(JSON.stringify(newArray) == JSON.stringify(oldArray) || newArray == []){
@@ -156,7 +156,7 @@ export default function ModifyDefTxtEdit() {
                 symbole: checkChanges(content.symbole , oldContent.symbole),
                 abreviation: checkChanges(content.abreviation , oldContent.abreviation),
                 references: checkChanges(content.references , oldContent.references),
-                voir: checkChanges(content.renvoi , oldContent.renvoi),
+                voir: checkChanges(voir , oldContent.voir),
                 edition: checkChanges(content.edition , oldContent.edition),
                 definition:checkArrayChange(synthese,oldContent.definition),
                 auteurs: checkArrayChange(auteurs,oldContent.auteurs),

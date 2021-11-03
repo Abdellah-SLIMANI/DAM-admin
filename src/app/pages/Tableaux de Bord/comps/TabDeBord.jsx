@@ -24,7 +24,7 @@ const TabDeBord = () => {
     let {user} = useAuth()
 
     function redirectToModify(def) {
-        localStorage.setItem('modifyWord',def.titre);
+        localStorage.setItem('modifyWord',def.id);
         let queryString = "titre=" + def.titre;
         history.push(`/modifier-une-definition-write/?${queryString}`);
     }
@@ -129,11 +129,11 @@ const TabDeBord = () => {
          options: {
           filter: false,
           sort: true,
-          customBodyRender: (value) => {
-            return Array.isArray(value) ? value.map( (val, key) => {
-                return <Chip label={val} key={key} />;
-            }) : <>{value}</>;
-        }
+        //   customBodyRender: (value) => {
+        //     return Array.isArray(value) ? value.map( (val, key) => {
+        //         return <Chip label={val} key={key} />;
+        //     }) : <>{value}</>;
+        // }
          }
         },
         {

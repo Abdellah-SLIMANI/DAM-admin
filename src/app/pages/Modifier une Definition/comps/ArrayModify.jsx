@@ -2,8 +2,6 @@ import { SimpleCard } from 'app/components'
 import React, { useEffect, useState } from 'react'
 import JoditEditor from "jodit-react";
 import { ReadOnly, config } from 'app/pages/Utils';
-import { Button } from 'react-bootstrap';
-import RedoIcon from '@material-ui/icons/Redo';
 
 export default function ArrayModify({value,setValue,type,oldValue}) {
     const emptyHelper =  {definition: '', commentaire: ''} 
@@ -16,8 +14,9 @@ export default function ArrayModify({value,setValue,type,oldValue}) {
         },[]))
     }
     useEffect(()=>{ 
-        setValue([...value, ...oldValue.map(e => emptyHelper)]) 
+        value.length == 0 &&  setValue([...value, ...oldValue.map(e => emptyHelper)]) 
     },[])
+    console.log("VALUE",value,"OLDVALUE",oldValue)
     return (
         <div style={{display: 'flex', flexDirection: 'column'}}>
             {value && value.map((item , index) =>(
@@ -85,7 +84,7 @@ function ModifyOneItem({actualItem,actualIndex,setActualItem , oldValue}){
             {/* This Line Meant to be a button for the defintions to get the oldValue onCLick
              */}
             {/* {setActuaItem({defintion:oldValue[actualIndex].definition, commentaire:oldValue[actualIndex].commentaire},actualIndex)}  */}
-            <Button onClick={()=>{setActualItem({definition:oldValue[actualIndex].definition, commentaire:oldValue[actualIndex].commentaire}, actualIndex)}} style={{background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button>
+            {/* <Button onClick={()=>{setActualItem({definition:oldValue[actualIndex].definition, commentaire:oldValue[actualIndex].commentaire}, actualIndex)}} style={{background: '#eee', margin: '1%'}}><RedoIcon style={{transform: 'rotate(180deg)'}}></RedoIcon></Button> */}
             </div>
     </div>
     )
