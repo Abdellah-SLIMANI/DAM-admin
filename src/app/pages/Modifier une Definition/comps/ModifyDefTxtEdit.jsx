@@ -177,7 +177,7 @@ export default function ModifyDefTxtEdit() {
         else {
             axios.put(putUrl, data ,config)
             .then(res => (
-                res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response 2',res)
+                (res.status == 200) || (res.status = 201) ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response 2',res)
             ))
             .finally(()=>{
                 setLoadingB(false)
@@ -233,7 +233,7 @@ export default function ModifyDefTxtEdit() {
         else {
             axios.put(putUrl, data ,config)
             .then(res => (
-                res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
+                (res.status == 200) || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
             ))
             .finally(()=>{
                 setLoadingB(false)
@@ -254,7 +254,7 @@ export default function ModifyDefTxtEdit() {
             <h4>Remplissez les champs ci-dessous pour modifier une définition.</h4>
                 <div>
                     <ReprisePreview open={openReprise} handleClose={handleCloseReprise} word={word}/>
-                   {word && word.preview == "" ? null : <Button className='text-white bg-gray mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{setOpenReprise(true)}}>Aperçu de la reprise</Button>}
+                   {word && word.preview && <Button className='text-white bg-gray mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{setOpenReprise(true)}}>Aperçu de la reprise</Button>}
                     <Button className='text-white mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{draft()}}>Enregistrer comme brouillon</Button>
                     <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
                 </div>

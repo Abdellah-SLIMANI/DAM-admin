@@ -76,7 +76,7 @@ export default function ModifySearchArray({value,setValue,oldValue}) {
                 <SimpleCard title='Version en cours'>
                 <TextField
                 className='w-full'
-                    value={Array.isArray(oldValue) && oldValue.map(word => word.titre + "-")}
+                    value={Array.isArray(oldValue) ? oldValue.map(word => word.titre + "-") : oldValue}
                     variant='outlined'
                     disabled
                     />
