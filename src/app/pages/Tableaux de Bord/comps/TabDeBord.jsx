@@ -262,7 +262,8 @@ const TabDeBord = () => {
                     filterTable: 'Tableau des filtres',
                   },
                   pagination: {
-                    rowsPerPage: " "
+                    rowsPerPage: "Lignes",
+                    jumpToPage: 'Page'
                   },
                   filter: {
                     all: "TOUS",

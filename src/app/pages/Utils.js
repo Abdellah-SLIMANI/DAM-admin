@@ -36,6 +36,9 @@ export const initContent = {
 }
 
 export const config = {
+    "uploader": {
+        "insertImageAsBase64URI": true
+      },
     readonly: false, 
     language: "fr",
     resizer: {

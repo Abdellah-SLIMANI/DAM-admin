@@ -28,7 +28,10 @@ export default function AuthorAdd({value,setValue,type}) {
 
 function AddOneItem({actualItem,actualIndex,setActualItem, type}){
     const config = {
-		readonly: false, 
+        "uploader": {
+            "insertImageAsBase64URI": true
+          },
+        readonly: false, 
         language: "fr",
         resizer: {
             "showSize": true,
@@ -37,10 +40,9 @@ function AddOneItem({actualItem,actualIndex,setActualItem, type}){
             "min_height": 10
         },
         useSplitMode: true,
-        askBeforePasteHTML: false,
         width: '100%',
-        "buttons": "source,bold,italic,underline,strikethrough,eraser,superscript,subscript,ul,ol,indent,outdent,left,font,fontsize,paragraph,classSpan"
-	}
+        editHTMLDocumentMode: true
+    }
 
     return (
         <div style={{ width: '100%', marginBottom: '3rem'}}>
