@@ -2,9 +2,13 @@ import { SimpleCard } from 'app/components'
 import React, { useEffect, useState } from 'react'
 import JoditEditor from "jodit-react";
 import { ReadOnly, config } from 'app/pages/Utils';
+import { Button } from '@material-ui/core';
 
 export default function ArrayModify({value,setValue,type,oldValue}) {
     const emptyHelper =  {definition: '', commentaire: ''} 
+    const ajouterItem = () => {
+        setValue([...value, emptyHelper])
+    }
     const setActualItem = (item,index) => {
         setValue(value.reduce((previous , current ,itemIndex) =>{
             if (itemIndex == index){
@@ -29,6 +33,7 @@ export default function ArrayModify({value,setValue,type,oldValue}) {
                         value={value}
                     />
             ))}
+            <Button onClick={()=> ajouterItem()}>Ajouter une definition</Button>
         </div>
     )
 }

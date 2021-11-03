@@ -5,7 +5,6 @@ import { Button } from '@material-ui/core';
 
 export default function AuthorAdd({value,setValue,type}) {
     const emptyHelper = {definition: '', commentaire: ''}
-
     const ajouterItem = () => {
         setValue([...value, emptyHelper])
     }
