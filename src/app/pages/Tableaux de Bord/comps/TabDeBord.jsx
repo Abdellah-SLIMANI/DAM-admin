@@ -1,5 +1,5 @@
 import React ,{useState}from 'react'
-import {IconButton,Icon, FormControlLabel, TextField, FormGroup, Chip,} from '@material-ui/core'
+import {IconButton,Icon, FormControlLabel, TextField, FormGroup, Chip, CircularProgress,Typography, TableCell, TableRow} from '@material-ui/core'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
@@ -17,6 +17,9 @@ const TabDeBord = () => {
     const [orderName, setOrderName] = useState('')
     const [orderDirection, setOrderDirection] = useState('')
     const [searchText, setSearchText] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [typeFilter, setTypeFilter] = useState([])
+    const [statusFilter, setStatusFilter] = useState([])
     const history = useHistory();
     let {user} = useAuth()
 
@@ -35,10 +38,10 @@ const TabDeBord = () => {
         setOpen(false)
     }
     
-
     React.useEffect(() => {
-        const urlWithSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&titre='+searchText+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName 
-        const urlWithoutSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName
+        setLoading(true)
+        const urlWithSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&titre='+searchText+'&type='+typeFilter.toString()+'&status='+statusFilter.toString()+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName 
+        const urlWithoutSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&type='+typeFilter.toString()+'&status='+statusFilter.toString()+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName
         axios.get(searchText == null ? urlWithoutSearch : urlWithSearch, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
@@ -46,8 +49,8 @@ const TabDeBord = () => {
         .then(res => {
             console.log(res.data)
             setDefinitions(res.data)
-        })
-    }, [page,action,orderName,orderDirection,rowsPerPage,searchText])
+        }).finally(() => setLoading(false))
+    }, [page,action,orderName,orderDirection,rowsPerPage,searchText,typeFilter,statusFilter])
 
     const handleChangePage = (event, newPage) => {
         setPage(event)
@@ -145,49 +148,7 @@ const TabDeBord = () => {
          name: "date_emission",
          label: "Date d'émission",
          options: {
-          filter: true,
-          filterType: 'custom',
-          customFilterListOptions: {
-            render: v => {
-              if (v[0] && v[1]) {
-                return [`Min Age: ${v[0]}`, `Max Age: ${v[1]}`];
-              } else if (v[0] && v[1] && !this.state.ageFilterChecked) {
-                return `Min Age: ${v[0]}, Max Age: ${v[1]}`;
-              } else if (v[0]) {
-                return `Min Age: ${v[0]}`;
-              } else if (v[1]) {
-                return `Max Age: ${v[1]}`;
-              }
-              return false;
-            },
-            filterOptions:{
-                display: (filterList, onChange, index, column) => (
-                    <div>
-                      <FormLabel>Age</FormLabel>
-                      <FormGroup row>
-                        <TextField
-                          label="min"
-                          value={filterList[index][0] || ''}
-                          onChange={event => {
-                            filterList[index][0] = event.target.value;
-                            onChange(filterList[index], index, column);
-                          }}
-                          style={{ width: '45%', marginRight: '5%' }}
-                        />
-                        <TextField
-                          label="max"
-                        //   value={filterList[index][1] || ''}
-                        //   onChange={event => {
-                        //     filterList[index][1] = event.target.value;
-                        //     onChange(filterList[index], index, column);
-                        //   }}
-                          style={{ width: '45%' }}
-                        />
-                      </FormGroup>
-                    </div>
-                  ),
-            },
-        },
+          filter: false,
           sort: true,
          }
         },
@@ -281,6 +242,9 @@ const TabDeBord = () => {
                     case 'search':
                         setSearchText(tableState.searchText)
                         break;
+                    case 'filterChange':    
+                          setTypeFilter(tableState.filterList[0])
+                          setStatusFilter(tableState.filterList[5])      
                     default:
                         break;
                 }
@@ -310,7 +274,14 @@ const TabDeBord = () => {
     return ( 
         <>      
                 <MUIDataTable
-                    title={"Liste des définitions"}
+                    title={
+                        <Typography variant="title" style={{display:'inline-flex'}}>
+                          <h4>Liste des définitions</h4>{' '}
+                          {loading && (
+                            <CircularProgress size={24} style={{ marginLeft: 15, position: 'relative', top: 4 }} />
+                          )}
+                        </Typography>
+                      }
                     data={definitions.results && definitions.results.map(item => {
                         return [
                             item.action,

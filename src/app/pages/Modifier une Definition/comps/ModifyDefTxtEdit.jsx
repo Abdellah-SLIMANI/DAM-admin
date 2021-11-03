@@ -12,6 +12,7 @@ import { useStyles } from '@material-ui/pickers/views/Calendar/Day';
 import ArrayModify from './ArrayModify'
 import DomaineModify from './DomaineModify'
 import ModifySearchArray from './ModifySearchArray'
+import ReprisePreview from './ReprisePreview'
 
 export default function ModifyDefTxtEdit() {
     const mapEventkeyToTitle = {
@@ -48,6 +49,7 @@ export default function ModifyDefTxtEdit() {
     const [oldContent, setOldContent] = useState({})
     const [loadingS, setLoadingS] = useState(false)
     const [loadingB, setLoadingB] = useState(false)
+    const [openReprise, setOpenReprise] = useState(false)
     const [codes, setCodes] = useState([])
     const [auteurs, setAuteurs] = useState([])
     const [synthese, setSynthese] = useState([])
@@ -63,6 +65,9 @@ export default function ModifyDefTxtEdit() {
 
     const handleSetValue = (k) =>{
         setContent({...content, ...k})
+    }
+    const handleCloseReprise = () => {
+        setOpenReprise(false)
     }
 
     function useQuery() {
@@ -248,6 +253,8 @@ export default function ModifyDefTxtEdit() {
             <div className= 'd-flex justify-content-between mb-3'>
             <h4>Remplissez les champs ci-dessous pour modifier une définition.</h4>
                 <div>
+                    <ReprisePreview open={openReprise} handleClose={handleCloseReprise} word={word}/>
+                   {word && word.preview == "" ? null : <Button className='text-white bg-gray mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{setOpenReprise(true)}}>Aperçu de la reprise</Button>}
                     <Button className='text-white mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{draft()}}>Enregistrer comme brouillon</Button>
                     <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
                 </div>
