@@ -18,7 +18,7 @@ export default function ArrayModify({value,setValue,type,oldValue}) {
         },[]))
     }
     useEffect(()=>{ 
-        value.length == 0 &&  setValue([...value, ...oldValue.map(e => emptyHelper)]) 
+        oldValue && value.length == 0 &&  setValue([...value, ...oldValue.map(e => emptyHelper)]) 
     },[])
     console.log("VALUE",value,"OLDVALUE",oldValue)
     return (

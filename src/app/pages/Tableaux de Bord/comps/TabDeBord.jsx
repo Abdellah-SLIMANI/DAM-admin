@@ -6,6 +6,7 @@ import useAuth from 'app/hooks/useAuth'
 import MUIDataTable from "mui-datatables";
 import DeleteItem from 'app/pages/Components/DeleteItem'
 import { FormLabel } from 'react-bootstrap'
+import WordPreview from 'app/pages/Components/WordPreview'
 
 const TabDeBord = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -20,6 +21,8 @@ const TabDeBord = () => {
     const [loading, setLoading] = useState(false)
     const [typeFilter, setTypeFilter] = useState([])
     const [statusFilter, setStatusFilter] = useState([])
+    const [previewWord, setPreviewWord] = useState({})
+    const [openPreview,setOpenPreview] = useState(false)
     const history = useHistory();
     let {user} = useAuth()
 
@@ -34,8 +37,14 @@ const TabDeBord = () => {
         setOpen(true)
     }  
 
+    function handlePreview(word){
+        setPreviewWord(word)
+        setOpenPreview(true)
+    }
+
     function handleClose(){
         setOpen(false)
+        setOpenPreview(false)
     }
     
     React.useEffect(() => {
@@ -204,17 +213,20 @@ const TabDeBord = () => {
             sort: false,
           customBodyRenderLite: (dataIndex) => {
             return ( 
-                <>
+                <div className='inline-block'>
                 <IconButton onClick={() => redirectToModify(definitions.results[dataIndex])}>
-                <Icon>edit</Icon>
+                <Icon color='primary'>edit</Icon>
             </IconButton>
-            <IconButton>
-                <Icon color="error" onClick = {()=> handleClickOpen(definitions.results[dataIndex])}>close</Icon>
+            <IconButton onClick = {()=> handleClickOpen(definitions.results[dataIndex])}>
+                <Icon color="error">close</Icon>
             </IconButton>
             <IconButton onClick={()=>ValidateWord(definitions.results[dataIndex])}>
-                <Icon className='hover-bg-green'>done</Icon>
+                <Icon className='text-green'>done</Icon>
             </IconButton>
-            </>
+            <IconButton className='mr-2' onClick={()=>handlePreview(definitions.results[dataIndex].data)}>
+                <Icon>visibility</Icon>
+            </IconButton>
+            </div>
             )
           }
          }
@@ -303,6 +315,11 @@ const TabDeBord = () => {
                         item={modalDef}
                         message='Confirmez-vous la suppression de la définition:'
                         url='http://13.36.215.163:8000/api/administration/article/'
+                    />
+                    <WordPreview 
+                        open={openPreview}
+                        handleClose={()=>handleClose()}
+                        selectedWord={previewWord}
                     />
         </>
     )

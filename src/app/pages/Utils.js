@@ -93,3 +93,73 @@ export const mapAuthorEventkeysToTitles = {
     deces: 'Année de décès',
     lien: 'Liens vers les définitions',
 }
+export const MapTitlesToKeys = {
+    traduction_en: {
+        name:'traduction_en', 
+        label: 'Anglais',
+        type:'normal'
+    },
+    definition: {
+        name:'definition',
+        label: '',
+        type:'definition'
+    },
+    abreviation: {
+        name:'abreviation',
+        label: 'Abreviation',
+        type:'normal'
+    },
+    domaines: {
+        name:'domaines',
+        label: 'Domaines',
+        type:'normal'
+    },
+    etymologie: {
+        name:"etymologie", 
+        label:'Etymologie',
+        type:'normal'
+    },
+    synonyme: {
+        name:'synonyme',
+        label: 'Synonymes',
+        type:'normal'
+    },
+    symbole: {
+        name:'symbole',
+        label: 'Symbole', 
+        type:'normal'
+    },
+    // antonyme: {
+
+    // },
+    // homonyme: {
+
+    // }
+    references: {
+        name:'references',
+        label: 'Références ',
+        type:'normal'
+    },
+    voir: {
+        name:'voir',
+        label: 'Cf.',
+        type:'voir'
+    },
+    voir_aussi: {
+        name:'voir_aussi',
+        label: '',
+        type:'voir'
+    },
+    edition: {
+        name:'edition',
+        label: 'Edition',
+        type:'normal'
+    },
+}
+
+export const titleProps = {
+    titre: 'titre',
+    s_cat: 's_cat',
+    sigle: 'sigle',
+    sigle_2 : 'sigle_2'
+}
