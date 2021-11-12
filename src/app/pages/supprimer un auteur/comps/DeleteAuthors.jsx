@@ -1,19 +1,11 @@
 import React ,{useRef, useState}from 'react'
 import {
     IconButton,
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
     Icon,
-    TablePagination,
-    Grid,
     Card,
     Tooltip,
     CircularProgress,
 } from '@material-ui/core'
-import { SimpleCard } from 'app/components'
 import axios from 'axios'
 import { useHistory, useLocation } from 'react-router-dom'
 import DeleteItem from 'app/pages/Components/DeleteItem'

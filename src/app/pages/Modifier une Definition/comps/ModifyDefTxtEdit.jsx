@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Col, Nav, Row } from 'react-bootstrap'
 import Tab from 'react-bootstrap/Tab'
 import { Button, Card,CircularProgress } from '@material-ui/core'
@@ -13,6 +13,70 @@ import ArrayModify from './ArrayModify'
 import DomaineModify from './DomaineModify'
 import ModifySearchArray from './ModifySearchArray'
 import ReprisePreview from './ReprisePreview'
+import {useDropzone} from 'react-dropzone';
+import SimpleCard from 'app/components/cards/SimpleCard';
+import PreviewContent from 'app/pages/Components/PreviewContent';
+
+const thumbsContainer = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16
+  };
+  
+  const thumb = {
+    display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    marginBottom: 8,
+    marginRight: 8,
+    width: 100,
+    height: 100,
+    padding: 4,
+    boxSizing: 'border-box'
+  };
+  
+  const thumbInner = {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden'
+  };
+  
+  const img = {
+    display: 'block',
+    width: 'auto',
+    height: '100%'
+  };
+
+  const baseStyle = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#eeeeee',
+    borderStyle: 'dashed',
+    backgroundColor: '#fafafa',
+    color: '#bdbdbd',
+    outline: 'none',
+    transition: 'border .24s ease-in-out',
+    cursor: 'pointer'
+  };
+  
+  const activeStyle = {
+    borderColor: '#2196f3'
+  };
+  
+  const acceptStyle = {
+    borderColor: '#00e676'
+  };
+  
+  const rejectStyle = {
+    borderColor: '#ff1744'
+  };
+  
 
 export default function ModifyDefTxtEdit() {
     const mapEventkeyToTitle = {
@@ -47,7 +111,7 @@ export default function ModifyDefTxtEdit() {
     }
 
     const [oldContent, setOldContent] = useState({})
-    const [loadingS, setLoadingS] = useState(false)
+    // const [loadingS, setLoadingS] = useState(false)
     const [loadingB, setLoadingB] = useState(false)
     const [openReprise, setOpenReprise] = useState(false)
     const [codes, setCodes] = useState([])
@@ -125,66 +189,66 @@ export default function ModifyDefTxtEdit() {
         }
         return newArray
     }
-    function soummetre(){
-        setLoadingS(true)
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
+    // function soummetre(){
+    //     setLoadingS(true)
+    //     let config = {
+    //         headers: {
+    //             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    //         }
+    //     }
 
-        const role = user.role;
-        const actionChecker = word.action
+    //     const role = user.role;
+    //     const actionChecker = word.action
 
-        let data = {
-            "titre": checkChanges(content.titre , oldContent.titre),
-            'status': role == 'Valideur' ? 'valide' : 'soumis',
-            "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
-            'created_by': oldContent.created_by ? oldContent.created_by : user.id,
-            "elastic_id" : oldContent.id ? oldContent.id : "",
-            'data': {
-                ...content,
-                titre: checkChanges(content.titre , oldContent.titre),
-                s_cat: checkChanges(content.s_cat , oldContent.s_cat),
-                terminologia_anatomica: checkChanges(content.terminologia_anatomica , oldContent.terminologia_anatomica),
-                traduction_en: checkChanges(content.traduction_en , oldContent.traduction_en),
-                etymologie: checkChanges(content.etymologie , oldContent.etymologie),
-                synonyme: checkChanges(content.synonyme , oldContent.synonyme),
-                antonyme: checkChanges(content.antonyme , oldContent.antonyme),
-                homonyme: checkChanges(content.homonyme , oldContent.homonyme),
-                sigle: checkChanges(content.sigle , oldContent.sigle),
-                symbole: checkChanges(content.symbole , oldContent.symbole),
-                abreviation: checkChanges(content.abreviation , oldContent.abreviation),
-                references: checkChanges(content.references , oldContent.references),
-                voir: checkChanges(voir , oldContent.voir),
-                edition: checkChanges(content.edition , oldContent.edition),
-                definition:checkArrayChange(synthese,oldContent.definition),
-                auteurs: checkArrayChange(auteurs,oldContent.auteurs),
-                domaines:checkChanges(codes, oldContent.domaines),
-            }
-        }
+    //     let data = {
+    //         "titre": checkChanges(content.titre , oldContent.titre),
+    //         'status': role == 'Valideur' ? 'valide' : 'soumis',
+    //         "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
+    //         'created_by': oldContent.created_by ? oldContent.created_by : user.id,
+    //         "elastic_id" : oldContent.id ? oldContent.id : "",
+    //         'data': {
+    //             ...content,
+    //             titre: checkChanges(content.titre , oldContent.titre),
+    //             s_cat: checkChanges(content.s_cat , oldContent.s_cat),
+    //             terminologia_anatomica: checkChanges(content.terminologia_anatomica , oldContent.terminologia_anatomica),
+    //             traduction_en: checkChanges(content.traduction_en , oldContent.traduction_en),
+    //             etymologie: checkChanges(content.etymologie , oldContent.etymologie),
+    //             synonyme: checkChanges(content.synonyme , oldContent.synonyme),
+    //             antonyme: checkChanges(content.antonyme , oldContent.antonyme),
+    //             homonyme: checkChanges(content.homonyme , oldContent.homonyme),
+    //             sigle: checkChanges(content.sigle , oldContent.sigle),
+    //             symbole: checkChanges(content.symbole , oldContent.symbole),
+    //             abreviation: checkChanges(content.abreviation , oldContent.abreviation),
+    //             references: checkChanges(content.references , oldContent.references),
+    //             voir: checkChanges(voir , oldContent.voir),
+    //             edition: checkChanges(content.edition , oldContent.edition),
+    //             definition:checkArrayChange(synthese,oldContent.definition),
+    //             auteurs: checkArrayChange(auteurs,oldContent.auteurs),
+    //             domaines:checkChanges(codes, oldContent.domaines),
+    //         }
+    //     }
         
-        if(previousPath == '/modifier-une-definition/'){
-            console.log("WHAT URL?", putUrl)
-            axios.post(putUrl, data ,config)
-            .then(res => (
-                res.statusText == "OK" ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
-            ))
-            .finally(()=>{
-                setLoadingB(false)
-            })
-        }
-        else {
-            axios.put(putUrl, data ,config)
-            .then(res => (
-                (res.status == 200) || (res.status = 201) ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response 2',res)
-            ))
-            .finally(()=>{
-                setLoadingB(false)
-            })
-        }
+    //     if(previousPath == '/modifier-une-definition/'){
+    //         console.log("WHAT URL?", putUrl)
+    //         axios.post(putUrl, data ,config)
+    //         .then(res => (
+    //             res.statusText == "OK" ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
+    //         ))
+    //         .finally(()=>{
+    //             setLoadingB(false)
+    //         })
+    //     }
+    //     else {
+    //         axios.put(putUrl, data ,config)
+    //         .then(res => (
+    //             (res.status == 200) || (res.status = 201) ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response 2',res)
+    //         ))
+    //         .finally(()=>{
+    //             setLoadingB(false)
+    //         })
+    //     }
         
-    }
+    // }
     function draft(){
         setLoadingB(true)
         let config = {
@@ -247,91 +311,120 @@ export default function ModifyDefTxtEdit() {
             .then(response => (func(response)))
     }, [])
 
+    //************************************************************************************************** */
+    const [files, setFiles] = useState([])
+    const [loadingS,setLoadingS] = useState(false)
+    const [previewWord, setPreviewWord] = useState({})
+    const {
+        acceptedFiles,
+        getRootProps,
+        getInputProps,
+        isDragActive,
+        isDragAccept,
+        isDragReject} = useDropzone({
+        accept: ['.doc', '.docx'],
+        onDrop: acceptedFiles => {
+          setFiles(acceptedFiles.map(file => Object.assign(file, {
+            preview: URL.createObjectURL(file)
+          })));
+        }
+      });
+
+
+      const style = useMemo(() => ({
+        ...baseStyle,
+        ...(isDragActive ? activeStyle : {}),
+        ...(isDragAccept ? acceptStyle : {}),
+        ...(isDragReject ? rejectStyle : {})
+      }), [
+        isDragActive,
+        isDragReject,
+        isDragAccept
+      ]);
+
+      const filesPrev = acceptedFiles.map(file => (
+        <li key={file.path}>
+          {file.path} - {file.size} bytes
+        </li>
+      ));
+
+      useEffect(() => () => {
+        // Make sure to revoke the data uris to avoid memory leaks
+        files.forEach(file => URL.revokeObjectURL(file.preview));
+      }, [files]);
+
+    const soummetre = () => {
+        console.log("SOUMMETRE CLICKED")
+    }
+
     return (
-        <div className = 'adminPageContainer'>
-            <div className= 'mainArea addWordContainer'>
-            <div className= 'd-flex justify-content-between mb-3'>
-            <h4>Remplissez les champs ci-dessous pour modifier une définition.</h4>
-                <div>
-                    <ReprisePreview open={openReprise} handleClose={handleCloseReprise} word={word}/>
-                   {word && word.preview && <Button className='text-white bg-gray mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{setOpenReprise(true)}}>Aperçu de la reprise</Button>}
-                    <Button className='text-white mr-2' variant='contained' color= 'primary' type="submit" onClick={()=>{draft()}}>Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
-                </div>
+        <div className='flex-column'>
+        <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
+            <div>
+            <Button
+                className='text-white mt-3 mb-3'
+                style={{alignSelf: 'flex-start'}}
+                variant='contained' 
+                color= 'primary' 
+                disabled={loadingS} 
+                type="submit" 
+                onClick={()=>{soummetre()}}
+            >
+              {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
+            </Button>
+            <Button
+                    className='text-white ml-3 mt-3 mb-3 bg-light-dark'
+                    style={{alignSelf: 'flex-start'}}
+                    variant='contained'
+                    disabled={loadingS} 
+                    type="submit" 
+                    onClick={()=>{soummetre()}}
+                >
+                {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre le fichier
+            </Button>
             </div>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="titre" unmountOnExit={true}>
-                <Row className='border p-5'>
-                    <Col sm={3}>
-                    <Nav variant="pills" className="flex-column">
-                        {Object.keys(mapEventkeyToTitle).map(key => (
-                            <Card className='m-1'>
-                                <Nav.Item>
-                                    <Nav.Link eventKey={key}>{mapEventkeyToTitle[key]}</Nav.Link>
-                                </Nav.Item>
-                            </Card>
-                        ))}
-                        </Nav>
-                    </Col>
-                    <Col sm={9}>
-                    {Object.keys(initContent).map(key => (
-                    <Tab.Content>
-                        <Tab.Pane eventKey={key} >
-                            <ModifyBlock value={content[key]} setValue={handleSetValue} fieldName={key} oldValue = {oldContent && oldContent[key]}/>      
-                        </Tab.Pane>
-                    </Tab.Content>                        
-                    ))}
-                            <Tab.Pane eventKey='synonyme'>
-                                <ModifySearchArray
-                                    oldValue={oldContent.synonyme}
-                                    value={synonyme}
-                                    setValue={setSynonyme}
-                                />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey='antonyme'>
-                                <ModifySearchArray
-                                    oldValue={oldContent.antonyme}
-                                    value={antonyme}
-                                    setValue={setAntonyme}
-                                />
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='homonyme'>
-                                <ModifySearchArray 
-                                    oldValue={oldContent.homonyme}
-                                    value={homonyme}
-                                    setValue={setHomonyme}
-                                />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey='voir'>
-                                <ModifySearchArray 
-                                    oldValue={oldContent.voir}
-                                    value={voir}
-                                    setValue={setVoir}
-                                />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey='synthese'>
-                                <ArrayModify 
-                                        value= {synthese} 
-                                        setValue = {setSynthese}
-                                        oldValue = {oldContent.definition} 
-                                        type = 'definition'
-                                    />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey='codes'>
-                                <DomaineModify 
-                                        value= {codes} 
-                                        setValue = {setCodes}
-                                        oldValue = {oldContent.domaines}
-                                    />
-                            </Tab.Pane>
-
-                    </Col>
-                </Row>
-                </Tab.Container>
-            </div>
-        </div>
+          <Button
+                className='bg-green text-white mt-3 mb-3'
+                variant='contained' 
+                style={{alignSelf: 'flex-end'}}
+                color= 'primary' 
+                disabled={loadingS} 
+                type="submit" 
+                onClick={()=>{soummetre()}}
+            >
+              {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre
+          </Button>
+          </div>
+          <div className="mt-3 mb-3 pl-20 pr-20">
+          <SimpleCard title={'Importer des fichiers'}>
+          <section className="container">
+          <div {...getRootProps({style})}>
+              <input {...getInputProps()} />
+              <p>Glissez et déposez des fichiers ici, ou cliquez pour les sélectionner.</p>
+          </div>
+          <aside style={thumbsContainer}>
+              {filesPrev}
+          </aside>
+          </section>
+          </SimpleCard>
+          </div>
+          <div className="mt-3 mb-3 pl-20 pr-20">
+          {
+              previewWord && 
+              <div className='flex'>
+                  <div className='mr-3'>
+                    <SimpleCard title={'Aperçu de la définition en cours'}>
+                        <PreviewContent selectedWord={oldContent}/>
+                    </SimpleCard>
+                  </div>
+                  <div className='ml-3'>
+                    <SimpleCard title={'Aperçu de la définition actuel'}>
+                        <PreviewContent selectedWord={oldContent}/>
+                    </SimpleCard>
+                  </div>
+              </div>
+          }
+          </div>
+      </div>
     )
 }

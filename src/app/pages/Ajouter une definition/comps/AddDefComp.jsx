@@ -1,170 +1,177 @@
-import React, { useRef, useState } from 'react'
-import { useStyles } from '@material-ui/pickers/views/Calendar/Day';
-import TxtModify from './TxtModify';
-import { Col, Nav, Row } from 'react-bootstrap'
-import Tab from 'react-bootstrap/Tab'
-import { Button, Card, CircularProgress, IconButton, TextField } from '@material-ui/core'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Button, CircularProgress } from '@material-ui/core'
 import './AddDefComp.css'
+import {useDropzone} from 'react-dropzone';
+import SimpleCard from 'app/components/cards/SimpleCard';
+import PreviewContent from 'app/pages/Components/PreviewContent';
 import axios from 'axios'
-import useAuth from 'app/hooks/useAuth';
-import { useHistory } from 'react-router-dom';
-import CodeAdd from './CodeAdd';
-import AuthorAdd from './AuthorAdd';
-import SearchAdd from './SearchAdd';
+
+const thumbsContainer = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16
+  };
+  
+  const thumb = {
+    display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    marginBottom: 8,
+    marginRight: 8,
+    width: 100,
+    height: 100,
+    padding: 4,
+    boxSizing: 'border-box'
+  };
+  
+  const thumbInner = {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden'
+  };
+  
+  const img = {
+    display: 'block',
+    width: 'auto',
+    height: '100%'
+  };
+
+  const baseStyle = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#eeeeee',
+    borderStyle: 'dashed',
+    backgroundColor: '#fafafa',
+    color: '#bdbdbd',
+    outline: 'none',
+    transition: 'border .24s ease-in-out',
+    cursor: 'pointer'
+  };
+  
+  const activeStyle = {
+    borderColor: '#2196f3'
+  };
+  
+  const acceptStyle = {
+    borderColor: '#00e676'
+  };
+  
+  const rejectStyle = {
+    borderColor: '#ff1744'
+  };
+  
+  
+
 
 export default function AddDefComp() {
-    const {user} = useAuth()
-    const history = useHistory();
-    const initContent = {
-        titre : '',
-        s_cat : '',
-        terminologia_anatomica : '',
-        traduction_en : '',
-        etymologie : '',
-        sigle : '',
-        symbole : '',
-        abreviation : '',
-        references : '',
-        edition : new Date().getFullYear().toString(),
-    }
-    const [loadingS, setLoadingS] = useState(false)
-    const [loadingB, setLoadingB] = useState(false)
-    const classes = useStyles()
-    const [codes, setCodes] = useState([])
-    const [auteurs, setAuteurs] = useState([])
-    const [synthese, setSynthese] = useState([])
-    const [synonyme, setSynonyme] = useState([])
-    const [antonyme, setAntonyme] = useState([])
-    const [homonyme, setHomonyme] = useState([])
-    const [voir, setVoir] = useState([])
-    const [content, setContent] = useState(initContent)
-
-    const mapEventkeyToTitle = {
-        titre: 'Entrée',
-        s_cat: 'Genre',
-        terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
-        traduction_en: 'Traduction anglais',
-        synthese: 'Définition et complément',
-        // auteurs: 'Auteurs',
-        etymologie: 'Etymologie',
-        synonyme: 'Synonyme',
-        antonyme: 'Antonyme',
-        homonyme: 'Homonyme',
-        sigle: 'Sigle',
-        symbole: 'Symbole',
-        abreviation: 'Abréviation',
-        references: 'Référence',
-        voir: 'Voir aussi',
-        codes: 'Codes internes de spécialité',
-        edition: 'Edition'
-    }
-
-    const handleSetValue = (k) =>{
-        setContent({...content, ...k})
-    }
-
-    function soummetre({isDraft = false} = {}){
-        isDraft ? setLoadingB(true) : setLoadingS(true)
-        let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
+    const [files, setFiles] = useState([])
+    const [loadingS,setLoadingS] = useState(false)
+    const [previewWord, setPreviewWord] = useState({})
+    const {
+        acceptedFiles,
+        getRootProps,
+        getInputProps,
+        isDragActive,
+        isDragAccept,
+        isDragReject} = useDropzone({
+        accept: ['.doc', '.docx',],
+        onDrop: acceptedFiles => {
+          setFiles(acceptedFiles.map(file => Object.assign(file, {
+            preview: URL.createObjectURL(file)
+          })));
         }
+      });
 
-        console.log("Bread",{...content , auteurs:auteurs, definition:synthese, domaines: codes,synonyme:synonyme,antonyme: antonyme, voir: voir,homonyme:homonyme})
-        const role = user.role;
-        let data = {
-            "titre": content.titre,
-            'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
-            'created_by': user.id,
-            'data': {...content , auteurs:auteurs, definition:synthese, domaines: codes,synonyme:synonyme,antonyme: antonyme, voir: voir,homonyme:homonyme}
-        }
+      const SubmitFile = () => {
+          axios.put("http://13.36.215.163:8000/api/administration/upload/"+acceptedFiles[0].name+ "/", acceptedFiles[0].preview ,
+            { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                "Content-Type" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              }
+          })
+            .then(res => console.log("FILE PUT RES", res))
+      }
+      console.log('FILES',acceptedFiles, files)
+      const style = useMemo(() => ({
+        ...baseStyle,
+        ...(isDragActive ? activeStyle : {}),
+        ...(isDragAccept ? acceptStyle : {}),
+        ...(isDragReject ? rejectStyle : {})
+      }), [
+        isDragActive,
+        isDragReject,
+        isDragAccept
+      ]);
 
-        axios.post("http://13.36.215.163:8000/api/administration/article/", data ,config)
-        .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Error',res))
-        .catch(res => console.log("Error while Posting data",res))
-        .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
+      const filesPrev = acceptedFiles.map(file => (
+        <li key={file.path}>
+          {file.path} - {file.size} bytes
+        </li>
+      ));
+
+      useEffect(() => () => {
+        // Make sure to revoke the data uris to avoid memory leaks
+        files.forEach(file => URL.revokeObjectURL(file.preview));
+      }, [files]);
+
+    const soummetre = () => {
+        console.log("SOUMMETRE CLICKED")
     }
 
-    return (
-        <div className = 'adminPageContainer mt-5'>
-            <div className= 'mainArea addWordContainer'>
-            <div className= 'd-flex justify-content-between mb-3'>
-                <h4>Remplissez les champs ci-dessous pour ajouter une définition.</h4>
-                <div>
-                <Button className='text-white mr-2' variant='contained' color= 'primary' disabled={loadingB} type="submit" onClick={()=>{soummetre({isDraft: true})}}>{loadingB &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
-                </div>
+    return(
+        <div className='flex-column mt-10'>
+        <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
+            <div>
+            <Button
+                    className='text-white mt-3 mb-3 bg-light-dark'
+                    style={{alignSelf: 'flex-start'}}
+                    variant='contained'
+                    disabled={loadingS} 
+                    type="submit" 
+                    onClick={()=>{SubmitFile()}}
+                >
+                {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre le fichier
+            </Button>
             </div>
-            <Card>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="titre" unmountOnExit={true}>
-                <Row className='p-10'>
-                    <Col sm={3}>
-                    <Nav variant="pills" className="flex-column">
-                        {
-                            Object.keys(mapEventkeyToTitle).map(key => (
-                            <Card className='m-1'> 
-                                <Nav.Item>
-                                    <Nav.Link eventKey={key}>{mapEventkeyToTitle[key]}</Nav.Link>
-                                </Nav.Item>
-                            </Card>
-                            ))
-                        }
-                        </Nav>
-                    </Col>
-                    <Col sm={9}>
-                    <Tab.Content>
-                        { Object.keys(initContent).map(key => (
-                            <Tab.Pane eventKey={key}>
-                                <TxtModify value= {content[key]} setValue = {handleSetValue} fieldName={key} />
-                            </Tab.Pane>
-                        ))}
-
-                            <Tab.Pane eventKey='synonyme'>
-                                <SearchAdd 
-                                    value={synonyme}
-                                    setValue={setSynonyme}
-                                />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey='antonyme'>
-                                <SearchAdd 
-                                    value={antonyme}
-                                    setValue={setAntonyme}
-                                />
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='homonyme'>
-                                <SearchAdd 
-                                    value={homonyme}
-                                    setValue={setHomonyme}
-                                />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey='voir'>
-                                <SearchAdd 
-                                    value={voir}
-                                    setValue={setVoir}
-                                />
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='synthese'>
-                                <AuthorAdd 
-                                        value= {synthese} 
-                                        setValue = {setSynthese}
-                                        type = 'definition'
-                                    />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey='codes'>
-                                <CodeAdd 
-                                        value= {codes} 
-                                        setValue = {setCodes}
-                                    />
-                            </Tab.Pane>
-                    </Tab.Content>
-                    </Col>
-                </Row>
-                </Tab.Container>
-                </Card>
+          <Button
+                className='bg-green text-white mt-3 mb-3'
+                variant='contained' 
+                style={{alignSelf: 'flex-end'}}
+                color= 'primary' 
+                disabled={loadingS} 
+                type="submit" 
+                onClick={()=>{soummetre()}}
+            >
+              {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre
+          </Button>
+          </div>
+            <div className="mt-3 mb-3 pl-20 pr-20">
+            <SimpleCard title={'Importer des fichiers'}>
+            <section className="container">
+            <div {...getRootProps({style})}>
+                <input {...getInputProps()} />
+                <p>Glissez et déposez des fichiers ici, ou cliquez pour les sélectionner.</p>
+            </div>
+            <aside style={thumbsContainer}>
+                {filesPrev}
+            </aside>
+            </section>
+            </SimpleCard>
+            </div>
+            <div className="mt-3 mb-3 pl-20 pr-20">
+            {
+                previewWord && 
+                    <SimpleCard title={'Aperçu de la définition'}>
+                        <PreviewContent selectedWord={previewWord}/>
+                    </SimpleCard>
+            }
             </div>
         </div>
     )

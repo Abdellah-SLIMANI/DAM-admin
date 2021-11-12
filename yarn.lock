@@ -3101,7 +3101,7 @@
   "resolved" "https://registry.npmjs.org/atob/-/atob-2.1.2.tgz"
   "version" "2.1.2"
 
-"attr-accept@^2.2.1":
+"attr-accept@^2.0.0", "attr-accept@^2.2.1":
   "integrity" "sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg=="
   "resolved" "https://registry.npmjs.org/attr-accept/-/attr-accept-2.2.2.tgz"
   "version" "2.2.2"
@@ -6221,6 +6221,13 @@
     "loader-utils" "^1.2.3"
     "schema-utils" "^2.5.0"
 
+"file-selector@^0.1.12":
+  "integrity" "sha512-kCWw3+Aai8Uox+5tHCNgMFaUdgidxvMnLWO6fM5sZ0hA2wlHP5/DHGF0ECe84BiB95qdJbKNEJhWKVDvMN+JDQ=="
+  "resolved" "https://registry.npmjs.org/file-selector/-/file-selector-0.1.19.tgz"
+  "version" "0.1.19"
+  dependencies:
+    "tslib" "^2.0.1"
+
 "file-selector@^0.2.2":
   "integrity" "sha512-ZDsQNbrv6qRi1YTDOEWzf5J2KjZ9KMI1Q2SGeTkCJmNNW25Jg4TW4UMcmoqcg4WrAyKRcpBXdbWRxkfrOzVRbA=="
   "resolved" "https://registry.npmjs.org/file-selector/-/file-selector-0.2.4.tgz"
@@ -9061,6 +9068,15 @@
     "react-beautiful-dnd" "13.0.0"
     "react-double-scrollbar" "0.0.15"
 
+"material-ui-dropzone@^3.5.0":
+  "integrity" "sha512-3BC6mz/4OEM4ZpbqMfuMN065JQyqfEbifT6/VzIua7Zj4b0DaR5YPCgpN+fL/e8yBgTs9MGBZJQY06p5pfKwvw=="
+  "resolved" "https://registry.npmjs.org/material-ui-dropzone/-/material-ui-dropzone-3.5.0.tgz"
+  "version" "3.5.0"
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "clsx" "^1.0.2"
+    "react-dropzone" "^10.2.1"
+
 "material-ui-search-bar@^1.0.0":
   "integrity" "sha512-lCNuzMLPBVukVAkcnYKLXHneozsuKZREZNOcc8z9S9scXHqxJzhC9hOS3OC3/YJ+NJEB5lZB9zg1gryBaXEu8w=="
   "resolved" "https://registry.npmjs.org/material-ui-search-bar/-/material-ui-search-bar-1.0.0.tgz"
@@ -11462,7 +11478,7 @@
   "resolved" "https://registry.npmjs.org/react-dom-factories/-/react-dom-factories-1.0.2.tgz"
   "version" "1.0.2"
 
-"react-dom@^15.0.0 || ^16.0.0", "react-dom@^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@^15.3.0 || ^16.0.0-alpha", "react-dom@^15.5.4 || ^16.0.0", "react-dom@^16.3.0", "react-dom@^16.6.1", "react-dom@^16.8.0", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^16.8.4", "react-dom@^16.8.4 || ^17.0.0", "react-dom@^16.8.5", "react-dom@^16.8.6", "react-dom@>= 16.3.0", "react-dom@>= 16.9.0", "react-dom@>=0.14.0", "react-dom@>=15.0.0", "react-dom@>=16.3.0", "react-dom@>=16.3.3", "react-dom@>=16.6.0", "react-dom@>=16.8.0", "react-dom@~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@0.13.x || 0.14.x || ^15.0.0-0 || 15.x.x || ^16.0.0-0 || ^16.x.x || ^17.x.x":
+"react-dom@^15.0.0 || ^16.0.0", "react-dom@^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@^15.3.0 || ^16.0.0-alpha", "react-dom@^15.5.0 || ^16.0.0", "react-dom@^15.5.4 || ^16.0.0", "react-dom@^16.3.0", "react-dom@^16.6.1", "react-dom@^16.8.0", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^16.8.4", "react-dom@^16.8.4 || ^17.0.0", "react-dom@^16.8.5", "react-dom@^16.8.6", "react-dom@>= 16.3.0", "react-dom@>= 16.8", "react-dom@>= 16.9.0", "react-dom@>=0.14.0", "react-dom@>=15.0.0", "react-dom@>=16.3.0", "react-dom@>=16.3.3", "react-dom@>=16.6.0", "react-dom@>=16.8.0", "react-dom@~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@0.13.x || 0.14.x || ^15.0.0-0 || 15.x.x || ^16.0.0-0 || ^16.x.x || ^17.x.x":
   "integrity" "sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-16.14.0.tgz"
   "version" "16.14.0"
@@ -11488,10 +11504,19 @@
     "linkify-it" "^2.2.0"
     "prop-types" "^15.7.2"
 
-"react-dropzone@^11.2.0":
-  "integrity" "sha512-B1nzNRZ4F1cnrfEC0T6KXeBN1mCPinu4JCoTrp7NjB+442KSPxqfDrw41QIA2kAwlYs1+wj/0BTedeM5hc2+xw=="
-  "resolved" "https://registry.npmjs.org/react-dropzone/-/react-dropzone-11.3.4.tgz"
-  "version" "11.3.4"
+"react-dropzone@^10.2.1":
+  "integrity" "sha512-U5EKckXVt6IrEyhMMsgmHQiWTGLudhajPPG77KFSvgsMqNEHSyGpqWvOMc5+DhEah/vH4E1n+J5weBNLd5VtyA=="
+  "resolved" "https://registry.npmjs.org/react-dropzone/-/react-dropzone-10.2.2.tgz"
+  "version" "10.2.2"
+  dependencies:
+    "attr-accept" "^2.0.0"
+    "file-selector" "^0.1.12"
+    "prop-types" "^15.7.2"
+
+"react-dropzone@^11.4.2":
+  "integrity" "sha512-ocYzYn7Qgp0tFc1gQtUTOaHHSzVTwhWHxxY+r7cj2jJTPfMTZB5GWSJHdIVoxsl+EQENpjJ/6Zvcw0BqKZQ+Eg=="
+  "resolved" "https://registry.npmjs.org/react-dropzone/-/react-dropzone-11.4.2.tgz"
+  "version" "11.4.2"
   dependencies:
     "attr-accept" "^2.2.1"
     "file-selector" "^0.2.2"
@@ -11874,13 +11899,20 @@
     "prop-types" "^15.5.8"
     "react-motion" "^0.5.2"
 
-"react@^0.14.0 || ^15.0.0 || ^16.0.0", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.0 || ^15.0.0 || ^16.0.0-0", "react@^0.14.7 || ^15.0.0 || ^16.0.0", "react@^0.14.9 || ^15.3.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || ^16.0.0-alpha", "react@^15.5.4 || ^16.0.0", "react@^16.0 || ^17.0.0", "react@^16.13.1", "react@^16.13.1 || ^17.0.0", "react@^16.14.0", "react@^16.3.0", "react@^16.6.1", "react@^16.8.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4", "react@^16.8.4 || ^17.0.0", "react@^16.8.5", "react@^16.8.6", "react@>= 0.14.7", "react@>= 16.3.0", "react@>= 16.8", "react@>= 16.8.3", "react@>= 16.9.0", "react@>=0.13", "react@>=0.13.2 || ^0.14 || ^15.0.0 || >=16.0.0", "react@>=0.14.0", "react@>=15", "react@>=15.0.0", "react@>=16.3.0", "react@>=16.3.2", "react@>=16.3.3", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@0.13.x || 0.14.x || ^15.0.0-0 || 15.x.x || ^16.0.0-0 || ^16.x.x || ^17.x.x", "react@15.3.0 - 16.x":
+"react@^0.14.0 || ^15.0.0 || ^16.0.0", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.0 || ^15.0.0 || ^16.0.0-0", "react@^0.14.7 || ^15.0.0 || ^16.0.0", "react@^0.14.9 || ^15.3.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || ^16.0.0-alpha", "react@^15.5.0 || ^16.0.0", "react@^15.5.4 || ^16.0.0", "react@^16.0 || ^17.0.0", "react@^16.13.1", "react@^16.13.1 || ^17.0.0", "react@^16.14.0", "react@^16.3.0", "react@^16.6.1", "react@^16.8.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4", "react@^16.8.4 || ^17.0.0", "react@^16.8.5", "react@^16.8.6", "react@>= 0.14.7", "react@>= 16.3.0", "react@>= 16.8", "react@>= 16.8.3", "react@>= 16.9.0", "react@>=0.13", "react@>=0.13.2 || ^0.14 || ^15.0.0 || >=16.0.0", "react@>=0.14.0", "react@>=15", "react@>=15.0.0", "react@>=16.3.0", "react@>=16.3.2", "react@>=16.3.3", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@~0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@0.13.x || 0.14.x || ^15.0.0-0 || 15.x.x || ^16.0.0-0 || ^16.x.x || ^17.x.x", "react@15.3.0 - 16.x":
   "integrity" "sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g=="
   "resolved" "https://registry.npmjs.org/react/-/react-16.14.0.tgz"
   "version" "16.14.0"
   dependencies:
     "loose-envify" "^1.1.0"
     "object-assign" "^4.1.1"
+    "prop-types" "^15.6.2"
+
+"reactjs-file-uploader@^1.0.8":
+  "integrity" "sha512-2OTL7B8F+6xKK+Taqcw7ast+MbW1Fh3tVVNJ9zCr7q0j5cQPbRQVbiq/WRH5g3DOlpbCkriRyr+2vY81rbcloQ=="
+  "resolved" "https://registry.npmjs.org/reactjs-file-uploader/-/reactjs-file-uploader-1.0.8.tgz"
+  "version" "1.0.8"
+  dependencies:
     "prop-types" "^15.6.2"
 
 "read-pkg-up@^1.0.1":
@@ -13737,7 +13769,7 @@
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   "version" "1.14.1"
 
-"tslib@^2.0.3", "tslib@^2.1.0":
+"tslib@^2.0.1", "tslib@^2.0.3", "tslib@^2.1.0":
   "integrity" "sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
   "version" "2.3.1"
