@@ -72,7 +72,7 @@ const thumbsContainer = {
 export default function AddDefComp() {
     const [files, setFiles] = useState([])
     const [loadingS,setLoadingS] = useState(false)
-    const [previewWord, setPreviewWord] = useState({})
+    const [previewWord, setPreviewWord] = useState()
     const {
         acceptedFiles,
         getRootProps,
@@ -80,23 +80,25 @@ export default function AddDefComp() {
         isDragActive,
         isDragAccept,
         isDragReject} = useDropzone({
-        accept: ['.doc', '.docx',],
+        accept: ['.doc', '.docx','/images*'],
         onDrop: acceptedFiles => {
           setFiles(acceptedFiles.map(file => Object.assign(file, {
             preview: URL.createObjectURL(file)
           })));
         }
       });
-
       const SubmitFile = () => {
-          axios.put("http://13.36.215.163:8000/api/administration/upload/"+acceptedFiles[0].name+ "/", acceptedFiles[0].preview ,
+        let data = new FormData();
+        data.append('data', acceptedFiles[0])
+        console.log("DATA SENT ON FILE",data.get('data'))
+        axios.post("http://13.36.215.163:8000/api/administration/upload/"+acceptedFiles[0].name+ "/", data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                "Content-Type" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                'Content-Type': acceptedFiles[0].type
               }
           })
-            .then(res => console.log("FILE PUT RES", res))
+            .then(res => console.log(res))
       }
       console.log('FILES',acceptedFiles, files)
       const style = useMemo(() => ({
@@ -112,7 +114,7 @@ export default function AddDefComp() {
 
       const filesPrev = acceptedFiles.map(file => (
         <li key={file.path}>
-          {file.path} - {file.size} bytes
+          {file.path}
         </li>
       ));
 
