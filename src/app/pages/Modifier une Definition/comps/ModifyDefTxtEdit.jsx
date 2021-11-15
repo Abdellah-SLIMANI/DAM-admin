@@ -1,18 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { Col, Nav, Row } from 'react-bootstrap'
-import Tab from 'react-bootstrap/Tab'
 import { Button, Card,CircularProgress } from '@material-ui/core'
 import axios from 'axios'
 import {  useHistory, useLocation } from 'react-router-dom';
-import ModifyBlock from './ModifyBlock';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useLastLocation } from 'react-router-last-location';
 import useAuth from 'app/hooks/useAuth';
-import { useStyles } from '@material-ui/pickers/views/Calendar/Day';
-import ArrayModify from './ArrayModify'
-import DomaineModify from './DomaineModify'
-import ModifySearchArray from './ModifySearchArray'
-import ReprisePreview from './ReprisePreview'
 import {useDropzone} from 'react-dropzone';
 import SimpleCard from 'app/components/cards/SimpleCard';
 import PreviewContent from 'app/pages/Components/PreviewContent';
@@ -22,30 +14,6 @@ const thumbsContainer = {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: 16
-  };
-  
-  const thumb = {
-    display: 'inline-flex',
-    borderRadius: 2,
-    border: '1px solid #eaeaea',
-    marginBottom: 8,
-    marginRight: 8,
-    width: 100,
-    height: 100,
-    padding: 4,
-    boxSizing: 'border-box'
-  };
-  
-  const thumbInner = {
-    display: 'flex',
-    minWidth: 0,
-    overflow: 'hidden'
-  };
-  
-  const img = {
-    display: 'block',
-    width: 'auto',
-    height: '100%'
   };
 
   const baseStyle = {
@@ -79,68 +47,17 @@ const thumbsContainer = {
   
 
 export default function ModifyDefTxtEdit() {
-    const mapEventkeyToTitle = {
-        titre: 'Entrée',
-        s_cat: 'Genre',
-        terminologia_anatomica : 'Terminologie (anatomica ou embryologica)',
-        traduction_en: 'Traduction anglais',
-        synthese: 'Définition et complément',
-        etymologie: 'Etymologie',
-        synonyme: 'Synonyme',
-        antonyme: 'Antonyme',
-        homonyme: 'Homonyme',
-        sigle: 'Sigle',
-        symbole: 'Symbole',
-        abreviation: 'Abréviation',
-        references: 'Référence',
-        voir: 'Voir aussi',
-        codes: 'Codes internes de spécialité',
-        edition: 'Edition'
-    }
-    const initContent = {
-        titre : '',
-        s_cat : '',
-        terminologia_anatomica : '',
-        traduction_en : '',
-        etymologie : '',
-        sigle : '',
-        symbole : '',
-        abreviation : '',
-        references : '',
-        edition : new Date().getFullYear().toString(),
-    }
-
     const [oldContent, setOldContent] = useState({})
-    // const [loadingS, setLoadingS] = useState(false)
     const [loadingB, setLoadingB] = useState(false)
-    const [openReprise, setOpenReprise] = useState(false)
-    const [codes, setCodes] = useState([])
-    const [auteurs, setAuteurs] = useState([])
-    const [synthese, setSynthese] = useState([])
     const [word,setWord] = useState('')
-    const [voir, setVoir] = useState([])   
-    const [synonyme, setSynonyme] = useState([])
-    const [antonyme, setAntonyme] = useState([])
-    const [homonyme, setHomonyme] = useState([])
     const {user} = useAuth()
     const history = useHistory();
-    const classes = useStyles()
-    const [content, setContent] = useState(initContent)
-
-    const handleSetValue = (k) =>{
-        setContent({...content, ...k})
-    }
-    const handleCloseReprise = () => {
-        setOpenReprise(false)
-    }
-
     function useQuery() {
         return new URLSearchParams(useLocation().search);
       }
 
     let query = useQuery();
     const lastLocation = useLastLocation()
-
 
     lastLocation && localStorage.setItem('LastPath',lastLocation.pathname);
     const previousPath = localStorage.getItem('LastPath');
@@ -170,25 +87,6 @@ export default function ModifyDefTxtEdit() {
             }
     }
 
-    function checkChanges(val,oldval){
-        if(oldContent != undefined){
-            if(val == oldval || val == ""){
-                if(oldval == undefined){
-                    oldval = ''
-                }
-                return oldval
-            }
-            return val
-        }
-    }
-    console.log("OLD CONTENT" , oldContent , '\nSYNTHESE', synthese)
-
-    function checkArrayChange(newArray,oldArray){
-           if(JSON.stringify(newArray) == JSON.stringify(oldArray) || newArray == []){
-               return oldArray
-        }
-        return newArray
-    }
     function draft(){
         setLoadingB(true)
         let config = {

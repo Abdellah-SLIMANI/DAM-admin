@@ -174,7 +174,7 @@ export default function AddDefComp() {
                 variant='contained' 
                 style={{alignSelf: 'flex-end'}}
                 color= 'primary' 
-                disabled={loadingS} 
+                disabled={!previewWord} 
                 type="submit" 
                 onClick={()=>{soummetre()}}
             >
