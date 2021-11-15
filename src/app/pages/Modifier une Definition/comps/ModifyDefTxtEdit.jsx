@@ -189,66 +189,6 @@ export default function ModifyDefTxtEdit() {
         }
         return newArray
     }
-    // function soummetre(){
-    //     setLoadingS(true)
-    //     let config = {
-    //         headers: {
-    //             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-    //         }
-    //     }
-
-    //     const role = user.role;
-    //     const actionChecker = word.action
-
-    //     let data = {
-    //         "titre": checkChanges(content.titre , oldContent.titre),
-    //         'status': role == 'Valideur' ? 'valide' : 'soumis',
-    //         "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
-    //         'created_by': oldContent.created_by ? oldContent.created_by : user.id,
-    //         "elastic_id" : oldContent.id ? oldContent.id : "",
-    //         'data': {
-    //             ...content,
-    //             titre: checkChanges(content.titre , oldContent.titre),
-    //             s_cat: checkChanges(content.s_cat , oldContent.s_cat),
-    //             terminologia_anatomica: checkChanges(content.terminologia_anatomica , oldContent.terminologia_anatomica),
-    //             traduction_en: checkChanges(content.traduction_en , oldContent.traduction_en),
-    //             etymologie: checkChanges(content.etymologie , oldContent.etymologie),
-    //             synonyme: checkChanges(content.synonyme , oldContent.synonyme),
-    //             antonyme: checkChanges(content.antonyme , oldContent.antonyme),
-    //             homonyme: checkChanges(content.homonyme , oldContent.homonyme),
-    //             sigle: checkChanges(content.sigle , oldContent.sigle),
-    //             symbole: checkChanges(content.symbole , oldContent.symbole),
-    //             abreviation: checkChanges(content.abreviation , oldContent.abreviation),
-    //             references: checkChanges(content.references , oldContent.references),
-    //             voir: checkChanges(voir , oldContent.voir),
-    //             edition: checkChanges(content.edition , oldContent.edition),
-    //             definition:checkArrayChange(synthese,oldContent.definition),
-    //             auteurs: checkArrayChange(auteurs,oldContent.auteurs),
-    //             domaines:checkChanges(codes, oldContent.domaines),
-    //         }
-    //     }
-        
-    //     if(previousPath == '/modifier-une-definition/'){
-    //         console.log("WHAT URL?", putUrl)
-    //         axios.post(putUrl, data ,config)
-    //         .then(res => (
-    //             res.statusText == "OK" ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
-    //         ))
-    //         .finally(()=>{
-    //             setLoadingB(false)
-    //         })
-    //     }
-    //     else {
-    //         axios.put(putUrl, data ,config)
-    //         .then(res => (
-    //             (res.status == 200) || (res.status = 201) ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response 2',res)
-    //         ))
-    //         .finally(()=>{
-    //             setLoadingB(false)
-    //         })
-    //     }
-        
-    // }
     function draft(){
         setLoadingB(true)
         let config = {
@@ -258,31 +198,12 @@ export default function ModifyDefTxtEdit() {
         }
         const actionChecker = word.action
         let data = {
-            "titre": checkChanges(content.titre , oldContent.titre),
+            "titre": previewWord.titre,
             'status': 'brouillon',
             "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
             'created_by': oldContent.created_by ? oldContent.created_by : user.id,
             "elastic_id" : oldContent.id ? oldContent.id : "",
-            'data': {
-                ...content,
-                titre: checkChanges(content.titre , oldContent.titre),
-                s_cat: checkChanges(content.s_cat , oldContent.s_cat),
-                terminologia_anatomica: checkChanges(content.terminologia_anatomica , oldContent.terminologia_anatomica),
-                traduction_en: checkChanges(content.traduction_en , oldContent.traduction_en),
-                etymologie: checkChanges(content.etymologie , oldContent.etymologie),
-                synonyme: checkChanges(synonyme , oldContent.synonyme),
-                antonyme: checkChanges(antonyme , oldContent.antonyme),
-                homonyme: checkChanges(homonyme, oldContent.homonyme),
-                sigle: checkChanges(content.sigle , oldContent.sigle),
-                symbole: checkChanges(content.symbole , oldContent.symbole),
-                abreviation: checkChanges(content.abreviation , oldContent.abreviation),
-                references: checkChanges(content.references , oldContent.references),
-                voir: checkChanges(voir, oldContent.voir),
-                edition: checkChanges(content.edition , oldContent.edition),
-                definition:checkArrayChange(synthese,oldContent.definition),
-                auteurs: checkArrayChange(auteurs,oldContent.auteurs),
-                domaines:checkChanges(codes, oldContent.domaines),
-            }
+            'data': previewWord
         }
 
         if(previousPath == '/modifier-une-definition/'){
@@ -303,7 +224,6 @@ export default function ModifyDefTxtEdit() {
                 setLoadingB(false)
             })
         }
-
     }
 
     useEffect(() => {
@@ -314,7 +234,7 @@ export default function ModifyDefTxtEdit() {
     //************************************************************************************************** */
     const [files, setFiles] = useState([])
     const [loadingS,setLoadingS] = useState(false)
-    const [previewWord, setPreviewWord] = useState({})
+    const [previewWord, setPreviewWord] = useState()
     const {
         acceptedFiles,
         getRootProps,
@@ -357,6 +277,21 @@ export default function ModifyDefTxtEdit() {
         console.log("SOUMMETRE CLICKED")
     }
 
+    const SubmitFile = () => {
+      let data = new FormData();
+      data.append('data', acceptedFiles[0])
+      console.log("DATA SENT ON FILE",data.get('data'))
+      axios.post("http://13.36.215.163:8000/api/administration/upload/"+acceptedFiles[0].name+ "/", data.get('data') ,
+          { 
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+              'Content-Type': acceptedFiles[0].type
+            }
+        })
+          .then(res => setPreviewWord(res.data))
+    }
+
+    console.log('PREVIEW ACTUEL WORD', previewWord)
     return (
         <div className='flex-column'>
         <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
@@ -365,10 +300,9 @@ export default function ModifyDefTxtEdit() {
                 className='text-white mt-3 mb-3'
                 style={{alignSelf: 'flex-start'}}
                 variant='contained' 
-                color= 'primary' 
-                disabled={loadingS} 
-                type="submit" 
-                onClick={()=>{soummetre()}}
+                color= 'primary'
+                href='http://13.36.215.163:8000/api/administration/download_template/'
+                target='_blank'
             >
               {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
             </Button>
@@ -378,7 +312,7 @@ export default function ModifyDefTxtEdit() {
                     variant='contained'
                     disabled={loadingS} 
                     type="submit" 
-                    onClick={()=>{soummetre()}}
+                    onClick={()=>{SubmitFile()}}
                 >
                 {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre le fichier
             </Button>
@@ -390,7 +324,7 @@ export default function ModifyDefTxtEdit() {
                 color= 'primary' 
                 disabled={loadingS} 
                 type="submit" 
-                onClick={()=>{soummetre()}}
+                onClick={()=>{draft()}}
             >
               {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre
           </Button>
@@ -409,21 +343,24 @@ export default function ModifyDefTxtEdit() {
           </SimpleCard>
           </div>
           <div className="mt-3 mb-3 pl-20 pr-20">
-          {
-              previewWord && 
-              <div className='flex'>
-                  <div className='mr-3'>
+              <div className='flex-column'>
+                
+                  {               
+                  oldContent &&   <div className='mb-5'>
                     <SimpleCard title={'Aperçu de la définition en cours'}>
                         <PreviewContent selectedWord={oldContent}/>
                     </SimpleCard>
                   </div>
-                  <div className='ml-3'>
+                  }
+                  {
+                    previewWord && 
+                 <div>
                     <SimpleCard title={'Aperçu de la définition actuel'}>
-                        <PreviewContent selectedWord={oldContent}/>
+                        <PreviewContent selectedWord={previewWord}/>
                     </SimpleCard>
                   </div>
+                  }
               </div>
-          }
           </div>
       </div>
     )

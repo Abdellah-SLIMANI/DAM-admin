@@ -13,7 +13,7 @@ import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
 import useSettings from 'app/hooks/useSettings'
 import images from 'dictionnaireImages/images'
-import axios from 'axios'
+import axios from '../../../../axios'
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     topbar: {
@@ -118,14 +118,12 @@ const Layout1Topbar = () => {
     }
 
     useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/get_user_menu/', {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
+        axios.get('administration/get_user_menu/')
             .then(res => setMenuItems(res.data))
 
-        axios.get('http://13.36.215.163:8000/api/administration/download_template/')
-                    .then(res => console.log(res))
+        axios.get('administration/download_template/')
+            .then(res => console.log(res))
     }, [])
-
-    console.log("URL DOWNLOAD",downloadUrl)
 
     return (
         <div className={classes.topbar}>
@@ -148,13 +146,10 @@ const Layout1Topbar = () => {
                                     {
                                         item.submenus.map(subItem => (
                                             <MenuItem>
-                                            <a href="http://13.36.215.163:8000/api/administration/download_template/" download target='_blank'>
-                                                DOWNLOAD
-                                            </a>
-                                                <Link className={classes.menuItem} to = {subItem.path}>
-                                                    <Icon>{subItem.icone}</Icon>
-                                                    <span className="pl-4">{subItem.title}</span>
-                                                </Link>
+                                            <Link className={classes.menuItem} to = {subItem.path}>
+                                                <Icon>{subItem.icone}</Icon>
+                                                <span className="pl-4">{subItem.title}</span>
+                                            </Link> 
                                             </MenuItem>
                                         ))
                                     }

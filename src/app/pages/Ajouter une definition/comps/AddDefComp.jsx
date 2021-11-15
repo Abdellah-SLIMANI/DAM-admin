@@ -4,7 +4,9 @@ import './AddDefComp.css'
 import {useDropzone} from 'react-dropzone';
 import SimpleCard from 'app/components/cards/SimpleCard';
 import PreviewContent from 'app/pages/Components/PreviewContent';
-import axios from 'axios'
+import axios from '../../../../axios'
+import useAuth from 'app/hooks/useAuth';
+import { useHistory } from 'react-router';
 
 const thumbsContainer = {
     display: 'flex',
@@ -73,6 +75,8 @@ export default function AddDefComp() {
     const [files, setFiles] = useState([])
     const [loadingS,setLoadingS] = useState(false)
     const [previewWord, setPreviewWord] = useState()
+    const {user} = useAuth()
+    const history = useHistory();
     const {
         acceptedFiles,
         getRootProps,
@@ -87,6 +91,21 @@ export default function AddDefComp() {
           })));
         }
       });
+
+      function soummetre(){
+      setLoadingS(true)
+        let data = {
+            "titre": previewWord.titre,
+            'status': 'brouillon',
+            'created_by': user.id,
+            'data': previewWord
+        }
+
+        axios.post("administration/article/", data )
+        .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Error',res))
+        .catch(res => console.log("Error while Posting data",res))
+        .finally(setLoadingS(false))
+    }
       const SubmitFile = () => {
         let data = new FormData();
         data.append('data', acceptedFiles[0])
@@ -98,7 +117,7 @@ export default function AddDefComp() {
                 'Content-Type': acceptedFiles[0].type
               }
           })
-            .then(res => console.log(res))
+            .then(res => setPreviewWord(res.data))
       }
       console.log('FILES',acceptedFiles, files)
       const style = useMemo(() => ({
@@ -123,16 +142,24 @@ export default function AddDefComp() {
         files.forEach(file => URL.revokeObjectURL(file.preview));
       }, [files]);
 
-    const soummetre = () => {
-        console.log("SOUMMETRE CLICKED")
-    }
+    console.log("PREVIEW WORD",previewWord)
 
     return(
         <div className='flex-column mt-10'>
         <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
             <div>
             <Button
-                    className='text-white mt-3 mb-3 bg-light-dark'
+                className='text-white mt-3 mb-3'
+                style={{alignSelf: 'flex-start'}}
+                variant='contained' 
+                color= 'primary'
+                href='http://13.36.215.163:8000/api/administration/download_template/'
+                target='_blank'
+            >
+              {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
+            </Button>
+            <Button
+                    className='text-white ml-3 mt-3 mb-3 bg-light-dark'
                     style={{alignSelf: 'flex-start'}}
                     variant='contained'
                     disabled={loadingS} 
