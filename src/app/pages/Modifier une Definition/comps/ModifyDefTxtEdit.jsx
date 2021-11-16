@@ -162,7 +162,7 @@ export default function ModifyDefTxtEdit() {
 
       const filesPrev = acceptedFiles.map(file => (
         <li key={file.path}>
-          {file.path} - {file.size} bytes
+          {file.path}
         </li>
       ));
 
@@ -174,6 +174,8 @@ export default function ModifyDefTxtEdit() {
     const soummetre = () => {
         console.log("SOUMMETRE CLICKED")
     }
+
+    console.log("OLD CONTENT", oldContent)
 
     const SubmitFile = () => {
       let data = new FormData();
@@ -189,7 +191,9 @@ export default function ModifyDefTxtEdit() {
           .then(res => setPreviewWord(res.data))
     }
 
-    console.log('PREVIEW ACTUEL WORD', previewWord)
+    const getDownloadURL = () =>(
+      oldContent.id ? 'http://13.36.215.163:8000/api/administration/download/' + oldContent.id + '/?db=elastic' : 'http://13.36.215.163:8000/api/administration/download/' + word.id + '/?db=postgre'
+    )
     return (
         <div className='flex-column'>
         <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
@@ -199,7 +203,7 @@ export default function ModifyDefTxtEdit() {
                 style={{alignSelf: 'flex-start'}}
                 variant='contained' 
                 color= 'primary'
-                href='http://13.36.215.163:8000/api/administration/download_template/'
+                href={getDownloadURL()}
                 target='_blank'
             >
               {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier

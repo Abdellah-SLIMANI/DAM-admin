@@ -118,10 +118,10 @@ const Layout1Topbar = () => {
     }
 
     useEffect(() => {
-        axios.get('administration/get_user_menu/')
+        axios.get('/administration/get_user_menu/')
             .then(res => setMenuItems(res.data))
 
-        axios.get('administration/download_template/')
+        axios.get('/administration/download_template/')
             .then(res => console.log(res))
     }, [])
 
