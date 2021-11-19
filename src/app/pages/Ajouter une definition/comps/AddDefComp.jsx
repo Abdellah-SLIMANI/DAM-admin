@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, CircularProgress } from '@material-ui/core'
+import { Button, CircularProgress,Typography } from '@material-ui/core'
 import './AddDefComp.css'
 import {useDropzone} from 'react-dropzone';
 import SimpleCard from 'app/components/cards/SimpleCard';
@@ -166,7 +166,7 @@ export default function AddDefComp() {
                     type="submit" 
                     onClick={()=>{SubmitFile()}}
                 >
-                {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre le fichier
+                {loadingS &&<CircularProgress size={24}></CircularProgress>} Valider le fichier
             </Button>
             </div>
           <Button
@@ -197,7 +197,10 @@ export default function AddDefComp() {
             <div className="mt-3 mb-3 pl-20 pr-20">
             {
                 previewWord && 
-                    <SimpleCard title={'Aperçu de la définition'}>
+                    <SimpleCard>
+                          <Typography variant="title" style={{display:'inline-flex'}}>
+                            <h4>Aperçu de la définition</h4>{' '}
+                          </Typography>
                         <PreviewContent selectedWord={previewWord}/>
                     </SimpleCard>
             }

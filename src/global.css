@@ -1,3 +1,6 @@
 .MuiTableBody-root tr:nth-child(odd){
     background: rgb(247, 245, 245);
 }
+html{
+    scroll-behavior: smooth;
+}

@@ -129,12 +129,16 @@ export const MapTitlesToKeys = {
         label: 'Symbole', 
         type:'normal'
     },
-    // antonyme: {
-
-    // },
-    // homonyme: {
-
-    // }
+    antonyme: {
+        name:'antonyme',
+        label: 'Antonyme', 
+        type:'normal'
+    },
+    homonyme: {
+        name:'homonyme',
+        label: 'Homonyme', 
+        type:'normal'
+    },
     references: {
         name:'references',
         label: 'Références ',

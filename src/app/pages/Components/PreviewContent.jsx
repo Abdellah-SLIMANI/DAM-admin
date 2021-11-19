@@ -37,7 +37,7 @@ export default function PreviewContent({selectedWord}) {
                                                             return<> {  selectedWord[key].length > 1 && <h6>{[index+1] + '.'} </h6> }<p dangerouslySetInnerHTML={{__html: def.definition }}></p>
                                                             {
                                                                 def.commentaire && 
-                                                                <div style={{marginLeft: '25px'}}><h6 style={{fontStyle: 'italic'}} dangerouslySetInnerHTML={{__html: def.commentaire }}></h6></div>
+                                                                <div style={{marginLeft: '25px'}}><p style={{fontStyle: 'italic'}} dangerouslySetInnerHTML={{__html: def.commentaire }}></p></div>
                                                             }
                                                             </>
                                                         }

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import { Button, Card,CircularProgress } from '@material-ui/core'
+import React, { useEffect, useState, useMemo, useRef } from 'react'
+import { Button, Card,CircularProgress,Typography} from '@material-ui/core'
 import axios from 'axios'
 import {  useHistory, useLocation } from 'react-router-dom';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -129,10 +129,11 @@ export default function ModifyDefTxtEdit() {
             .then(response => (func(response)))
     }, [])
 
-    //************************************************************************************************** */
+    //************************************************************************************************************/
     const [files, setFiles] = useState([])
     const [loadingS,setLoadingS] = useState(false)
     const [previewWord, setPreviewWord] = useState()
+    const previewWordRef = useRef(null)
     const {
         acceptedFiles,
         getRootProps,
@@ -171,12 +172,6 @@ export default function ModifyDefTxtEdit() {
         files.forEach(file => URL.revokeObjectURL(file.preview));
       }, [files]);
 
-    const soummetre = () => {
-        console.log("SOUMMETRE CLICKED")
-    }
-
-    console.log("OLD CONTENT", oldContent)
-
     const SubmitFile = () => {
       let data = new FormData();
       data.append('data', acceptedFiles[0])
@@ -188,7 +183,10 @@ export default function ModifyDefTxtEdit() {
               'Content-Type': acceptedFiles[0].type
             }
         })
-          .then(res => setPreviewWord(res.data))
+          .then(res => (
+              setPreviewWord(res.data),
+              previewWordRef.current.scrollIntoView()
+              ))
     }
 
     const getDownloadURL = () =>(
@@ -216,7 +214,7 @@ export default function ModifyDefTxtEdit() {
                     type="submit" 
                     onClick={()=>{SubmitFile()}}
                 >
-                {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre le fichier
+                {loadingS &&<CircularProgress size={24}></CircularProgress>} Valider le fichier
             </Button>
             </div>
           <Button
@@ -249,15 +247,21 @@ export default function ModifyDefTxtEdit() {
                 
                   {               
                   oldContent &&   <div className='mb-5'>
-                    <SimpleCard title={'Aperçu de la définition en cours'}>
+                    <SimpleCard>
+                    <Typography variant="title" style={{display:'inline-flex'}}>
+                            <h4>Aperçu de la définition en cours</h4>{' '}
+                          </Typography>
                         <PreviewContent selectedWord={oldContent}/>
                     </SimpleCard>
                   </div>
                   }
                   {
                     previewWord && 
-                 <div>
-                    <SimpleCard title={'Aperçu de la définition actuel'}>
+                 <div ref={previewWordRef}>
+                    <SimpleCard>
+                      <Typography variant="title" style={{display:'inline-flex'}}>
+                            <h4>Aperçu de la définition actuel</h4>{' '}
+                          </Typography>
                         <PreviewContent selectedWord={previewWord}/>
                     </SimpleCard>
                   </div>
