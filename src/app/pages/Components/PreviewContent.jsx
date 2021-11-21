@@ -45,13 +45,13 @@ export default function PreviewContent({selectedWord}) {
                                                 }
                                             </div>
                                }
-                            //    else if (MapTitlesToKeys[key].type === 'voir'){
-                            //         return <>
-                            //         <div style={{marginBottom: '1rem'}}>
-                            //                     <span style={{fontStyle: 'italic'}}>{MapTitlesToKeys[key].label && MapTitlesToKeys[key].label +" : "}</span>    
-                            //                     <span>{selectedWord[key] && selectedWord[key].map((e) => <span>{e.titre + " "}</span>)}</span>
-                            //                 </div></>
-                            //    }
+                               else if (MapTitlesToKeys[key].type === 'voir'){
+                                    return <>
+                                    <div style={{marginBottom: '1rem'}}>
+                                                <span style={{fontStyle: 'italic'}}>{MapTitlesToKeys[key].label && MapTitlesToKeys[key].label +" : "}</span>    
+                                                <span>{selectedWord[key] && selectedWord[key].map((e) => <span>{e.titre + " "}</span>)}</span>
+                                            </div></>
+                               }
                            }
                         }
                         })}
