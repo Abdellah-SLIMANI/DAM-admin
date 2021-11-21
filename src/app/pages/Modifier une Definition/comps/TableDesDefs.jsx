@@ -70,11 +70,10 @@ const TableDesDefs = () => {
                     <div className="flex items-center">
                         {/* <Icon>group</Icon> */}
                         <div className="ml-3 flex-column">
-                        <h6 className="m-0 mt-1 text-primary font-medium">
-                                {definition.titre}
+                        <h6 dangerouslySetInnerHTML={{__html: definition.titre}} className="m-0 mt-1 text-primary font-medium">
                             </h6>
-                            <small>{definition.definition.map(def => def.definition)}</small>
-                            <small className="text-muted">{definition.edition}</small>
+                            <small dangerouslySetInnerHTML={{__html: definition.definition.map(def => def.definition)}}></small>
+                            <small className="text-muted" dangerouslySetInnerHTML={{__html: definition.edition}}></small>
                         </div>
                     </div>
                     <Tooltip title="View Details" placement="top">
