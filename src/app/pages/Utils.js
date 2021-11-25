@@ -119,6 +119,11 @@ export const MapTitlesToKeys = {
         label:'Etymologie',
         type:'normal'
     },
+    terminologia_anatomica: {
+        name:"terminologia_anatomica", 
+        label:'Terminologia Anatomica',
+        type:'normal'
+    },
     synonyme: {
         name:'synonyme',
         label: 'Synonymes',

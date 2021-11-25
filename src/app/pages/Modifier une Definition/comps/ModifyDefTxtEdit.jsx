@@ -17,46 +17,7 @@ import {
   StepStatus,
   StepDescription
 } from "react-progress-stepper";
-import ReactDiffViewer from 'react-diff-viewer'
-import ReactDOMServer from 'react-dom/server'
 import '../../Ajouter une definition/comps/AddDefComp.css'
-
-const thumbsContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 16
-  };
-
-  const baseStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: '#eeeeee',
-    borderStyle: 'dashed',
-    backgroundColor: '#fafafa',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out',
-    cursor: 'pointer'
-  };
-  
-  const activeStyle = {
-    borderColor: '#2196f3'
-  };
-  
-  const acceptStyle = {
-    borderColor: '#00e676'
-  };
-  
-  const rejectStyle = {
-    borderColor: '#ff1744'
-  };
-  
 
 export default function ModifyDefTxtEdit() {
   const { step, incrementStep, decrementStep } = useStepper(0, 3);
@@ -150,57 +111,34 @@ export default function ModifyDefTxtEdit() {
     const {
         acceptedFiles,
         getRootProps,
-        getInputProps,
-        isDragActive,
-        isDragAccept,
-        isDragReject} = useDropzone({
+        getInputProps,} = useDropzone({
         accept: ['.doc', '.docx'],
+        accept: ['.doc', '.docx','/images*'],
         onDrop: acceptedFiles => {
-          setFiles(acceptedFiles.map(file => Object.assign(file, {
-            preview: URL.createObjectURL(file)
-          })));
+          SubmitFile(acceptedFiles);
         }
       });
 
-
-      const style = useMemo(() => ({
-        ...baseStyle,
-        ...(isDragActive ? activeStyle : {}),
-        ...(isDragAccept ? acceptStyle : {}),
-        ...(isDragReject ? rejectStyle : {})
-      }), [
-        isDragActive,
-        isDragReject,
-        isDragAccept
-      ]);
-
-      const filesPrev = acceptedFiles.map(file => (
-        <li key={file.path}>
-          {file.path}
-        </li>
-      ));
-
+      console.log("PREVIEW WORD",previewWord)
       useEffect(() => () => {
         // Make sure to revoke the data uris to avoid memory leaks
         files.forEach(file => URL.revokeObjectURL(file.preview));
       }, [files]);
 
-    const SubmitFile = () => {
-      incrementStep()
-      let data = new FormData();
-      data.append('data', acceptedFiles[0])
-      console.log("DATA SENT ON FILE",data.get('data'))
-      axios.post("http://13.36.215.163:8000/api/administration/upload/"+acceptedFiles[0].name+ "/", data.get('data') ,
-          { 
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-              'Content-Type': acceptedFiles[0].type
-            }
-        })
-          .then(res => 
-              setPreviewWord(res.data)
-              )
-    }
+      const SubmitFile = (acceptedFilesProp) => {
+        incrementStep()
+        let data = new FormData();
+        data.append('data', acceptedFilesProp[0])
+        console.log("DATA SENT ON FILE",data.get('data'))
+        axios.post("http://13.36.215.163:8000/api/administration/upload/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+            { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': acceptedFilesProp[0].type
+              }
+          })
+            .then(res => (setPreviewWord(res.data)))
+      }
 
     const getDownloadURL = () =>(
       oldContent.id ? 'http://13.36.215.163:8000/api/administration/download/' + oldContent.id + '/?db=elastic' : 'http://13.36.215.163:8000/api/administration/download/' + word.id + '/?db=postgre'
@@ -208,59 +146,50 @@ export default function ModifyDefTxtEdit() {
     return (
         <div className='flex-column'>
         <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
-        {step == 0 &&               <div>
-            <Button
-                className='text-white mt-3 mb-3'
-                style={{alignSelf: 'flex-start'}}
-                variant='contained' 
-                color= 'primary'
-                href={getDownloadURL()}
-                target='_blank'
-            >
-              {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
-            </Button>
-            <Button
-                    className='text-white ml-3 mt-3 mb-3'
-                    style={{alignSelf: 'flex-start'}}
-                    variant='contained'
-                    color='primary'
-                    disabled={acceptedFiles.length == 0} 
-                    type="submit" 
-                    onClick={()=>{SubmitFile()}}
+                              <Button
+                                  className='text-white mt-3 mb-3'
+                                  style={{alignSelf: 'flex-start'}}
+                                  variant='contained'
+                                  disabled={step != 0}
+                                  color= 'primary'
+                                  href={getDownloadURL()}
+                                  target='_blank'
+                                  onClick={() => incrementStep()}
+                              >
+                                {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
+                              </Button>
+                              <div {...getRootProps()}>
+                              <Button
+                                      className='text-white ml-3 mt-3 mb-3'
+                                      style={{alignSelf: 'flex-start'}}
+                                      variant='contained'
+                                      color='primary'
+                                      disabled={step != 1} 
+                                  >
+                                  <input {...getInputProps()} />
+                                    Charger le fichier
+                              </Button>
+                              </div>
+              <Button
+                          className='text-white mt-3 mb-3'
+                          variant='contained' 
+                          style={{alignSelf: 'flex-end'}}
+                          color= 'primary' 
+                          disabled={step != 2} 
+                          type="submit" 
+                          onClick={()=>{draft()}}
+                      >
+                        Enregistrez la définition
+                    </Button>
                     
-                >
-                 Valider le fichier
-            </Button>
-            </div>
-}
-            {step == 1 &&          <><Button
-                className='bg-green text-white mt-3 mb-3'
-                variant='contained' 
-                style={{alignSelf: 'flex-end'}}
-                color= 'primary' 
-                disabled={!previewWord} 
-                type="submit" 
-                onClick={()=>{draft()}}
-            >
-              {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre
-          </Button>
-           <Button onClick={decrementStep} className='m-10'>Retour</Button>
-           </>
-           }
           </div>
-          {step == 0 &&             <div className="mt-3 mb-3 pl-20 pr-20">
-            <SimpleCard title={'Importer des fichiers'}>
-            <section className="container">
-            <div {...getRootProps({style})}>
-                <input {...getInputProps()} />
-                <p>Glissez et déposez des fichiers ici, ou cliquez pour les sélectionner.</p>
-            </div>
-            <aside style={thumbsContainer}>
-                {filesPrev}
-            </aside>
-            </section>
-            </SimpleCard>
-            </div>}
+          <Stepper step={step}>
+            <Step></Step>
+            <Step></Step>
+            <Step>
+
+            </Step>
+          </Stepper>
           <div className="mt-3 mb-3 pl-20 pr-20">
               <div className='flex-column'>
                 
@@ -288,18 +217,6 @@ export default function ModifyDefTxtEdit() {
               </div>
           </div>
           <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
-      <Stepper step={step}>
-      <Step>
-          <StepTitle>Titre ici</StepTitle>
-          <StepStatus textProgress='En cours' textCompleted='Terminé'/>
-          <StepDescription>Description ici</StepDescription>
-        </Step>
-        <Step>
-        <StepTitle>Titre ici</StepTitle>
-          <StepStatus textProgress='En cours' textCompleted='Terminé' textPending='En attendant'/>
-          <StepDescription>Description ici</StepDescription>
-        </Step>
-      </Stepper>
     </div>
       </div>
     )
