@@ -2,3 +2,7 @@
     color: #fff;
     background-color: #1976d2  !important;
 }
+
+.progress{
+    overflow: visible !important;
+}

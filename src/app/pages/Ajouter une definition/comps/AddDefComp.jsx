@@ -1,12 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, CircularProgress,Typography } from '@material-ui/core'
-import './AddDefComp.css'
+import { Button, Card, CircularProgress,Typography } from '@material-ui/core'
 import {useDropzone} from 'react-dropzone';
 import SimpleCard from 'app/components/cards/SimpleCard';
 import PreviewContent from 'app/pages/Components/PreviewContent';
 import axios from '../../../../axios'
 import useAuth from 'app/hooks/useAuth';
 import { useHistory } from 'react-router';
+import {
+  Stepper,
+  Step,
+  useStepper,
+  StepNumber,
+  StepTitle,
+  StepStatus,
+  StepDescription
+} from "react-progress-stepper";
+import './AddDefComp.css'
+
 
 const thumbsContainer = {
     display: 'flex',
@@ -15,30 +25,6 @@ const thumbsContainer = {
     marginTop: 16
   };
   
-  const thumb = {
-    display: 'inline-flex',
-    borderRadius: 2,
-    border: '1px solid #eaeaea',
-    marginBottom: 8,
-    marginRight: 8,
-    width: 100,
-    height: 100,
-    padding: 4,
-    boxSizing: 'border-box'
-  };
-  
-  const thumbInner = {
-    display: 'flex',
-    minWidth: 0,
-    overflow: 'hidden'
-  };
-  
-  const img = {
-    display: 'block',
-    width: 'auto',
-    height: '100%'
-  };
-
   const baseStyle = {
     flex: 1,
     display: 'flex',
@@ -72,9 +58,11 @@ const thumbsContainer = {
 
 
 export default function AddDefComp() {
+  const { step, incrementStep, decrementStep } = useStepper(0, 3);
     const [files, setFiles] = useState([])
     const [loadingS,setLoadingS] = useState(false)
     const [previewWord, setPreviewWord] = useState()
+    const [valider, setValider] = useState(false)
     const {user} = useAuth()
     const history = useHistory();
     const {
@@ -91,8 +79,11 @@ export default function AddDefComp() {
           })));
         }
       });
+      
+      console.log("STEP",step)
 
       function soummetre(){
+        incrementStep()
       setLoadingS(true)
         let data = {
             "titre": previewWord.titre,
@@ -107,6 +98,7 @@ export default function AddDefComp() {
         .finally(setLoadingS(false))
     }
       const SubmitFile = () => {
+        incrementStep()
         let data = new FormData();
         data.append('data', acceptedFiles[0])
         console.log("DATA SENT ON FILE",data.get('data'))
@@ -117,9 +109,9 @@ export default function AddDefComp() {
                 'Content-Type': acceptedFiles[0].type
               }
           })
-            .then(res => setPreviewWord(res.data))
+            .then(res => (setPreviewWord(res.data), setValider(true)))
       }
-      console.log('FILES',acceptedFiles, files)
+      console.log('FILES',acceptedFiles, files ,acceptedFiles.length == 0)
       const style = useMemo(() => ({
         ...baseStyle,
         ...(isDragActive ? activeStyle : {}),
@@ -147,7 +139,7 @@ export default function AddDefComp() {
     return(
         <div className='flex-column mt-10'>
         <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
-            <div>
+{step == 0 &&            <div>
             <Button
                 className='text-white mt-3 mb-3'
                 style={{alignSelf: 'flex-start'}}
@@ -159,17 +151,19 @@ export default function AddDefComp() {
               {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
             </Button>
             <Button
-                    className='text-white ml-3 mt-3 mb-3 bg-light-dark'
+                    className='text-white ml-3 mt-3 mb-3'
                     style={{alignSelf: 'flex-start'}}
                     variant='contained'
-                    disabled={loadingS} 
+                    color='primary'
+                    disabled={acceptedFiles.length == 0} 
                     type="submit" 
                     onClick={()=>{SubmitFile()}}
+                    
                 >
-                {loadingS &&<CircularProgress size={24}></CircularProgress>} Valider le fichier
+                 Valider le fichier
             </Button>
-            </div>
-          <Button
+            </div>}
+{step == 1 &&          <><Button
                 className='bg-green text-white mt-3 mb-3'
                 variant='contained' 
                 style={{alignSelf: 'flex-end'}}
@@ -180,8 +174,11 @@ export default function AddDefComp() {
             >
               {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre
           </Button>
+           <Button onClick={decrementStep} className='m-10'>Retour</Button>
+           </>
+           }
           </div>
-            <div className="mt-3 mb-3 pl-20 pr-20">
+{step == 0 &&             <div className="mt-3 mb-3 pl-20 pr-20">
             <SimpleCard title={'Importer des fichiers'}>
             <section className="container">
             <div {...getRootProps({style})}>
@@ -193,10 +190,10 @@ export default function AddDefComp() {
             </aside>
             </section>
             </SimpleCard>
-            </div>
+            </div>}
             <div className="mt-3 mb-3 pl-20 pr-20">
             {
-                previewWord && 
+                previewWord && step == 1 &&
                     <SimpleCard>
                           <Typography variant="title" style={{display:'inline-flex'}}>
                             <h4>Aperçu de la définition</h4>{' '}
@@ -205,6 +202,20 @@ export default function AddDefComp() {
                     </SimpleCard>
             }
             </div>
+            <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
+      <Stepper step={step}>
+      <Step>
+          <StepTitle>Titre ici</StepTitle>
+          <StepStatus textProgress='En cours' textCompleted='Terminé'/>
+          <StepDescription>Description ici</StepDescription>
+        </Step>
+        <Step>
+        <StepTitle>Titre ici</StepTitle>
+          <StepStatus textProgress='En cours' textCompleted='Terminé' textPending='En attendant'/>
+          <StepDescription>Description ici</StepDescription>
+        </Step>
+      </Stepper>
+    </div>
         </div>
     )
 }

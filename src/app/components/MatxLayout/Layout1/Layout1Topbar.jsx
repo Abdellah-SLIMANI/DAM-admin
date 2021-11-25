@@ -13,7 +13,7 @@ import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
 import useSettings from 'app/hooks/useSettings'
 import images from 'dictionnaireImages/images'
-import axios from '../../../../axios'
+import axios from 'axios'
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     topbar: {
@@ -118,7 +118,9 @@ const Layout1Topbar = () => {
     }
 
     useEffect(() => {
-        axios.get('/administration/get_user_menu/')
+        axios.get('http://13.36.215.163:8000/api/administration/get_user_menu/', {              headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          }})
             .then(res => setMenuItems(res.data))
 
         axios.get('/administration/download_template/')

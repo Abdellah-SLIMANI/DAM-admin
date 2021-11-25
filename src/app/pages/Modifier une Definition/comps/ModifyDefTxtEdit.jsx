@@ -8,6 +8,18 @@ import useAuth from 'app/hooks/useAuth';
 import {useDropzone} from 'react-dropzone';
 import SimpleCard from 'app/components/cards/SimpleCard';
 import PreviewContent from 'app/pages/Components/PreviewContent';
+import {
+  Stepper,
+  Step,
+  useStepper,
+  StepNumber,
+  StepTitle,
+  StepStatus,
+  StepDescription
+} from "react-progress-stepper";
+import ReactDiffViewer from 'react-diff-viewer'
+import ReactDOMServer from 'react-dom/server'
+import '../../Ajouter une definition/comps/AddDefComp.css'
 
 const thumbsContainer = {
     display: 'flex',
@@ -47,6 +59,7 @@ const thumbsContainer = {
   
 
 export default function ModifyDefTxtEdit() {
+  const { step, incrementStep, decrementStep } = useStepper(0, 3);
     const [oldContent, setOldContent] = useState({})
     const [loadingB, setLoadingB] = useState(false)
     const [word,setWord] = useState('')
@@ -173,6 +186,7 @@ export default function ModifyDefTxtEdit() {
       }, [files]);
 
     const SubmitFile = () => {
+      incrementStep()
       let data = new FormData();
       data.append('data', acceptedFiles[0])
       console.log("DATA SENT ON FILE",data.get('data'))
@@ -183,10 +197,9 @@ export default function ModifyDefTxtEdit() {
               'Content-Type': acceptedFiles[0].type
             }
         })
-          .then(res => (
-              setPreviewWord(res.data),
-              previewWordRef.current.scrollIntoView()
-              ))
+          .then(res => 
+              setPreviewWord(res.data)
+              )
     }
 
     const getDownloadURL = () =>(
@@ -195,7 +208,7 @@ export default function ModifyDefTxtEdit() {
     return (
         <div className='flex-column'>
         <div className="pr-20 pl-20 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
-            <div>
+        {step == 0 &&               <div>
             <Button
                 className='text-white mt-3 mb-3'
                 style={{alignSelf: 'flex-start'}}
@@ -207,41 +220,47 @@ export default function ModifyDefTxtEdit() {
               {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
             </Button>
             <Button
-                    className='text-white ml-3 mt-3 mb-3 bg-light-dark'
+                    className='text-white ml-3 mt-3 mb-3'
                     style={{alignSelf: 'flex-start'}}
                     variant='contained'
-                    disabled={loadingS} 
+                    color='primary'
+                    disabled={acceptedFiles.length == 0} 
                     type="submit" 
                     onClick={()=>{SubmitFile()}}
+                    
                 >
-                {loadingS &&<CircularProgress size={24}></CircularProgress>} Valider le fichier
+                 Valider le fichier
             </Button>
             </div>
-          <Button
+}
+            {step == 1 &&          <><Button
                 className='bg-green text-white mt-3 mb-3'
                 variant='contained' 
                 style={{alignSelf: 'flex-end'}}
                 color= 'primary' 
-                disabled={loadingS} 
+                disabled={!previewWord} 
                 type="submit" 
                 onClick={()=>{draft()}}
             >
               {loadingS &&<CircularProgress size={24}></CircularProgress>} Soumettre
           </Button>
+           <Button onClick={decrementStep} className='m-10'>Retour</Button>
+           </>
+           }
           </div>
-          <div className="mt-3 mb-3 pl-20 pr-20">
-          <SimpleCard title={'Importer des fichiers'}>
-          <section className="container">
-          <div {...getRootProps({style})}>
-              <input {...getInputProps()} />
-              <p>Glissez et déposez des fichiers ici, ou cliquez pour les sélectionner.</p>
-          </div>
-          <aside style={thumbsContainer}>
-              {filesPrev}
-          </aside>
-          </section>
-          </SimpleCard>
-          </div>
+          {step == 0 &&             <div className="mt-3 mb-3 pl-20 pr-20">
+            <SimpleCard title={'Importer des fichiers'}>
+            <section className="container">
+            <div {...getRootProps({style})}>
+                <input {...getInputProps()} />
+                <p>Glissez et déposez des fichiers ici, ou cliquez pour les sélectionner.</p>
+            </div>
+            <aside style={thumbsContainer}>
+                {filesPrev}
+            </aside>
+            </section>
+            </SimpleCard>
+            </div>}
           <div className="mt-3 mb-3 pl-20 pr-20">
               <div className='flex-column'>
                 
@@ -268,6 +287,20 @@ export default function ModifyDefTxtEdit() {
                   }
               </div>
           </div>
+          <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
+      <Stepper step={step}>
+      <Step>
+          <StepTitle>Titre ici</StepTitle>
+          <StepStatus textProgress='En cours' textCompleted='Terminé'/>
+          <StepDescription>Description ici</StepDescription>
+        </Step>
+        <Step>
+        <StepTitle>Titre ici</StepTitle>
+          <StepStatus textProgress='En cours' textCompleted='Terminé' textPending='En attendant'/>
+          <StepDescription>Description ici</StepDescription>
+        </Step>
+      </Stepper>
+    </div>
       </div>
     )
 }
