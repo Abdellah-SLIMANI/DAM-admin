@@ -3,7 +3,7 @@ import { MapTitlesToKeys, titleProps } from '../Utils'
 
 export default function PreviewContent({selectedWord}) {
     return (
-                                <div>
+                                <div style={{fontSize:'16px'}}>
                 <div className= "title">
                            {Object.keys(titleProps).map(key => {
                                if(key === titleProps[key] && selectedWord[key] != ""){

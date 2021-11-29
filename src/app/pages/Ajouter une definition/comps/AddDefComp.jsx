@@ -93,7 +93,7 @@ export default function AddDefComp() {
                                       color='primary'
                                       disabled={step != 1} 
                                   >
-                                  <input {...getInputProps()} />
+                                  {step ==1 && <input {...getInputProps()} /> }
                                     Charger le fichier
                               </Button>
                               </div>
@@ -106,7 +106,7 @@ export default function AddDefComp() {
                           type="submit" 
                           onClick={()=>{soummetre()}}
                       >
-                        Enregistrez la définition
+                        Enregistrer la définition
                     </Button>
                     
           </div>

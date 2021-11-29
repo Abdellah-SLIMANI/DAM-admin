@@ -3,6 +3,7 @@ import ForgotPassword from './ForgotPassword'
 import JwtRegister from './register/JwtRegister'
 import JwtLogin from './login/JwtLogin'
 import ResetPassword from './ResetPassword'
+import FirstLogin from './FirstLogin'
 
 const sessionRoutes = [
     {
@@ -16,6 +17,10 @@ const sessionRoutes = [
     {
         path: '/session/forgot-password',
         component: ForgotPassword,
+    },
+    {
+        path:'/session/first-login',
+        component: FirstLogin
     },
     {
         path: '/session/reset-password',

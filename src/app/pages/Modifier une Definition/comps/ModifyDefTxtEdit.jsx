@@ -166,7 +166,7 @@ export default function ModifyDefTxtEdit() {
                                       color='primary'
                                       disabled={step != 1} 
                                   >
-                                  <input {...getInputProps()} />
+                                  {step ==1 && <input {...getInputProps()} /> }
                                     Charger le fichier
                               </Button>
                               </div>
@@ -179,7 +179,7 @@ export default function ModifyDefTxtEdit() {
                           type="submit" 
                           onClick={()=>{draft()}}
                       >
-                        Enregistrez la définition
+                        Enregistrer la définition
                     </Button>
                     
           </div>
