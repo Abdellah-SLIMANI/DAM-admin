@@ -138,11 +138,6 @@ const TabDeBord = () => {
          options: {
           filter: false,
           sort: true,
-        //   customBodyRender: (value) => {
-        //     return Array.isArray(value) ? value.map( (val, key) => {
-        //         return <Chip label={val} key={key} />;
-        //     }) : <>{value}</>;
-        // }
          }
         },
         {

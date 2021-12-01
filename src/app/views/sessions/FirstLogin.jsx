@@ -81,7 +81,7 @@ const FirstLogin = () => {
                     </Grid>
                     <Grid item lg={7} md={7} sm={7} xs={12}>
                         <div className="p-8 h-full bg-light-gray relative">
-                        <h4 color='gray'>Changez votre mot de passe</h4>
+                        <h4 color='gray'>Entrez votre mot de passe</h4>
 
                             <ValidatorForm onSubmit={handleFormSubmit}>
                                 <TextValidator
