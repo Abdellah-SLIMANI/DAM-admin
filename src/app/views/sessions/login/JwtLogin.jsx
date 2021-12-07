@@ -15,6 +15,7 @@ import history from 'history.js'
 import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
 import images from '../../../../dictionnaireImages/images'
+import SnackBar from 'app/pages/Components/SnackBar'
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     cardHolder: {
@@ -42,6 +43,9 @@ const JwtLogin = () => {
         password: '',
     })
     const [message, setMessage] = useState('')
+    const [snackMessage, setsnackMessage] = useState('')
+    const [open, setOpen] = useState(false)
+    const [severity, setSeverity] = useState('')
     const { login } = useAuth()
 
     const classes = useStyles()
@@ -50,6 +54,10 @@ const JwtLogin = () => {
         let temp = { ...userInfo }
         temp[name] = value
         setUserInfo(temp)
+    }
+
+    const handleClose = () => {
+        setOpen(false)
     }
 
     const handleFormSubmit = async (event) => {
@@ -61,10 +69,14 @@ const JwtLogin = () => {
             console.log(e)
             setMessage(e.message)
             setLoading(false)
+            setSeverity('error')
+            setOpen(true)
+            setsnackMessage("Nom d'utilisateur ou mot de passe incorrect!")
         }
     }
 
     return (
+
         <div
             className={clsx(
                 'flex justify-center items-center  min-h-full-screen',
@@ -149,6 +161,12 @@ const JwtLogin = () => {
                     </Grid>
                 </Grid>
             </Card>
+            <SnackBar 
+                open= {open}
+                message = {snackMessage}
+                severity = {severity}
+                handleClose = {() => handleClose()}
+            />
         </div>
     )
 }

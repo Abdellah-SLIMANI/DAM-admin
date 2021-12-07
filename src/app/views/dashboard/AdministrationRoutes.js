@@ -25,6 +25,10 @@ const administrationRoutes = [
     {
         path: '/supprimer-une-definition',
         component: React.lazy(() => import('../../pages/Supprimer une definition/DeleteElasticDef')),
+    },
+    {
+        path: '/modification-par-lot',
+        component: React.lazy(() => import('../../pages/Modifier une Definition/ModificationLot')),
     }
 ]
 
