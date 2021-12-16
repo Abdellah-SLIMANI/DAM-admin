@@ -172,3 +172,30 @@ export const titleProps = {
     sigle: 'sigle',
     sigle_2 : 'sigle_2'
 }
+
+export const mapAuthorProps = {
+    nom: {
+        name: 'nom',
+        label:  'Nom',
+    },
+    prenom: {
+        name: 'prenom',
+        label:  'Prénom',
+    },
+    biographie: {
+        name: 'biographie',
+        label:  'Biographie',
+    },
+    bibliographie: {
+        name: 'bibliographie',
+        label:  'Bibliographie',
+    },
+    naissance: {
+        name: 'Naissance',
+        label:  'Année de naissance',
+    },
+    deces: {
+        name: 'deces',
+        label:  'Année de décès',
+    },
+}

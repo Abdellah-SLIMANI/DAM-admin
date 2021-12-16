@@ -22,6 +22,7 @@ export default function ModificationLot() {
     const [word,setWord] = useState('')
     const {user} = useAuth()
     const history = useHistory();
+    const [letters, setLetters] = useState()
     function useQuery() {
         return new URLSearchParams(useLocation().search);
       }
@@ -40,7 +41,6 @@ export default function ModificationLot() {
             if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
                 res && res.data.results.find((word) => {
                     if(word.titre === query.get('titre')){
-                        console.log("WORD INSIDE POSTGres",word)
                         setOldContent(word.data)
                         setWord(word)
                     }
@@ -49,7 +49,6 @@ export default function ModificationLot() {
             else{
                 res && res.data.find((word) => {
                     if(word.titre === query.get('titre')){
-                        console.log("WORD INSIDE Elastic",word)
                         setOldContent(word)
                         setWord(word)
                     }
@@ -97,36 +96,37 @@ export default function ModificationLot() {
     useEffect(() => {
          axios.get(url+query.get('titre'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
             .then(response => (func(response)))
+            axios.get('http://13.36.215.163:8000/api/administration/get_letters/')
+                .then(res => setLetters(res.data))
     }, [])
 
     //************************************************************************************************************/
+    const [letter,setLetter] = useState()
     const [files, setFiles] = useState([])
     const [loadingS,setLoadingS] = useState(false)
     const [previewWord, setPreviewWord] = useState()
     const previewWordRef = useRef(null)
     const {
-        acceptedFiles,
         getRootProps,
         getInputProps,} = useDropzone({
         accept: ['.doc', '.docx'],
         accept: ['.doc', '.docx','/images*'],
         onDrop: acceptedFiles => {
-          SubmitFile(acceptedFiles);
+          SubmitFile(acceptedFiles,letter);
         }
       });
 
-      console.log("PREVIEW WORD",previewWord)
       useEffect(() => () => {
         // Make sure to revoke the data uris to avoid memory leaks
         files.forEach(file => URL.revokeObjectURL(file.preview));
+
       }, [files]);
 
-      const SubmitFile = (acceptedFilesProp) => {
+      const SubmitFile = (acceptedFilesProp,letter) => {
         incrementStep()
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
-        console.log("DATA SENT ON FILE",data.get('data'))
-        axios.post("http://13.36.215.163:8000/api/administration/upload/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+        axios.post("http://13.36.215.163:8000/api/administration/upload_lot/"+letter+ "/", data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -194,9 +194,9 @@ export default function ModificationLot() {
                     <h4>Choisir une lettre pour télécharger le fichier du définitions:</h4>
                 </Typography>
             {
-                ["A",'B','C','D','E',"F",'G','H','I','J',"K",'L','M','N','O',"P",'Q','R','S','T',"U",'V','W','X','Y','Z'].map(letter=>
-                   <Fab color="primary" aria-label="add" onClick={() => incrementStep()} className='m-2'>
-                        <div>{letter}</div>
+                letters && letters.map(letter=>
+                   <Fab color={letter.status == 'Valide' ? 'primary' : 'secondary'} aria-label="add" onClick={() => (incrementStep(), setLetter(letter.lettre))} href={'http://13.36.215.163:8000/api/administration/download_lot/'+letter.lettre+'/'} className='m-2'>
+                        <div>{letter.lettre}</div>
                     </Fab>
                 )        
             }

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import useAuth from 'app/hooks/useAuth'
 import MUIDataTable from "mui-datatables";
 import DeleteItem from 'app/pages/Components/DeleteItem'
-import { FormLabel } from 'react-bootstrap'
+
 import WordPreview from 'app/pages/Components/WordPreview'
 
 const TabDeBord = () => {

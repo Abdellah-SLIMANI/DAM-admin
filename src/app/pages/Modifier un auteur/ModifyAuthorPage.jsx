@@ -1,32 +1,42 @@
-import React, { useEffect, useState } from 'react'
-import { Col, Nav, Row } from 'react-bootstrap'
-import Tab from 'react-bootstrap/Tab'
-import { Button, Card,CircularProgress } from '@material-ui/core'
+import React, { useEffect, useState,useRef } from 'react'
+import { Button,CircularProgress,Typography} from '@material-ui/core'
 import axios from 'axios'
 import {  useHistory, useLocation } from 'react-router-dom';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useLastLocation } from 'react-router-last-location';
+import {useDropzone} from 'react-dropzone';
 import useAuth from 'app/hooks/useAuth';
-import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
 import { Breadcrumb } from 'app/components'
-import ModifyBlock from '../Modifier une Definition/comps/ModifyBlock'
-import ModifierBiblio from './comps/ModifierBiblio'
-import ModifySearchArray from '../Modifier une Definition/comps/ModifySearchArray'
-import { mapAuthorEventkeysToTitles, AuthorInitContent } from '../Utils'
+import SimpleCard from 'app/components/cards/SimpleCard';
+import PreviewContent from 'app/pages/Components/PreviewContent';
+import {
+  Stepper,
+  Step,
+  useStepper,
+} from "react-progress-stepper";
+import { mapAuthorProps } from '../Utils';
+
 
 export default function ModifyDefTxtEdit() {
+    const { step, incrementStep, decrementStep } = useStepper(0, 3);
     const [oldContent, setOldContent] = useState({})
-    const [loadingS, setLoadingS] = useState(false)
     const [loadingB, setLoadingB] = useState(false)
-    const [liens, setLiens] = useState([])
-    const [bibliographie, setBibliographie] = useState([])
+    const [word,setWord] = useState('')
     const {user} = useAuth()
     const history = useHistory();
-    const classes = useStyles()
-    const [content, setContent] = useState(AuthorInitContent)
-    const handleSetValue = (k) =>{
-        setContent({...content, ...k})
-    }
+    const [files, setFiles] = useState([])
+    const [loadingS,setLoadingS] = useState(false)
+    const [previewWord, setPreviewWord] = useState()
+    const previewWordRef = useRef(null)
+    const {
+        acceptedFiles,
+        getRootProps,
+        getInputProps,} = useDropzone({
+        accept: ['.doc', '.docx'],
+        accept: ['.doc', '.docx','/images*'],
+        onDrop: acceptedFiles => {
+          SubmitFile(acceptedFiles);
+        }
+      });
 
     function useQuery() {
         return new URLSearchParams(useLocation().search);
@@ -34,6 +44,10 @@ export default function ModifyDefTxtEdit() {
 
     let query = useQuery();
     const lastLocation = useLastLocation()
+
+    function useQuery() {
+        return new URLSearchParams(useLocation().search);
+      }
 
     lastLocation && localStorage.setItem('LastPath',lastLocation.pathname);
     const previousPath = localStorage.getItem('LastPath');
@@ -55,19 +69,6 @@ export default function ModifyDefTxtEdit() {
             }
     }
 
-    function checkChanges(val,oldval){
-        if(oldContent != undefined){
-            if(val == oldval || val == ""){
-                if(oldval == undefined){
-                    oldval = ''
-                }
-                return oldval
-            }
-            return val
-        }
-    }
-
-    console.log("OLD CONTENT AUHTOR",oldContent, "\nBibliographie",bibliographie)
     function checkArrayChange(newArray,oldArray){
             console.log('what json stringify new',JSON.stringify(newArray),'\nwhat json stringify old',JSON.stringify(oldArray, '\nwhat at last', JSON.stringify(newArray) == JSON.stringify(oldArray)))
            if(JSON.stringify(newArray) == JSON.stringify(oldArray) || newArray == []){
@@ -79,8 +80,7 @@ export default function ModifyDefTxtEdit() {
     }
     console.log("HELLO")
 
-    function soummetre({isDraft = false} = {}){
-        isDraft ? setLoadingB(true) : setLoadingS(true)
+    function draft(){
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -93,32 +93,20 @@ export default function ModifyDefTxtEdit() {
                 "elastic_id" : oldContent.elastic_id ? oldContent.elastic_id : "",
                 "action": actionChecker ? actionChecker : (previousPath.includes('modifier-un-auteur') ? "Modification" : "Creation"),
                 'created_by': user.id,
-                'status': isDraft ? 'brouillon': role == 'Valideur' ? 'valide' : 'soumis',
-                "nom": checkChanges(content.nom,oldContent.nom),
-                "prenom": checkChanges(content.prenom,oldContent.prenom),
-                "biographie": checkChanges(content.biographie,oldContent.biographie),
-                "bibliographie": checkArrayChange(bibliographie,oldContent.bibliographie),
-                "naissance": checkChanges(content.naissance,oldContent.naissance),
-                "deces": checkChanges(content.deces,oldContent.deces),
-                "liens" : checkArrayChange(liens,oldContent.liens),
+                'status': 'brouillon',
+                'data': previewWord
         }
         if(previousPath.includes('modifier-un-auteur')) {
             axios.post(putUrl, data ,config)
             .then(res => res.statusText == "Created" || res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Error',res))
             .catch(e => console.log("Error while Posting data",e))
-            .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
         }else {
             axios.put(putUrl, data ,config)
             .then(res => (
                 res.status == 200 ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Response',res),
                 console.log("RESSSSS",res)
             ))
-            .finally(()=>{
-                setLoadingB(false)
-            })
         }
-
-        
     }
 
     console.log("THE URL SEAESHED AT ", url+query.get('nom'))
@@ -126,6 +114,27 @@ export default function ModifyDefTxtEdit() {
          axios.get(url+query.get('nom'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
             .then(response => (func(response)))
     }, [])
+
+    const SubmitFile = (acceptedFilesProp) => {
+        incrementStep()
+        let data = new FormData();
+        data.append('data', acceptedFilesProp[0])
+        console.log("DATA SENT ON FILE",data.get('data'))
+        axios.post("http://13.36.215.163:8000/api/administration/upload_auteur/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+            { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': acceptedFilesProp[0].type
+              }
+          })
+            .then(res => (setPreviewWord(res.data)))
+      }
+
+      const getDownloadURL = () =>(
+        oldContent.elastic_id ? 'http://13.36.215.163:8000/api/administration/download_auteur/' + oldContent.elastic_id + '/?db=elastic' : 'http://13.36.215.163:8000/api/administration/download_auteur/' + oldContent.id + '/?db=postgre'
+      )
+
+      console.log('OLD CONTENT', oldContent)
 
     return (
         <div className = 'adminPageContainer p-10'>
@@ -135,53 +144,104 @@ export default function ModifyDefTxtEdit() {
                         { name: 'Modifier un auteur' },
                     ]}
                 />
-            <div className= 'mainArea addWordContainer mt-5'>
-            <div className= 'd-flex justify-content-between mb-3'>
-                <h4>Remplissez les champs ci-dessous pour ajouter un auteur.</h4>
-                <div>
-                <Button className='text-white mr-2' variant='contained' color= 'primary' disabled={loadingB} type="submit" onClick={()=>{soummetre({isDraft: true})}}>{loadingB &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Enregistrer comme brouillon</Button>
-                    <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
-                </div>
-            </div>
-            <Card>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="nom" unmountOnExit={true}>
-                <Row className='p-10'>
-                    <Col sm={3}>
-                    <Nav variant="pills" className="flex-column">
-                        {
-                            Object.keys(mapAuthorEventkeysToTitles).map(key => (
-                            <Card className='m-1'> 
-                                <Nav.Item>
-                                    <Nav.Link eventKey={key}>{mapAuthorEventkeysToTitles[key]}</Nav.Link>
-                                </Nav.Item>
-                            </Card>
-                            ))
-                        }
-                        </Nav>
-                    </Col>
-                    <Col sm={9}>
-                    <Tab.Content>
-                        { Object.keys(AuthorInitContent).map(key => (
-                            <Tab.Pane eventKey={key}>
-                                <ModifyBlock value= {content[key]} setValue = {handleSetValue} fieldName={key} oldValue={oldContent[key]}/>
-                            </Tab.Pane>
-                        ))}
-                            <Tab.Pane eventKey='bibliographie'>
-                                <ModifierBiblio value= {bibliographie} setValue = {setBibliographie} oldValue={oldContent.bibliographie}/>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='lien'>
-                                <ModifySearchArray 
-                                    value={liens}
-                                    setValue={setLiens}
-                                    oldValue={oldContent.liens}
-                                />
-                            </Tab.Pane>
-                    </Tab.Content>
-                    </Col>
-                </Row>
-                </Tab.Container>
-                </Card>
-            </div>
+           <div className="pr-20 pl-20 pt-10 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
+                              <Button
+                                  className='text-white mt-3 mb-3'
+                                  style={{alignSelf: 'flex-start'}}
+                                  variant='contained'
+                                  disabled={step != 0}
+                                  color= 'primary'
+                                  href={getDownloadURL()}
+                                  target='_blank'
+                                  onClick={() => incrementStep()}
+                              >
+                                {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
+                              </Button>
+                              <div {...getRootProps()}>
+                              <Button
+                                      className='text-white ml-3 mt-3 mb-3'
+                                      style={{alignSelf: 'flex-start'}}
+                                      variant='contained'
+                                      color='primary'
+                                      disabled={step != 1} 
+                                  >
+                                  {step ==1 && <input {...getInputProps()} /> }
+                                    Charger le fichier
+                              </Button>
+                              </div>
+              <Button
+                          className='text-white mt-3 mb-3'
+                          variant='contained' 
+                          style={{alignSelf: 'flex-end'}}
+                          color= 'primary' 
+                          disabled={step != 2} 
+                          type="submit" 
+                          onClick={()=>{draft()}}
+                      >
+                        Enregistrer l'auteur
+                    </Button>
+                    
+          </div>
+          <Stepper step={step}>
+            <Step></Step>
+            <Step></Step>
+            <Step>
+
+            </Step>
+          </Stepper>
+          <div className="mt-3 mb-3 pl-20 pr-20">
+              <div className='flex-column'>
+                
+                  {               
+                  oldContent &&   <div className='mb-5'>
+                    <SimpleCard>
+                    <Typography variant="title" style={{display:'inline-flex'}}>
+                            <h4>Aperçu de l'auteur en cours</h4>{' '}
+                          </Typography>
+                          <>
+                        <div>
+                            {
+                                Object.keys(mapAuthorProps).map((key) =>  
+
+                                {
+                                    if(key === mapAuthorProps[key].name)
+                                        return <div style={{fontSize: '16px'}}><span style={{fontStyle: 'italic'}}>{mapAuthorProps[key].label + " : "}</span><span >{oldContent[key]}</span><br /></div>
+                                        
+                                }
+                                )
+                            }
+                        </div>
+                        </>
+                    </SimpleCard>
+                  </div>
+                  }
+                  {
+                    previewWord && 
+                 <div ref={previewWordRef}>
+                    <SimpleCard>
+                      <Typography variant="title" style={{display:'inline-flex'}}>
+                            <h4>Aperçu de l'auteur actuel</h4>{' '}
+                          </Typography>
+                          <>
+                        <div>
+                            {
+                                Object.keys(mapAuthorProps).map((key) =>  
+
+                                {
+                                    if(key === mapAuthorProps[key].name)
+                                        return <div style={{fontSize: '16px'}}><span style={{fontStyle: 'italic'}}>{mapAuthorProps[key].label + " : "}</span><span >{previewWord[key]}</span><br /></div>
+                                }
+                                )
+                            }
+                        </div>
+                        </>
+                    </SimpleCard>
+                  </div>
+                  }
+              </div>
+          </div>
+          <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
+    </div>
         </div>
     )
 }

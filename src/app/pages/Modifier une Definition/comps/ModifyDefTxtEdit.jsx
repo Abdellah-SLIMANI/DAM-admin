@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { Button, Card,CircularProgress,Typography} from '@material-ui/core'
 import axios from 'axios'
 import {  useHistory, useLocation } from 'react-router-dom';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useLastLocation } from 'react-router-last-location';
 import useAuth from 'app/hooks/useAuth';
 import {useDropzone} from 'react-dropzone';
@@ -12,10 +11,6 @@ import {
   Stepper,
   Step,
   useStepper,
-  StepNumber,
-  StepTitle,
-  StepStatus,
-  StepDescription
 } from "react-progress-stepper";
 import '../../Ajouter une definition/comps/AddDefComp.css'
 

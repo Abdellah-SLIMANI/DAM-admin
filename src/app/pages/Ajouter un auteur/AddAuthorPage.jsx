@@ -1,49 +1,39 @@
 import React, { useState } from 'react'
 import { useStyles } from '@material-ui/pickers/views/Calendar/Day';
-import TxtModify from '../Ajouter une definition/comps/TxtModify';
-import { Col, Nav, Row } from 'react-bootstrap'
-import Tab from 'react-bootstrap/Tab'
-import { Button, Card, CircularProgress } from '@material-ui/core'
+import { Button, Card, CircularProgress,Typography } from '@material-ui/core'
+import {useDropzone} from 'react-dropzone';
 import axios from 'axios'
 import useAuth from 'app/hooks/useAuth';
 import { useHistory } from 'react-router-dom';
-import AjouterBiblio from './comps/AjouterBiblio';
-import SearchAdd from '../Ajouter une definition/comps/SearchAdd';
 import { Breadcrumb } from 'app/components';
+import SimpleCard from 'app/components/cards/SimpleCard';
+import PreviewContent from 'app/pages/Components/PreviewContent';
+import {
+    Stepper,
+    Step,
+    useStepper,
+  } from "react-progress-stepper";
+import { mapAuthorProps } from '../Utils';
+
+
+
 export default function AddDefComp() {
-    const  AuthorInitContent = {
-        nom : '',
-        prenom : '',
-        biographie : '',
-        naissance: '',
-        deces: ''
-    }
-    
-    const mapAuthorEventkeysToTitles = {
-        nom: 'Nom',
-        prenom: 'Prénom',
-        biographie : 'Biographie',
-        bibliographie: 'Bibliographie',
-        naissance: 'Année de naissance',
-        deces: 'Année de décès',
-        lien: 'Liens vers les définitions',
-    }
+    const { step, incrementStep, decrementStep } = useStepper(0, 3);
+    const [files, setFiles] = useState([])
+    const [loadingS,setLoadingS] = useState(false)
+    const [previewWord, setPreviewWord] = useState()
     const {user} = useAuth()
     const history = useHistory();
-    const [loadingS, setLoadingS] = useState(false)
-    const [loadingB, setLoadingB] = useState(false)
-    const classes = useStyles()
-    const [liens, setLiens] = useState([])
-    const [bibliographie, setBibliographie] = useState([])
-    const [content, setContent] = useState(AuthorInitContent)
+    const {
+        getRootProps,
+        getInputProps} = useDropzone({
+        accept: ['.doc', '.docx','/images*'],
+        onDrop: acceptedFiles => {
+          SubmitFile(acceptedFiles);
+        },
+      });
 
-
-    const handleSetValue = (k) =>{
-        setContent({...content, ...k})
-    }
-
-    function soummetre({isDraft = false} = {}){
-        isDraft ? setLoadingB(true) : setLoadingS(true)
+    function soummetre(){
         let config = {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -51,18 +41,30 @@ export default function AddDefComp() {
         }
         let data = {
             "action": "Creation",
-            "status": isDraft ? 'brouillon' : "soumis",  
+            "status": "brouillon",  
             'created_by': user.id,
-            ...content,
-            liens: liens,
-            bibliographie: bibliographie,
+            'data': previewWord
         }
 
         axios.post("http://13.36.215.163:8000/api/administration/auteur/", data ,config)
         .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Error',res))
-        .catch(e => console.log("Error while Posting data",e))
-        .finally(isDraft ? setLoadingB(false) : setLoadingS(false))
     }
+
+    const SubmitFile = (acceptedFilesProp) => {
+        incrementStep()
+        let data = new FormData();
+        data.append('data', acceptedFilesProp[0])
+        axios.post("http://13.36.215.163:8000/api/administration/upload_auteur/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+            { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': acceptedFilesProp[0].type
+              }
+          })
+            .then(res => (setPreviewWord(res.data)))
+      }
+
+
 
     return (
         <div className = 'adminPageContainer p-10'>
@@ -72,49 +74,77 @@ export default function AddDefComp() {
                         { name: 'Ajouter un auteur' },
                     ]}
                 />
-            <div className= 'mainArea addWordContainer mt-5'>
-            <div className= 'd-flex justify-content-between mb-3'>
-                <h4>Remplissez les champs ci-dessous pour ajouter un auteur.</h4>
-                <div>
-                <Button className='text-white mr-2' variant='contained' color= 'primary' disabled={loadingB} type="submit" onClick={()=>{soummetre({isDraft: true})}}>{loadingB &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Enregistrer comme brouillon</Button>
-                <Button className='bg-green text-white ml-2' variant='contained' color= 'primary' disabled={loadingS} type="submit" onClick={()=>{soummetre()}}>{loadingS &&<CircularProgress size={24} classes={classes.buttonProgress}></CircularProgress>} Soumettre</Button>
-                </div>
+                        <div className="pr-20 pl-20 pt-10 flex" style={{alignSelf: 'flex-end',width:'100%',justifyContent: 'space-between'}}>
+                              <Button
+                                  className='text-white mt-3 mb-3'
+                                  style={{alignSelf: 'flex-start'}}
+                                  variant='contained'
+                                  disabled={step != 0}
+                                  color= 'primary'
+                                  href='http://13.36.215.163:8000/api/administration/download_auteur_template/'
+                                  target='_blank'
+                                  onClick={() => incrementStep()}
+                              >
+                                {loadingS &&<CircularProgress size={24}></CircularProgress>} Télécharger le fichier
+                              </Button>
+                              <div {...getRootProps()}>
+                              <Button
+                                      className='text-white ml-3 mt-3 mb-3'
+                                      style={{alignSelf: 'flex-start'}}
+                                      variant='contained'
+                                      color='primary'
+                                      disabled={step != 1} 
+                                  >
+                                  {step ==1 && <input {...getInputProps()} /> }
+                                    Charger le fichier
+                              </Button>
+                              </div>
+              <Button
+                          className='text-white mt-3 mb-3'
+                          variant='contained' 
+                          style={{alignSelf: 'flex-end'}}
+                          color= 'primary' 
+                          disabled={step != 2} 
+                          type="submit" 
+                          onClick={()=>{soummetre()}}
+                      >
+                        Enregistrer l'auteur
+                    </Button>
+                    
+          </div>
+          <Stepper step={step}>
+            <Step></Step>
+            <Step></Step>
+            <Step>
+
+            </Step>
+          </Stepper>
+            <div className="mt-3 mb-3 pl-20 pr-20">
+            {
+                previewWord && step == 2 &&
+                    <SimpleCard>
+                          <Typography variant="title" style={{display:'inline-flex'}}>
+                            <h4>Aperçu de l'auteur</h4>{' '}
+                          </Typography>
+                          <>
+                        <div>
+                            {
+                                Object.keys(mapAuthorProps).map((key) =>  
+
+                                {
+                                    if(key === mapAuthorProps[key].name)
+                                        return <div style={{fontSize: '16px'}}><span style={{fontStyle: 'italic'}}>{mapAuthorProps[key].label + " : "}</span><span >{previewWord[key]}</span><br /></div>
+                                }
+                                )
+                            }
+                        </div>
+                        </>
+                    </SimpleCard>
+            }
             </div>
-            <Card>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="nom" unmountOnExit={true}>
-                <Row className='p-10'>
-                    <Col sm={3}>
-                    <Nav variant="pills" className="flex-column">
-                        {
-                            Object.keys(mapAuthorEventkeysToTitles).map(key => (
-                            <Card className='m-1'> 
-                                <Nav.Item>
-                                    <Nav.Link eventKey={key}>{mapAuthorEventkeysToTitles[key]}</Nav.Link>
-                                </Nav.Item>
-                            </Card>
-                            ))
-                        }
-                        </Nav>
-                    </Col>
-                    <Col sm={9}>
-                    <Tab.Content>
-                        { Object.keys(AuthorInitContent).map(key => (
-                            <Tab.Pane eventKey={key}>
-                                <TxtModify value= {content[key]} setValue = {handleSetValue} fieldName={key} />
-                            </Tab.Pane>
-                        ))}
-                            <Tab.Pane eventKey='bibliographie'>
-                                <AjouterBiblio value= {bibliographie} setValue = {setBibliographie}/>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='lien'>
-                                <SearchAdd value= {liens} setValue = {setLiens}/>
-                            </Tab.Pane>
-                    </Tab.Content>
-                    </Col>
-                </Row>
-                </Tab.Container>
-                </Card>
-            </div>
+            <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
+
+    </div>
         </div>
     )
 }
