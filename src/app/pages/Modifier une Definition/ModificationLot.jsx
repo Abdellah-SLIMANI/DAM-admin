@@ -55,6 +55,7 @@ export default function ModificationLot() {
                 })
             }
     }
+    console.log("LETTER,",letter)
 
     function draft(){
         setLoadingB(true)
@@ -63,34 +64,13 @@ export default function ModificationLot() {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
-        const actionChecker = word.action
-        let data = {
-            "titre": previewWord.titre,
-            'status': 'brouillon',
-            "action": actionChecker ? actionChecker : (previousPath.includes('/modifier-une-definition') ? "Modification" : "Creation"),
-            'created_by': oldContent.created_by ? oldContent.created_by : user.id,
-            "elastic_id" : oldContent.id ? oldContent.id : "",
-            'data': previewWord
-        }
-
-        if(previousPath == '/modifier-une-definition/'){
-            axios.post(putUrl, data ,config)
-            .then(res => (
-                res.statusText == "Created" ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
-            ))
-            .finally(()=>{
+            axios.post('http://13.36.215.163:8000/api/administration/valider_lot/'+letter+'/', previewLot ,config)
+            .then(res => (console.log("RESPONSE",res)))
+            .finally(()=>(
+                history.push(`/Tableaux-de-bord/?tableaux=definitions`),
                 setLoadingB(false)
-            })
-        }
-        else {
-            axios.put(putUrl, data ,config)
-            .then(res => (
-                (res.status == 200) || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Response',res)
             ))
-            .finally(()=>{
-                setLoadingB(false)
-            })
-        }
+        
     }
 
     useEffect(() => {
@@ -105,6 +85,7 @@ export default function ModificationLot() {
     const [files, setFiles] = useState([])
     const [loadingS,setLoadingS] = useState(false)
     const [previewWord, setPreviewWord] = useState()
+    const [previewLot, setPreviewLot] = useState()
     const previewWordRef = useRef(null)
     const {
         getRootProps,
@@ -133,7 +114,7 @@ export default function ModificationLot() {
                 'Content-Type': acceptedFilesProp[0].type
               }
           })
-            .then(res => (setPreviewWord(res.data)))
+            .then(res => setPreviewLot(res.data))
       }
 
     return (
@@ -188,7 +169,7 @@ export default function ModificationLot() {
             </Step>
           </Stepper>
           </div>
-{step ==0 &&          <div className='pl-20 pr-20 pt-10 m-auto'>
+        {step ==0 &&          <div className='pl-20 pr-20 pt-10 m-auto'>
             <SimpleCard>
                 <Typography className='mb-6 ml-2'>
                     <h4>Choisir une lettre pour télécharger le fichier du définitions:</h4>
@@ -202,6 +183,22 @@ export default function ModificationLot() {
             }
             </SimpleCard>
             </div>}
+            <div>
+            {
+                    previewLot && <>
+                    <Typography variant="title" style={{display:'inline-flex'}} className='mt-5'>
+                            <h4>Aperçu des définitions du fichier</h4>{' '}
+                    </Typography>
+                    {previewLot.map(def =>
+                    <div className='mt-2 mb-2'>    
+                    <SimpleCard>
+                        <PreviewContent selectedWord={def}/>
+                    </SimpleCard>
+                    </div>
+                    )}
+                    </>
+                  }
+            </div>
           <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
     </div>
       </div>

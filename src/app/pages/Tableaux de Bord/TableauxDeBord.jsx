@@ -22,7 +22,7 @@ export default function TableauxDeBord() {
                 :
                 <>
                 <Tabs defaultActiveKey={tableaux ? tableaux : "definitions"} className="mb-3" unmountOnExit onSelect={(eventKey)=>{history.push(`/Tableaux-de-bord/?tableaux=${eventKey}`)}}>
-                    <Tab eventKey="definitions" title="Definitions">
+                    <Tab eventKey="definitions" title="Définitions">
                         <TabDeBord />
                     </Tab>
                     <Tab eventKey="auteurs" title="Auteurs">
