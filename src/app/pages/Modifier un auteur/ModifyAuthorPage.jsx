@@ -14,6 +14,7 @@ import {
   useStepper,
 } from "react-progress-stepper";
 import { mapAuthorProps } from '../Utils';
+import AuthorContent from '../Components/AuthorContent';
 
 
 export default function ModifyDefTxtEdit() {
@@ -198,20 +199,7 @@ export default function ModifyDefTxtEdit() {
                     <Typography variant="title" style={{display:'inline-flex'}}>
                             <h4>Aperçu de l'auteur en cours</h4>{' '}
                           </Typography>
-                          <>
-                        <div>
-                            {
-                                Object.keys(mapAuthorProps).map((key) =>  
-
-                                {
-                                    if(key === mapAuthorProps[key].name)
-                                        return <div style={{fontSize: '16px'}}><span style={{fontStyle: 'italic'}}>{mapAuthorProps[key].label + " : "}</span><span >{oldContent[key]}</span><br /></div>
-                                        
-                                }
-                                )
-                            }
-                        </div>
-                        </>
+                          <AuthorContent author={oldContent} />
                     </SimpleCard>
                   </div>
                   }
@@ -222,19 +210,7 @@ export default function ModifyDefTxtEdit() {
                       <Typography variant="title" style={{display:'inline-flex'}}>
                             <h4>Aperçu de l'auteur actuel</h4>{' '}
                           </Typography>
-                          <>
-                        <div>
-                            {
-                                Object.keys(mapAuthorProps).map((key) =>  
-
-                                {
-                                    if(key === mapAuthorProps[key].name)
-                                        return <div style={{fontSize: '16px'}}><span style={{fontStyle: 'italic'}}>{mapAuthorProps[key].label + " : "}</span><span >{previewWord[key]}</span><br /></div>
-                                }
-                                )
-                            }
-                        </div>
-                        </>
+                          <AuthorContent author={previewWord}/>
                     </SimpleCard>
                   </div>
                   }

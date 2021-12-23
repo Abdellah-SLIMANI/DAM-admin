@@ -198,4 +198,8 @@ export const mapAuthorProps = {
         name: 'deces',
         label:  'Année de décès',
     },
+    liens: {
+        name: 'liens',
+        label: 'Définitions'
+    }
 }

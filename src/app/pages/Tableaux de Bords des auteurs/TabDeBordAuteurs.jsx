@@ -6,6 +6,7 @@ import useAuth from 'app/hooks/useAuth'
 import MUIDataTable from "mui-datatables";
 import { Breadcrumb } from 'app/components'
 import DeleteItem from '../Components/DeleteItem'
+import AuthorPreview from '../Components/AuthorPreview'
 
 const TabDeBordAuteurs = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -13,6 +14,8 @@ const TabDeBordAuteurs = () => {
     const [page, setPage] = React.useState(0)
     const [authors, setAuthors] = useState([])
     const [modalDef, setModalDef] = useState([])
+    const [previewWord, setPreviewWord] = useState({})
+    const [openPreview,setOpenPreview] = useState(false)
     const history = useHistory();
     let {user} = useAuth()
 
@@ -28,7 +31,13 @@ const TabDeBordAuteurs = () => {
         setOpen(true)
     }  
 
+    function handlePreview(word){
+        setPreviewWord(word)
+        setOpenPreview(true)
+    }
+
     function handleClose(){
+        setOpenPreview(false)
         setOpen(false)
     }
 
@@ -191,6 +200,9 @@ const TabDeBordAuteurs = () => {
             <IconButton onClick={()=>ValidateWord(authors.results[dataIndex])}>
                 <Icon className='hover-bg-green'>done</Icon>
             </IconButton>
+            <IconButton className='mr-2' onClick={()=>handlePreview(authors.results[dataIndex])}>
+                <Icon>visibility</Icon>
+            </IconButton>
             </>
             )
           }
@@ -198,6 +210,8 @@ const TabDeBordAuteurs = () => {
         },
         
        ];
+
+       console.log("Author's results",authors.results)
 
        const options = {
             count: authors.count,
@@ -243,6 +257,11 @@ const TabDeBordAuteurs = () => {
                 message="Confirmez-vous la suppression de l'auteur:"
                 url='http://13.36.215.163:8000/api/administration/auteur/'
             />
+            <AuthorPreview
+                        open={openPreview}
+                        handleClose={()=>handleClose()}
+                        author={previewWord}
+                    />
         </>
     )
 }
