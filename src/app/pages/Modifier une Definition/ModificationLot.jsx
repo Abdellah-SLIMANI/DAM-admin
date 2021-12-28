@@ -88,6 +88,7 @@ export default function ModificationLot() {
     const [previewWord, setPreviewWord] = useState()
     const [previewLot, setPreviewLot] = useState()
     const [sousLot, setSouslot] = useState()
+    const [sousLotNbr, setSousLotNbr] = useState()
     const previewWordRef = useRef(null)
     const {
         getRootProps,
@@ -122,7 +123,7 @@ export default function ModificationLot() {
         incrementStep()
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
-        axios.post("http://13.36.215.163:8000/api/administration/upload_lot/"+letter+ "/", data.get('data') ,
+        axios.post("http://13.36.215.163:8000/api/administration/upload_lot/"+letter+ "/"+ sousLotNbr, data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -278,7 +279,7 @@ export default function ModificationLot() {
                        customBodyRenderLite: (dataIndex) => {
                         return ( 
                             <div className='inline-block'>
-                            <IconButton onClick={() => (incrementStep(),console.log("THE ALMIGHTY URL","http://13.36.215.163:8000/api/administration/download_lot/"+letter+'/'+ sousLot[dataIndex].id))} href={"http://13.36.215.163:8000/api/administration/download_lot/"+letter+'/'+ sousLot[dataIndex].id}>
+                            <IconButton onClick={() => (incrementStep(),setSousLotNbr(sousLot[dataIndex].id))} href={"http://13.36.215.163:8000/api/administration/download_lot/"+letter+'/'+ sousLot[dataIndex].id}>
                             <Icon color='primary'>download</Icon>
                         </IconButton>
                         </div>
