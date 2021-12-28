@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react'
-import { Button, Card,CircularProgress,Fab,Grid,Typography} from '@material-ui/core'
+import { Button, Card,CircularProgress,Fab,Grid,Icon,IconButton,Table,TableCell,TableHead,TableRow,Typography} from '@material-ui/core'
 import axios from 'axios'
 import {  useHistory, useLocation } from 'react-router-dom';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -14,6 +14,7 @@ import {
   useStepper,
 } from "react-progress-stepper";
 import { Breadcrumb } from 'app/components';
+import MUIDataTable from 'mui-datatables';
 
 export default function ModificationLot() {
   const { step, incrementStep, decrementStep } = useStepper(0, 3);
@@ -86,6 +87,7 @@ export default function ModificationLot() {
     const [loadingS,setLoadingS] = useState(false)
     const [previewWord, setPreviewWord] = useState()
     const [previewLot, setPreviewLot] = useState()
+    const [sousLot, setSouslot] = useState()
     const previewWordRef = useRef(null)
     const {
         getRootProps,
@@ -102,6 +104,19 @@ export default function ModificationLot() {
         files.forEach(file => URL.revokeObjectURL(file.preview));
 
       }, [files]);
+
+      const getSousLot = (letter) => {
+        setLetter(letter)
+        incrementStep()
+        axios.get("http://13.36.215.163:8000/api/administration/get_sous_lots/"+letter ,
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          }
+        })
+        .then(res=> (console.log(res.data.sous_lots), setSouslot(res.data.sous_lots)))
+        .finally(console.log("SOUSLOTS",sousLot))
+      }
 
       const SubmitFile = (acceptedFilesProp,letter) => {
         incrementStep()
@@ -136,15 +151,26 @@ export default function ModificationLot() {
                               >
                                 {loadingS &&<CircularProgress size={24}></CircularProgress>} Choix de la lettre
                               </Button>
+                              <Button
+                                  className='text-white ml-8 mt-3 mb-3'
+                                  style={{alignSelf: 'flex-start'}}
+                                  variant='contained'
+                                  disabled={step != 1}
+                                  color= 'primary'
+                                  target='_blank'
+                                  
+                              >
+                                {loadingS &&<CircularProgress size={24}></CircularProgress>} Choix du sous lot
+                              </Button>
                               <div {...getRootProps()}>
                               <Button
-                                      className='text-white ml-3 mt-3 mb-3'
+                                      className='text-white ml-10 mt-3 mb-3'
                                       style={{alignSelf: 'flex-start'}}
                                       variant='contained'
                                       color='primary'
-                                      disabled={step != 1} 
+                                      disabled={step != 2} 
                                   >
-                                  {step ==1 && <input {...getInputProps()} /> }
+                                  {step ==2 && <input {...getInputProps()} /> }
                                     Charger le fichier
                               </Button>
                               </div>
@@ -153,7 +179,7 @@ export default function ModificationLot() {
                           variant='contained' 
                           style={{alignSelf: 'flex-end'}}
                           color= 'primary' 
-                          disabled={step != 2} 
+                          disabled={step != 3} 
                           type="submit" 
                           onClick={()=>{draft()}}
                       >
@@ -167,6 +193,7 @@ export default function ModificationLot() {
             <Step>
 
             </Step>
+            <Step></Step>
           </Stepper>
           </div>
         {step ==0 &&          <div className='pl-20 pr-20 pt-10 m-auto'>
@@ -176,13 +203,95 @@ export default function ModificationLot() {
                 </Typography>
             {
                 letters && letters.map(letter=>
-                   <Fab color={letter.status == 'Valide' ? 'primary' : 'secondary'} aria-label="add" onClick={() => (incrementStep(), setLetter(letter.lettre))} href={'http://13.36.215.163:8000/api/administration/download_lot/'+letter.lettre+'/'} className='m-2'>
+                   <Fab color={letter.status == 'Valide' ? 'primary' : 'secondary'} aria-label="add" onClick={() =>  getSousLot(letter.lettre)} className='m-2'>
                         <div>{letter.lettre}</div>
                     </Fab>
                 )        
             }
             </SimpleCard>
             </div>}
+            {
+              step == 1 && 
+              <div>
+              <SimpleCard>
+                <Typography className='mb-6 ml-2'>
+                    <h4>Choisir un sous-lot pour télécharger le fichier du définitions:</h4>
+                </Typography>
+                <MUIDataTable 
+                  options= {{
+                    count: sousLot && sousLot.length,
+                    print: false,
+                    download: false,
+                    selectableRows: 'none',
+                    search: false,
+                    filter: false,
+                    viewColumns: false,
+                    rowsPerPage: 20
+                  }}
+                  columns={[
+                    {
+                      name: "id",
+                      label: "Numero du fichier",
+                      options: {
+                       filter: false,
+                       sort: true,
+                      }
+                    },
+                    {
+                      name: "traite",
+                      label: "Definitions Traite",
+                      options: {
+                       filter: false,
+                       sort: true,
+                      }
+                    },
+                    {
+                      name: "restant",
+                      label: "Definitions restant",
+                      options: {
+                       filter: false,
+                       sort: true,
+                      }
+                    },
+                    {
+                      name: "premiere",
+                      label: "Premier definition du fichier",
+                      options: {
+                       filter: false,
+                       sort: true,
+                      }
+                    },
+                    {
+                      name: "derniere",
+                      label: "derniere definition du fichier",
+                      options: {
+                       filter: false,
+                       sort: true,
+                      }
+                    },
+                    {
+                      name: "a",
+                      label: "Telecharger",
+                      options: {
+                       filter: false,
+                       sort: true,
+                       customBodyRenderLite: (dataIndex) => {
+                        return ( 
+                            <div className='inline-block'>
+                            <IconButton onClick={() => (incrementStep(),console.log("THE ALMIGHTY URL","http://13.36.215.163:8000/api/administration/download_lot/"+letter+'/'+ sousLot[dataIndex].id))} href={"http://13.36.215.163:8000/api/administration/download_lot/"+letter+'/'+ sousLot[dataIndex].id}>
+                            <Icon color='primary'>download</Icon>
+                        </IconButton>
+                        </div>
+                        )
+                      }
+                      }
+                    }
+                  ]}
+                  data={sousLot && sousLot}
+                />
+            </SimpleCard>
+              </div>
+            }
             <div>
             {
                     previewLot && <>
