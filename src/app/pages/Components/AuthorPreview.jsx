@@ -21,7 +21,8 @@ export default function AuthorPreview({author,open,handleClose}){
         <div>
             <Dialog
                 style={{padding: '2rem'}}
-                maxWidth="xl"
+                maxWidth="md"
+                fullWidth = {true}
                 open={open}
                 TransitionComponent={Transition}
                 keepMounted

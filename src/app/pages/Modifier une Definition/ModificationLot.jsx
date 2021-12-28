@@ -213,21 +213,31 @@ export default function ModificationLot() {
             </div>}
             {
               step == 1 && 
-              <div>
-              <SimpleCard>
-                <Typography className='mb-6 ml-2'>
+              <div className='mt-5 pt-5 pl-10 pr-10'>
+                <MUIDataTable 
+                  title = {
+                    <Typography className='mb-6  mt-10'>
                     <h4>Choisir un sous-lot pour télécharger le fichier du définitions:</h4>
                 </Typography>
-                <MUIDataTable 
+                  }
                   options= {{
                     count: sousLot && sousLot.length,
                     print: false,
                     download: false,
                     selectableRows: 'none',
+                    jumpToPage: true,
                     search: false,
                     filter: false,
                     viewColumns: false,
-                    rowsPerPage: 20
+                    textLabels: {
+                      body: {
+                          noMatch: "Désolé, aucun fichier correspondant n'a été trouvé"
+                      },
+                        pagination: {
+                          rowsPerPage: "Fichier par page ",
+                          jumpToPage: 'Page'
+                        },
+                  }
                   }}
                   columns={[
                     {
@@ -240,7 +250,7 @@ export default function ModificationLot() {
                     },
                     {
                       name: "traite",
-                      label: "Definitions Traite",
+                      label: "Définitions traitées",
                       options: {
                        filter: false,
                        sort: true,
@@ -248,7 +258,7 @@ export default function ModificationLot() {
                     },
                     {
                       name: "restant",
-                      label: "Definitions restant",
+                      label: "Définitions restantes",
                       options: {
                        filter: false,
                        sort: true,
@@ -256,7 +266,7 @@ export default function ModificationLot() {
                     },
                     {
                       name: "premiere",
-                      label: "Premier definition du fichier",
+                      label: "Première définition du fichier",
                       options: {
                        filter: false,
                        sort: true,
@@ -264,7 +274,7 @@ export default function ModificationLot() {
                     },
                     {
                       name: "derniere",
-                      label: "derniere definition du fichier",
+                      label: "Dernière définition du fichier",
                       options: {
                        filter: false,
                        sort: true,
@@ -272,7 +282,7 @@ export default function ModificationLot() {
                     },
                     {
                       name: "a",
-                      label: "Telecharger",
+                      label: "Télécharger",
                       options: {
                        filter: false,
                        sort: true,
@@ -290,7 +300,6 @@ export default function ModificationLot() {
                   ]}
                   data={sousLot && sousLot}
                 />
-            </SimpleCard>
               </div>
             }
             <div>
