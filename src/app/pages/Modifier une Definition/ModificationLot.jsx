@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react'
-import { Button, Card,CircularProgress,Fab,Grid,Icon,IconButton,Table,TableCell,TableHead,TableRow,Typography} from '@material-ui/core'
+import React, { useEffect, useState, useRef } from 'react'
+import { Button,CircularProgress,Fab,Icon,IconButton,Typography} from '@material-ui/core'
 import axios from 'axios'
 import {  useHistory, useLocation } from 'react-router-dom';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -65,7 +65,7 @@ export default function ModificationLot() {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
-            axios.post('http://13.36.215.163:8000/api/administration/valider_lot/'+letter+'/', previewLot ,config)
+            axios.post('http://13.36.215.163:8000/api/administration/valider_lot/'+letter+'/'+sousLotNbr, previewLot ,config)
             .then(res => (console.log("RESPONSE",res)))
             .finally(()=>(
                 history.push(`/Tableaux-de-bord/?tableaux=definitions`),
