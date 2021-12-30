@@ -137,7 +137,7 @@ export default function ModificationLot() {
         <div className='flex-column m-10'>
             <Breadcrumb
                     routeSegments={[
-                        { name: 'Gestion des definitions', path: '/tableaux-de-bord' },
+                        { name: 'Gestion des définitions', path: '/tableaux-de-bord' },
                         { name: 'Modification par lot' },
                     ]}
             />
@@ -150,7 +150,7 @@ export default function ModificationLot() {
                                   color= 'primary'
                                   target='_blank'
                               >
-                                {loadingS &&<CircularProgress size={24}></CircularProgress>} Choix de la lettre
+                                {loadingS &&<CircularProgress size={24}></CircularProgress>} Choix de lettre
                               </Button>
                               <Button
                                   className='text-white ml-8 mt-3 mb-3'
@@ -242,7 +242,7 @@ export default function ModificationLot() {
                   columns={[
                     {
                       name: "id",
-                      label: "Numero du fichier",
+                      label: "Numéro du fichier",
                       options: {
                        filter: false,
                        sort: true,

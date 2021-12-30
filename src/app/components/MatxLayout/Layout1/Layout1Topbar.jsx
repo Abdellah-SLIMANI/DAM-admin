@@ -193,7 +193,7 @@ const Layout1Topbar = () => {
                             <MenuItem>
                                 <Link className={classes.menuItem} to="/">
                                     <Icon> home </Icon>
-                                    <span className="pl-4"> Acceuill </span>
+                                    <span className="pl-4"> Acceuil </span>
                                 </Link>
                             </MenuItem>
                             <MenuItem

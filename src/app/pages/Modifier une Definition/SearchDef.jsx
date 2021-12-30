@@ -21,8 +21,8 @@ export default function ModifyDef (){
             <div className='pt-10 pl-10'>
                 <Breadcrumb
                     routeSegments={[
-                        { name: 'Gestion des definitions', path: '/tableaux-de-bord' },
-                        { name: 'Modifier une definition' },
+                        { name: 'Gestion des définition', path: '/tableaux-de-bord' },
+                        { name: 'Modifier une définition' },
                     ]}
                 />
                 </div>

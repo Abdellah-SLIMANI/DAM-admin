@@ -20,8 +20,8 @@ export default function DeleteElasticDef(){
                 <div className='pt-10 pl-10'>
                 <Breadcrumb
                     routeSegments={[
-                        { name: 'Gestion des definitions', path: '/tableaux-de-bord' },
-                        { name: 'Supprimer une definition' },
+                        { name: 'Gestion des définitions', path: '/tableaux-de-bord' },
+                        { name: 'Supprimer une définition' },
                     ]}
                 />
                 </div>

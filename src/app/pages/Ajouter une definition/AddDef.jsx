@@ -8,8 +8,8 @@ export default function AddDef() {
         <div className='m-10'>
             <Breadcrumb
                     routeSegments={[
-                        { name: 'Gestion des definitions', path: '/tableaux-de-bord' },
-                        { name: 'Ajouter une definition' },
+                        { name: 'Gestion des définitions', path: '/tableaux-de-bord' },
+                        { name: 'Ajouter une définition' },
                     ]}
             />
             <AddDefComp />
