@@ -15,11 +15,14 @@ import {
 } from "react-progress-stepper";
 import { Breadcrumb } from 'app/components';
 import MUIDataTable from 'mui-datatables';
+import ConfirmReinit from '../Components/ConfirmReinit';
 
 export default function ModificationLot() {
   const { step, incrementStep, decrementStep } = useStepper(0, 3);
     const [oldContent, setOldContent] = useState({})
     const [loadingB, setLoadingB] = useState(false)
+    const [reinitOpen, setReinitOpen] = useState(false)
+    const [reinitLetter,setReinitLetter] = useState('')
     const [word,setWord] = useState('')
     const {user} = useAuth()
     const history = useHistory();
@@ -58,6 +61,16 @@ export default function ModificationLot() {
     }
     console.log("LETTER,",letter)
 
+    const handleReinitOpen = (letter) => {
+      console.log(" 1 =>",reinitLetter," \n2 =>",reinitOpen)
+      setReinitLetter(letter)
+      setReinitOpen(true)
+    }
+
+    const handleClose = () => {
+      setReinitOpen(false)
+    }
+
     function draft(){
         setLoadingB(true)
         let config = {
@@ -79,7 +92,13 @@ export default function ModificationLot() {
             .then(response => (func(response)))
             axios.get('http://13.36.215.163:8000/api/administration/get_letters/')
                 .then(res => setLetters(res.data))
-    }, [])
+    }, [letters])
+
+    const floationgFabStyle = {
+      position: 'absolute',
+      bottom: 16,
+      right: 16,
+    };
 
     //************************************************************************************************************/
     const [letter,setLetter] = useState()
@@ -204,12 +223,16 @@ export default function ModificationLot() {
                 </Typography>
             {
                 letters && letters.map(letter=>
+                  <>
                    <Fab color={letter.status == 'Valide' ? 'primary' : 'secondary'} aria-label="add" onClick={() =>  getSousLot(letter.lettre)} className='m-2'>
                         <div>{letter.lettre}</div>
                     </Fab>
+                    <Fab size='small' style={{transform: 'translate(-60%,50%)'}} onClick={() => handleReinitOpen(letter.lettre)}><Icon>autorenew</Icon></Fab>
+                  </>
                 )        
             }
             </SimpleCard>
+
             </div>}
             {
               step == 1 && 
@@ -320,6 +343,11 @@ export default function ModificationLot() {
             </div>
           <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
     </div>
+        <ConfirmReinit 
+          letter = {reinitLetter}
+          open = {reinitOpen}
+          handleClose = {() => handleClose()}
+        />
       </div>
     )
 }

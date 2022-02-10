@@ -29,6 +29,10 @@ const administrationRoutes = [
     {
         path: '/modification-par-lot',
         component: React.lazy(() => import('../../pages/Modifier une Definition/ModificationLot')),
+    },
+    {
+        path: '/reprise-des-definition',
+        component: React.lazy(() => import('../../pages/Ajouter une definition/RepriseDef')),
     }
 ]
 
