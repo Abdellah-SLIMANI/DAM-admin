@@ -109,11 +109,7 @@ export const MapTitlesToKeys = {
         label: 'Abreviation',
         type:'normal'
     },
-    domaines: {
-        name:'domaines',
-        label: 'Domaines',
-        type:'normal'
-    },
+
     etymologie: {
         name:"etymologie", 
         label:'Etymologie',
@@ -158,6 +154,11 @@ export const MapTitlesToKeys = {
         name:'voir_aussi',
         label: '',
         type:'voir'
+    },
+    domaines: {
+        name:'domaines',
+        label: 'Domaines',
+        type:'normal'
     },
     edition: {
         name:'edition',
