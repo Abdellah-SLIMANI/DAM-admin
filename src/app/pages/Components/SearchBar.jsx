@@ -33,10 +33,6 @@ export default function AsyncAutocomplete(props) {
             setOpen(true)
     }, [value])
 
-    const getOptionLabel = (def) => {
-        console.log(def)
-        return def.titre
-    }
     return (
         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
             <div className=' m-auto'>
@@ -114,7 +110,6 @@ export default function AsyncAutocomplete(props) {
       }}
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
-
         const { inputValue } = params;
         // Suggest the creation of a new value
         const isExisting = options.some((option) => inputValue === option.titre);
@@ -127,7 +122,6 @@ export default function AsyncAutocomplete(props) {
 
         return filtered;
       }}
-      
       options={defs}
       getOptionLabel={(option) => {
         // Value selected with enter, right from the input
@@ -136,7 +130,7 @@ export default function AsyncAutocomplete(props) {
         }
         // Add "xxx" option created dynamically
         if (option.inputValue) {
-          return option.inputValue;
+          return option.titre;
         }
         // Regular option
         return option.titre;
