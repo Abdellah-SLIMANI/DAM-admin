@@ -113,5 +113,8 @@
     "eslint-plugin-react-hooks": "0.0.0-8d7535e54",
     "gh-pages": "3.2.3",
     "react-app-rewired": "^2.1.6"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }

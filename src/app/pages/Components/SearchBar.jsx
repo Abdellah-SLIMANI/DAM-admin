@@ -1,13 +1,16 @@
 import fetch from 'cross-fetch'
 import React, { useState } from 'react'
 import { TextField, CircularProgress } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import Autocomplete ,  { createFilterOptions }from '@material-ui/lab/Autocomplete'
 import { useHistory, useLocation } from 'react-router-dom'
+
+
+const filter = createFilterOptions();
 
 export default function AsyncAutocomplete(props) {
     const [open, setOpen] = React.useState(false)
     const [defs, setDefs] = React.useState([])
-    const [value, setValue] = React.useState('')
+    const [value, setValue] = React.useState("")
     const [loading, setLoading] = React.useState(false)
     const [inputValue, setInputValue] = React.useState('');
     let location = useLocation();
@@ -23,18 +26,21 @@ export default function AsyncAutocomplete(props) {
 
     }, [inputValue,location.pathname])
 
-    console.log("URL",props.url+inputValue , defs)
+    
 
     React.useEffect(() => {
-        if (!open) {
-            setDefs([])
-        }
-    }, [open])
+        if(value != '')
+            setOpen(true)
+    }, [value])
 
+    const getOptionLabel = (def) => {
+        console.log(def)
+        return def.titre
+    }
     return (
         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
             <div className=' m-auto'>
-            <Autocomplete
+            {/* <Autocomplete
               open={open}
               onOpen={() => {
                   setOpen(true)
@@ -49,7 +55,7 @@ export default function AsyncAutocomplete(props) {
               value={value}
               onChange= {(event, newval) => (props.handleSearch(newval))}
               getOptionSelected={(def,value) => (def.titre ==+ value.titre) }
-              getOptionLabel={(def) => def.titre || "" }
+              getOptionLabel={(def) => getOptionLabel(def) }
               options={defs}
               loading={loading}
               noOptionsText = {props.noOptionsText}
@@ -76,7 +82,93 @@ export default function AsyncAutocomplete(props) {
                       }}
                   />
               )}
-          />
+          /> */}
+
+
+<Autocomplete
+      value={value}
+      onInputChange={(event, newInputValue) => {
+        setInputValue(newInputValue);
+      }}
+      open={open}
+              onOpen={() => {
+                  setOpen(true)
+              }}
+              onClose={() => {
+                  setOpen(false)
+              }}
+      onChange={(event, newValue) => {
+        if (typeof newValue === 'string') {
+          setValue({
+            titre: newValue,
+          });
+        } else if (newValue && newValue.inputValue) {
+          // Create a new value from the user input
+          setValue({
+            titre: newValue.inputValue,
+          });
+        } else {
+          setValue(newValue);
+          props.handleSearch(newValue)
+        }
+      }}
+      filterOptions={(options, params) => {
+        const filtered = filter(options, params);
+
+        const { inputValue } = params;
+        // Suggest the creation of a new value
+        const isExisting = options.some((option) => inputValue === option.titre);
+        if (inputValue !== '' && !isExisting) {
+          filtered.push({
+            inputValue,
+            titre: `Add "${inputValue}"`,
+          });
+        }
+
+        return filtered;
+      }}
+      
+      options={defs}
+      getOptionLabel={(option) => {
+        // Value selected with enter, right from the input
+        if (typeof option === 'string') {
+          return option;
+        }
+        // Add "xxx" option created dynamically
+        if (option.inputValue) {
+          return option.inputValue;
+        }
+        // Regular option
+        return option.titre;
+      }}
+      noOptionsText = {props.noOptionsText}
+              renderInput={(params) => (
+                  <TextField
+                      {...params}
+                      label={props.label}
+                      fullWidth
+                      className ='bg-white'
+                      variant='outlined'
+                      InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                              <React.Fragment>
+                                  {loading ? (
+                                      <CircularProgress
+                                          color="inherit"
+                                          size={20}
+                                      />
+                                  ) : null}
+                                  {params.InputProps.endAdornment}
+                              </React.Fragment>
+                          ),
+                      }}
+                  />
+              )}
+    />
+ 
+
+
             </div>
         </div>
     )
