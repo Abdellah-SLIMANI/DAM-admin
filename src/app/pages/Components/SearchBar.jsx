@@ -25,144 +25,92 @@ export default function AsyncAutocomplete(props) {
         })()
 
     }, [inputValue,location.pathname])
-
-    
-
     React.useEffect(() => {
-        if(value != '')
-            setOpen(true)
+        if(inputValue.includes('Trouver des suggestions du')) 
+            return setOpen(true)
     }, [value])
-
     return (
         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
             <div className=' m-auto'>
-            {/* <Autocomplete
-              open={open}
-              onOpen={() => {
-                  setOpen(true)
-              }}
-              onClose={() => {
-                  setOpen(false)
-              }}
-              inputValue={inputValue}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
-              value={value}
-              onChange= {(event, newval) => (props.handleSearch(newval))}
-              getOptionSelected={(def,value) => (def.titre ==+ value.titre) }
-              getOptionLabel={(def) => getOptionLabel(def) }
-              options={defs}
-              loading={loading}
-              noOptionsText = {props.noOptionsText}
-              renderInput={(params) => (
-                  <TextField
-                      {...params}
-                      label={props.label}
-                      fullWidth
-                      className ='bg-white'
-                    //   variant='outlined'
-                      InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                              <React.Fragment>
-                                  {loading ? (
-                                      <CircularProgress
-                                          color="inherit"
-                                          size={20}
-                                      />
-                                  ) : null}
-                                  {params.InputProps.endAdornment}
-                              </React.Fragment>
-                          ),
-                      }}
-                  />
-              )}
-          /> */}
+                <Autocomplete
+                    value={value}
+                    onInputChange={(event, newInputValue) => {
+                        setInputValue(newInputValue);
+                    }}
+                    open={open}
+                            onOpen={() => {
+                                setOpen(true)
+                            }}
+                            onClose={() => {
+                                setOpen(false)
+                            }}
+                    onChange={(event, newValue) => {
+                        if (typeof newValue === 'string') {
+                        setValue({
+                            titre: newValue,
+                        });
+                        } else if (newValue && newValue.inputValue) {
+                        // Create a new value from the user input
+                        setValue({
+                            titre: newValue.inputValue,
+                        });
+                        } else {
+                        setValue(newValue);
+                        props.handleSearch(newValue)
+                        }
+                    }}
+                    filterOptions={(options, params) => {
+                        const filtered = filter(options, params);
+                        const { inputValue } = params;
+                        // Suggest the creation of a new value
+                        const isExisting = options.some((option) => inputValue === option.titre);
+                        if (inputValue !== '' && !isExisting) {
+                        filtered.push({
+                            inputValue,
+                            titre: `Trouver des suggestions du "${inputValue}"`,
+                        });
+                        }
 
-
-<Autocomplete
-      value={value}
-      onInputChange={(event, newInputValue) => {
-        setInputValue(newInputValue);
-      }}
-      open={open}
-              onOpen={() => {
-                  setOpen(true)
-              }}
-              onClose={() => {
-                  setOpen(false)
-              }}
-      onChange={(event, newValue) => {
-        if (typeof newValue === 'string') {
-          setValue({
-            titre: newValue,
-          });
-        } else if (newValue && newValue.inputValue) {
-          // Create a new value from the user input
-          setValue({
-            titre: newValue.inputValue,
-          });
-        } else {
-          setValue(newValue);
-          props.handleSearch(newValue)
-        }
-      }}
-      filterOptions={(options, params) => {
-        const filtered = filter(options, params);
-        const { inputValue } = params;
-        // Suggest the creation of a new value
-        const isExisting = options.some((option) => inputValue === option.titre);
-        if (inputValue !== '' && !isExisting) {
-          filtered.push({
-            inputValue,
-            titre: `Add "${inputValue}"`,
-          });
-        }
-
-        return filtered;
-      }}
-      options={defs}
-      getOptionLabel={(option) => {
-        // Value selected with enter, right from the input
-        if (typeof option === 'string') {
-          return option;
-        }
-        // Add "xxx" option created dynamically
-        if (option.inputValue) {
-          return option.titre;
-        }
-        // Regular option
-        return option.titre;
-      }}
-      noOptionsText = {props.noOptionsText}
-              renderInput={(params) => (
-                  <TextField
-                      {...params}
-                      label={props.label}
-                      fullWidth
-                      className ='bg-white'
-                      variant='outlined'
-                      InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                              <React.Fragment>
-                                  {loading ? (
-                                      <CircularProgress
-                                          color="inherit"
-                                          size={20}
-                                      />
-                                  ) : null}
-                                  {params.InputProps.endAdornment}
-                              </React.Fragment>
-                          ),
-                      }}
-                  />
-              )}
-    />
- 
-
-
+                        return filtered;
+                    }}
+                    options={defs}
+                    getOptionLabel={(option) => {
+                        // Value selected with enter, right from the input
+                        if (typeof option === 'string') {
+                        return option;
+                        }
+                        // Add "xxx" option created dynamically
+                        if (option.inputValue) {
+                        return option.titre;
+                        }
+                        // Regular option
+                        return option.titre;
+                    }}
+                    noOptionsText = {props.noOptionsText}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label={props.label}
+                                    fullWidth
+                                    className ='bg-white'
+                                    variant='outlined'
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        endAdornment: (
+                                            <React.Fragment>
+                                                {loading ? (
+                                                    <CircularProgress
+                                                        color="inherit"
+                                                        size={20}
+                                                    />
+                                                ) : null}
+                                                {params.InputProps.endAdornment}
+                                            </React.Fragment>
+                                        ),
+                                    }}
+                                />
+                            )}
+                    />
             </div>
         </div>
     )
