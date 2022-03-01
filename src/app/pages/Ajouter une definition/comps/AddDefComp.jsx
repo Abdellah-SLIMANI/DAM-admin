@@ -33,6 +33,11 @@ export default function AddDefComp() {
       function soummetre(){
       incrementStep()
       setLoadingS(true)
+      let config = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    }
         let data = {
             "titre": previewWord.titre,
             'status': 'brouillon',
@@ -40,7 +45,7 @@ export default function AddDefComp() {
             'data': previewWord
         }
 
-        axios.post("administration/article/", data )
+        axios.post("administration/article/", data , config )
         .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=definitions`) : window.alert('Server Error',res))
         .catch(res => console.log("Error while Posting data",res))
         .finally(setLoadingS(false))
