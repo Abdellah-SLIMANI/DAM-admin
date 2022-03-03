@@ -38,8 +38,8 @@ export default function ModificationLot() {
     const previousPath = localStorage.getItem('LastPath');
     const isTabDeBordThePreviousPath = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord");
     
-    const url = isTabDeBordThePreviousPath ? 'http://13.36.215.163:8000/api/administration/article/?titre=' : 'http://13.36.215.163:8000/api/elastic/search/?titre='
-    const putUrl = isTabDeBordThePreviousPath ? 'http://13.36.215.163:8000/api/administration/article/'+word.id+'/' : 'http://13.36.215.163:8000/api/administration/article/'
+    const url = isTabDeBordThePreviousPath ? 'http://51.68.80.15:8000/api/administration/article/?titre=' : 'http://51.68.80.15:8000/api/elastic/search/?titre='
+    const putUrl = isTabDeBordThePreviousPath ? 'http://51.68.80.15:8000/api/administration/article/'+word.id+'/' : 'http://51.68.80.15:8000/api/administration/article/'
 
     function func(res) {
             if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
@@ -78,7 +78,7 @@ export default function ModificationLot() {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
-            axios.post('http://13.36.215.163:8000/api/administration/valider_lot/'+letter+'/'+sousLotNbr, previewLot ,config)
+            axios.post('http://51.68.80.15:8000/api/administration/valider_lot/'+letter+'/'+sousLotNbr, previewLot ,config)
             .then(res => (console.log("RESPONSE",res)))
             .finally(()=>(
                 history.push(`/Tableaux-de-bord/?tableaux=definitions`),
@@ -90,7 +90,7 @@ export default function ModificationLot() {
     useEffect(() => {
          axios.get(url+query.get('titre'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
             .then(response => (func(response)))
-            axios.get('http://13.36.215.163:8000/api/administration/get_letters/')
+            axios.get('http://51.68.80.15:8000/api/administration/get_letters/')
                 .then(res => setLetters(res.data))
     }, [letters])
 
@@ -128,7 +128,7 @@ export default function ModificationLot() {
       const getSousLot = (letter) => {
         setLetter(letter)
         incrementStep()
-        axios.get("http://13.36.215.163:8000/api/administration/get_sous_lots/"+letter ,
+        axios.get("http://51.68.80.15:8000/api/administration/get_sous_lots/"+letter ,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -142,7 +142,7 @@ export default function ModificationLot() {
         incrementStep()
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
-        axios.post("http://13.36.215.163:8000/api/administration/upload_lot/"+letter+ "/"+ sousLotNbr, data.get('data') ,
+        axios.post("http://51.68.80.15:8000/api/administration/upload_lot/"+letter+ "/"+ sousLotNbr, data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -219,7 +219,7 @@ export default function ModificationLot() {
         {step ==0 &&          <div className='pl-20 pr-20 pt-10 m-auto'>
             <SimpleCard>
                 <Typography className='mb-6 ml-2'>
-                    <h4>Choisir une lettre pour télécharger le fichier du définitions:</h4>
+                    <h4>Choisir une lettre pour télécharger le fichier des définitions:</h4>
                 </Typography>
             {
                 letters && letters.map(letter=>
@@ -240,7 +240,7 @@ export default function ModificationLot() {
                 <MUIDataTable 
                   title = {
                     <Typography className='mb-6  mt-10'>
-                    <h4>Choisir un sous-lot pour télécharger le fichier du définitions:</h4>
+                    <h4>Choisir un sous-lot pour télécharger le fichier des définitions:</h4>
                 </Typography>
                   }
                   options= {{
@@ -312,7 +312,7 @@ export default function ModificationLot() {
                        customBodyRenderLite: (dataIndex) => {
                         return ( 
                             <div className='inline-block'>
-                            <IconButton onClick={() => (incrementStep(),setSousLotNbr(sousLot[dataIndex].id))} href={"http://13.36.215.163:8000/api/administration/download_lot/"+letter+'/'+ sousLot[dataIndex].id}>
+                            <IconButton onClick={() => (incrementStep(),setSousLotNbr(sousLot[dataIndex].id))} href={"http://51.68.80.15:8000/api/administration/download_lot/"+letter+'/'+ sousLot[dataIndex].id}>
                             <Icon color='primary'>download</Icon>
                         </IconButton>
                         </div>

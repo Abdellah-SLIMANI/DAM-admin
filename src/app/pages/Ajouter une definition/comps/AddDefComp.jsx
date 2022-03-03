@@ -52,7 +52,7 @@ export default function AddDefComp() {
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
         console.log("DATA SENT ON FILE",data.get('data'))
-        axios.post("http://13.36.215.163:8000/api/administration/upload/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+        axios.post("http://51.68.80.15:8000/api/administration/upload/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -79,7 +79,7 @@ export default function AddDefComp() {
                                   variant='contained'
                                   disabled={step != 0}
                                   color= 'primary'
-                                  href='http://13.36.215.163:8000/api/administration/download_template/'
+                                  href='http://51.68.80.15:8000/api/administration/download_template/'
                                   target='_blank'
                                   onClick={() => incrementStep()}
                               >
