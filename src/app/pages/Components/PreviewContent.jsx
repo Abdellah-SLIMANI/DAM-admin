@@ -48,8 +48,10 @@ export default function PreviewContent({selectedWord}) {
                                else if (MapTitlesToKeys[key].type === 'voir'){
                                     return <>
                                     <div style={{marginBottom: '1rem'}}>
-                                                <span style={{fontStyle: 'italic'}}>{MapTitlesToKeys[key].label && MapTitlesToKeys[key].label +" : "}</span>    
-                                                <span>{selectedWord[key] && selectedWord[key].map((e) => <span>{e.titre + " "}</span>)}</span>
+                                                <span style={{fontStyle: 'italic'}}>{MapTitlesToKeys[key].label && MapTitlesToKeys[key].label +" : "}</span>
+                                                    
+                                                <span>{selectedWord[key] && Array.prototype.map.call(selectedWord[key], function(item) { return item.titre }).join(", ")}</span>
+                                                {/* <span>{selectedWord[key] && selectedWord[key].map((e) => <span>{e.titre + ", "}</span>)}</span> */}
                                             </div></>
                                }
                            }

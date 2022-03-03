@@ -203,9 +203,9 @@ export default function ModifyDefTxtEdit() {
                  <div ref={previewWordRef}>
                     <SimpleCard>
                       <Typography variant="title" style={{display:'inline-flex'}}>
-                            <h4>Aperçu de la définition actuel</h4>{' '}
-                          </Typography>
-                        <PreviewContent selectedWord={previewWord}/>
+                            <h4>Aperçu de la nouvelle définition</h4>{' '}
+                        </Typography>
+                      <PreviewContent selectedWord={previewWord}/>
                     </SimpleCard>
                   </div>
                   }
