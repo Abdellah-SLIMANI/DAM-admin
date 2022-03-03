@@ -87,12 +87,29 @@ export default function ModificationLot() {
         
     }
 
-    useEffect(() => {
-         axios.get(url+query.get('titre'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
+    const fetchData = () => {
+      axios.get(url+query.get('titre'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
             .then(response => (func(response)))
             axios.get('http://13.36.215.163:8000/api/administration/get_letters/')
                 .then(res => setLetters(res.data))
-    }, [letters])
+    }
+    useEffect(()=>{
+      fetchData();
+    },[])
+    useEffect(() => {
+      const interval = setInterval(() => {
+        fetchData();
+      }, 5000);
+    
+      return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    }, [])
+
+    // useEffect(() => {
+    //      axios.get(url+query.get('titre'), {headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
+    //         .then(response => (func(response)))
+    //         axios.get('http://13.36.215.163:8000/api/administration/get_letters/')
+    //             .then(res => setLetters(res.data))
+    // }, [letters])
 
     const floationgFabStyle = {
       position: 'absolute',
