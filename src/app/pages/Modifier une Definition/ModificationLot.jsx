@@ -13,7 +13,7 @@ import {
   Step,
   useStepper,
 } from "react-progress-stepper";
-import { Breadcrumb } from 'app/components';
+import { Breadcrumb, MatxLoading } from 'app/components';
 import MUIDataTable from 'mui-datatables';
 import ConfirmReinit from '../Components/ConfirmReinit';
 
@@ -123,6 +123,7 @@ export default function ModificationLot() {
     const [loadingS,setLoadingS] = useState(false)
     const [previewWord, setPreviewWord] = useState()
     const [previewLot, setPreviewLot] = useState()
+    const [previewLotLoading, setPreviewLotLoading] = useState(false)
     const [sousLot, setSouslot] = useState()
     const [sousLotNbr, setSousLotNbr] = useState()
     const previewWordRef = useRef(null)
@@ -156,6 +157,7 @@ export default function ModificationLot() {
       }
 
       const SubmitFile = (acceptedFilesProp,letter) => {
+        setPreviewLotLoading(true)
         incrementStep()
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
@@ -166,7 +168,10 @@ export default function ModificationLot() {
                 'Content-Type': acceptedFilesProp[0].type
               }
           })
-            .then(res => setPreviewLot(res.data))
+            .then(res => {
+             setPreviewLotLoading(false) 
+              setPreviewLot(res.data)
+            })
       }
 
     return (
@@ -216,7 +221,7 @@ export default function ModificationLot() {
                           variant='contained' 
                           style={{alignSelf: 'flex-end'}}
                           color= 'primary' 
-                          disabled={step != 3} 
+                          disabled={!previewLot} 
                           type="submit" 
                           onClick={()=>{draft()}}
                       >
@@ -254,6 +259,7 @@ export default function ModificationLot() {
             {
               step == 1 && 
               <div className='mt-5 pt-5 pl-10 pr-10'>
+                {sousLot ? 
                 <MUIDataTable 
                   title = {
                     <Typography className='mb-6  mt-10'>
@@ -340,22 +346,31 @@ export default function ModificationLot() {
                   ]}
                   data={sousLot && sousLot}
                 />
+              : <MatxLoading/> }
               </div>
             }
             <div>
-            {
-                    previewLot && <>
+            { 
+                    ( previewLot && !previewLotLoading) ? <>
                     <Typography variant="title" style={{display:'inline-flex'}} className='mt-5'>
                             <h4>Aperçu des définitions du fichier</h4>{' '}
                     </Typography>
+                    
                     {previewLot.map(def =>
-                    <div className='mt-2 mb-2'>    
-                    <SimpleCard>
-                        <PreviewContent selectedWord={def}/>
-                    </SimpleCard>
-                    </div>
+                      {
+                        if(def.status == 'En attente') return;
+                        return(
+                          <div className='mt-2 mb-2'>    
+                          <SimpleCard>
+                              <PreviewContent selectedWord={def}/>
+                          </SimpleCard>
+                          </div>
+                        )
+                      }
                     )}
-                    </>
+                    </>: <div style={{display:!previewLotLoading && 'none'}}>
+                    <MatxLoading/>
+                    </div>
                   }
             </div>
           <div className='pl-20 pr-20' style={{marginBottom: '10rem'}}>
