@@ -30,7 +30,7 @@ const UsersTabDeBord = () => {
       }
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/users/' , {
+        axios.get('http://51.68.80.15:8000/api/administration/users/' , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})

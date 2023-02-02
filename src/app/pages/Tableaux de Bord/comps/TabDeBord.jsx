@@ -49,8 +49,8 @@ const TabDeBord = () => {
     
     React.useEffect(() => {
         setLoading(true)
-        const urlWithSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&titre='+searchText+'&type='+typeFilter.toString()+'&status='+statusFilter.toString()+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName 
-        const urlWithoutSearch = 'http://13.36.215.163:8000/api/administration/article/?page='+page+'&type='+typeFilter.toString()+'&status='+statusFilter.toString()+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName
+        const urlWithSearch = 'http://51.68.80.15:8000/api/administration/article/?page='+page+'&titre='+searchText+'&type='+typeFilter.toString()+'&status='+statusFilter.toString()+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName 
+        const urlWithoutSearch = 'http://51.68.80.15:8000/api/administration/article/?page='+page+'&type='+typeFilter.toString()+'&status='+statusFilter.toString()+'&page_size='+rowsPerPage+'&order_by='+orderDirection+'&order='+orderName
         axios.get(searchText == null ? urlWithoutSearch : urlWithSearch, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
@@ -79,7 +79,7 @@ const TabDeBord = () => {
             status: 'valide',
             data: word.data
         }
-        axios.put('http://13.36.215.163:8000/api/administration/article/'+word.id+'/' , data , {
+        axios.put('http://51.68.80.15:8000/api/administration/article/'+word.id+'/' , data , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
@@ -309,7 +309,7 @@ const TabDeBord = () => {
                         handleClose={()=>handleClose()}
                         item={modalDef}
                         message='Confirmez-vous la suppression de la définition:'
-                        url='http://13.36.215.163:8000/api/administration/article/'
+                        url='http://51.68.80.15:8000/api/administration/article/'
                     />
                     <WordPreview 
                         open={openPreview}

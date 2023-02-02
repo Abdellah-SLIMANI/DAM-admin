@@ -32,8 +32,8 @@ export default function ModifyDefTxtEdit() {
     const previousPath = localStorage.getItem('LastPath');
     const isTabDeBordThePreviousPath = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord");
     
-    const url = isTabDeBordThePreviousPath ? 'http://13.36.215.163:8000/api/administration/article/?titre=' : 'http://13.36.215.163:8000/api/elastic/search/?titre='
-    const putUrl = isTabDeBordThePreviousPath ? 'http://13.36.215.163:8000/api/administration/article/'+word.id+'/' : 'http://13.36.215.163:8000/api/administration/article/'
+    const url = isTabDeBordThePreviousPath ? 'http://51.68.80.15:8000/api/administration/article/?titre=' : 'http://51.68.80.15:8000/api/elastic/search/?titre='
+    const putUrl = isTabDeBordThePreviousPath ? 'http://51.68.80.15:8000/api/administration/article/'+word.id+'/' : 'http://51.68.80.15:8000/api/administration/article/'
 
     function func(res) {
             if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
@@ -125,7 +125,7 @@ export default function ModifyDefTxtEdit() {
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
         console.log("DATA SENT ON FILE",data.get('data'))
-        axios.post("http://13.36.215.163:8000/api/administration/upload/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+        axios.post("http://51.68.80.15:8000/api/administration/upload/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -136,7 +136,7 @@ export default function ModifyDefTxtEdit() {
       }
 
     const getDownloadURL = () =>(
-      oldContent.id ? 'http://13.36.215.163:8000/api/administration/download/' + oldContent.id + '/?db=elastic' : 'http://13.36.215.163:8000/api/administration/download/' + word.id + '/?db=postgre'
+      oldContent.id ? 'http://51.68.80.15:8000/api/administration/download/' + oldContent.id + '/?db=elastic' : 'http://51.68.80.15:8000/api/administration/download/' + word.id + '/?db=postgre'
     )
     return (
         <div className='flex-column'>

@@ -118,7 +118,7 @@ const Layout1Topbar = () => {
     }
 
     useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/get_user_menu/', {              headers: {
+        axios.get('http://51.68.80.15:8000/api/administration/get_user_menu/', {              headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
           }})
             .then(res => setMenuItems(res.data))

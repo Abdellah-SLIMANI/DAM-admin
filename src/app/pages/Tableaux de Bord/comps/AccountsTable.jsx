@@ -42,7 +42,7 @@ const AccountsTable = () => {
     }
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/user/?page='+page+'&page_size='+rowsPerPage, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
+        axios.get('http://51.68.80.15:8000/api/administration/user/?page='+page+'&page_size='+rowsPerPage, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
         .then(res => {
             console.log("USERS DATA",res.data)
             setUsers(res.data)

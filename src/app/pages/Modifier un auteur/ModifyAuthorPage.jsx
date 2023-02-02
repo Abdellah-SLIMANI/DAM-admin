@@ -52,8 +52,8 @@ export default function ModifyDefTxtEdit() {
 
     lastLocation && localStorage.setItem('LastPath',lastLocation.pathname);
     const previousPath = localStorage.getItem('LastPath');
-    const url = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/auteur/?nom=' : 'http://13.36.215.163:8000/api/elastic/auteur/?nom='
-    const putUrl = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://13.36.215.163:8000/api/administration/auteur/'+oldContent.id+'/' : 'http://13.36.215.163:8000/api/administration/auteur/'
+    const url = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://51.68.80.15:8000/api/administration/auteur/?nom=' : 'http://51.68.80.15:8000/api/elastic/auteur/?nom='
+    const putUrl = (previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord") ? 'http://51.68.80.15:8000/api/administration/auteur/'+oldContent.id+'/' : 'http://51.68.80.15:8000/api/administration/auteur/'
 
     function func(res) {
             if((previousPath == "/Tableaux-de-bord/" || previousPath == "/Tableaux-de-bord")){
@@ -121,7 +121,7 @@ export default function ModifyDefTxtEdit() {
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
         console.log("DATA SENT ON FILE",data.get('data'))
-        axios.post("http://13.36.215.163:8000/api/administration/upload_auteur/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+        axios.post("http://51.68.80.15:8000/api/administration/upload_auteur/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -132,7 +132,7 @@ export default function ModifyDefTxtEdit() {
       }
 
       const getDownloadURL = () =>(
-        oldContent.elastic_id ? 'http://13.36.215.163:8000/api/administration/download_auteur/' + oldContent.elastic_id + '/?db=elastic' : 'http://13.36.215.163:8000/api/administration/download_auteur/' + oldContent.id + '/?db=postgre'
+        oldContent.elastic_id ? 'http://51.68.80.15:8000/api/administration/download_auteur/' + oldContent.elastic_id + '/?db=elastic' : 'http://51.68.80.15:8000/api/administration/download_auteur/' + oldContent.id + '/?db=postgre'
       )
 
       console.log('OLD CONTENT', oldContent)

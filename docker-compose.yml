@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:    
+  backoffice:
+    restart: always
+    container_name: backoffice
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3000:80
+    networks:
+      - dam-network
+
+networks:
+  dam-network:
+    driver: bridge

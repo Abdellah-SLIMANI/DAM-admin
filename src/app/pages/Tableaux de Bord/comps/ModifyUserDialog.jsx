@@ -48,7 +48,7 @@ export default function ModifyUserDialog({user,open ,handleClose}) {
     
     const handleFormSubmit = async (event) => {
         try {
-            axios.put('http://13.36.215.163:8000/api/administration/user/'+user.id+'/', currentUser ,{headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
+            axios.put('http://51.68.80.15:8000/api/administration/user/'+user.id+'/', currentUser ,{headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}})
             .then(res=> res.statusText === 'OK' ? window.location.reload() : alert("Server Problem"))
 
         } catch (e) {

@@ -38,7 +38,7 @@ const ListeDesAuteurs = () => {
     React.useEffect(() => { 
         if(query.get('nom') != null){
             setLoading(true)
-            axios.get(`http://13.36.215.163:8000/api/elastic/auteur/?nom=${query.get('nom')}`)
+            axios.get(`http://51.68.80.15:8000/api/elastic/auteur/?nom=${query.get('nom')}`)
             .then(res => {
                 console.log(res.data)
                 setAuthors(res.data)

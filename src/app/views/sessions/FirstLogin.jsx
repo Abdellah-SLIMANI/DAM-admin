@@ -57,7 +57,7 @@ const FirstLogin = () => {
             token: token
         }
 
-        axios.post("http://13.36.215.163:8000/password_reset/confirm/", body)
+        axios.post("http://51.68.80.15:8000/password_reset/confirm/", body)
         .then(res=> res.statusText == "OK" ? history.push(`/session/login`) : alert('error'))
     }
 

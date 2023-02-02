@@ -12,7 +12,7 @@ export default function SearchAdd({value,setValue}) {
         <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
         <SearchBar 
             handleSearch={handleSearch} 
-            url = {'http://13.36.215.163:8000/api/elastic/search/?titre='} 
+            url = {'http://51.68.80.15:8000/api/elastic/search/?titre='} 
             noOptionsText = 'Aucune définition' 
             label="Saisir le titre de la définition"
         />

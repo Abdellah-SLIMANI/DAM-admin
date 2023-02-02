@@ -25,7 +25,7 @@ export default function AsyncAutocomplete() {
         setLoading(true)
         ;(async () => {
             const response = await fetch(
-                `http://13.36.215.163:8000/api/elastic/search/?titre=${inputValue}`
+                `http://51.68.80.15:8000/api/elastic/search/?titre=${inputValue}`
             ).finally(() => {setLoading(false)})
             const defs = await response.json()
                 setDefs(defs)

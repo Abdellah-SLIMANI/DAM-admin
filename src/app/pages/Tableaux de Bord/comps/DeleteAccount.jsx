@@ -36,7 +36,7 @@ export default function DeleteAccount({user,open ,handleClose}) {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        axios.get("http://13.36.215.163:8000/api/administration/user/"+user.id+"/", {headers: {'Authorization': `Bearer ${localStorage.getItem("accessToken")}`} })
+        axios.get("http://51.68.80.15:8000/api/administration/user/"+user.id+"/", {headers: {'Authorization': `Bearer ${localStorage.getItem("accessToken")}`} })
             .then(res => 
                 setCurrentUser(res.data)
             )
@@ -47,7 +47,7 @@ export default function DeleteAccount({user,open ,handleClose}) {
     const handleFormSubmit = async (event) => {
         setLoading(true)
         try {
-            axios.delete('http://13.36.215.163:8000/api/administration/user/'+user.id+'/', {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
+            axios.delete('http://51.68.80.15:8000/api/administration/user/'+user.id+'/', {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
             .then(res=> res.status == 204 ? window.location.reload() : alert("problem occured"))
             // .finally(
             //     window.location.reload()

@@ -18,7 +18,7 @@ export default function CodeAdd({value , setValue}) {
 
         ;(async () => {
             const response = await fetch(
-                'http://13.36.215.163:8000/api/administration/get_domaine_list/'
+                'http://51.68.80.15:8000/api/administration/get_domaine_list/'
             )
             const codes = await response.json()
             console.log('cntr',codes.Domaines)

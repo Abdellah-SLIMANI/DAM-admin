@@ -8,7 +8,7 @@ import { Breadcrumb } from 'app/components'
 export default function ModifyDef (){
     const history = useHistory()
     // const word = localStorage.getItem("SearchedWord")
-    const url = 'http://13.36.215.163:8000/api/elastic/search/?titre='
+    const url = 'http://51.68.80.15:8000/api/elastic/search/?titre='
         function handleSearch(word){
            if(word != null){
             let queryString = "titre=" + word.titre;

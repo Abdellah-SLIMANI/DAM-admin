@@ -42,7 +42,7 @@ const TabDeBordAuteurs = () => {
     }
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/auteur/?page='+page+'&page_size='+rowsPerPage , {
+        axios.get('http://51.68.80.15:8000/api/administration/auteur/?page='+page+'&page_size='+rowsPerPage , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
@@ -72,7 +72,7 @@ const TabDeBordAuteurs = () => {
             created_by: user.id,
             status: 'valide',
         }
-        axios.put('http://13.36.215.163:8000/api/administration/auteur/'+word.id+'/' , data , {
+        axios.put('http://51.68.80.15:8000/api/administration/auteur/'+word.id+'/' , data , {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }})
@@ -255,7 +255,7 @@ const TabDeBordAuteurs = () => {
                 handleClose={()=>handleClose()}
                 item={modalDef}
                 message="Confirmez-vous la suppression de l'auteur:"
-                url='http://13.36.215.163:8000/api/administration/auteur/'
+                url='http://51.68.80.15:8000/api/administration/auteur/'
             />
             <AuthorPreview
                         open={openPreview}

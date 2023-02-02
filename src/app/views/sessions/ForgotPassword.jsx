@@ -63,7 +63,7 @@ const ForgotPassword = () => {
     }
     
     const handleFormSubmit = (event) => {
-        axios.post("http://13.36.215.163:8000/password_reset/", state)
+        axios.post("http://51.68.80.15:8000/password_reset/", state)
         .then(res=>  ( res.statusText === "OK" ? onApiCallSuccess() : onApiCallFailure()))
         .catch((e)=> (onApiCallFailure(),console.log(e)))
         .finally(() => (setState({...state, email: ''}),setLoading(false)))

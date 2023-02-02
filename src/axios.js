@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-    baseURL: 'http://13.36.215.163:8000/api/',
+    baseURL: 'http://51.68.80.15:8000/api/',
     headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     }

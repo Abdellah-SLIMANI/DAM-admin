@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     const login = async (email, password) => {
-        const response = await axios.post('http://13.36.215.163:8000/gettoken/', {
+        const response = await axios.post('http://51.68.80.15:8000/gettoken/', {
             email,
             password,
         })
@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }) => {
 
                 if (accessToken) {
                     setSession(accessToken)
-                    const response = await axios.get('http://13.36.215.163:8000/api/administration/get_user/')
+                    const response = await axios.get('http://51.68.80.15:8000/api/administration/get_user/')
                     console.log("EYO?",response.data)
                     const user = response.data
 

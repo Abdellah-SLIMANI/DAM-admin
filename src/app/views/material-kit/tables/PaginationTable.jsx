@@ -87,7 +87,7 @@ const PaginationTable = () => {
     
 
     React.useEffect(() => {
-        axios.get('http://13.36.215.163:8000/api/administration/article/')
+        axios.get('http://51.68.80.15:8000/api/administration/article/')
         .then(res => {
             console.log(res.data)
             setDefinitions(res.data)

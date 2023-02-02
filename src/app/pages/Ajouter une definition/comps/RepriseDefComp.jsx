@@ -44,7 +44,7 @@ export default function RepriseDefComp() {
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
         console.log("DATA SENT ON FILE",data.get('data'))
-        axios.post("http://13.36.215.163:8000/api/administration/upload_reprise/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+        axios.post("http://51.68.80.15:8000/api/administration/upload_reprise/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,

@@ -18,7 +18,7 @@ export default function DomaineModify({value , oldValue ,setValue}) {
 
         ;(async () => {
             const response = await fetch(
-                'http://13.36.215.163:8000/api/administration/get_domaine_list/'
+                'http://51.68.80.15:8000/api/administration/get_domaine_list/'
             )
             const Codes = await response.json()
 

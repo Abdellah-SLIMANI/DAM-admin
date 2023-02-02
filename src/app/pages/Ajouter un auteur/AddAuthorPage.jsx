@@ -47,7 +47,7 @@ export default function AddDefComp() {
             'data': previewWord
         }
 
-        axios.post("http://13.36.215.163:8000/api/administration/auteur/", data ,config)
+        axios.post("http://51.68.80.15:8000/api/administration/auteur/", data ,config)
         .then(res => res.status == 200 || res.status == 201 ? history.push(`/Tableaux-de-bord/?tableaux=auteurs`) : window.alert('Server Error',res))
     }
 
@@ -55,7 +55,7 @@ export default function AddDefComp() {
         incrementStep()
         let data = new FormData();
         data.append('data', acceptedFilesProp[0])
-        axios.post("http://13.36.215.163:8000/api/administration/upload_auteur/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
+        axios.post("http://51.68.80.15:8000/api/administration/upload_auteur/"+acceptedFilesProp[0].name+ "/", data.get('data') ,
             { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -82,7 +82,7 @@ export default function AddDefComp() {
                                   variant='contained'
                                   disabled={step != 0}
                                   color= 'primary'
-                                  href='http://13.36.215.163:8000/api/administration/download_auteur_template/'
+                                  href='http://51.68.80.15:8000/api/administration/download_auteur_template/'
                                   target='_blank'
                                   onClick={() => incrementStep()}
                               >

@@ -11,7 +11,7 @@ export default function AuthorsAddSearchBar() {
          <div className='searchContainer m-auto p-5' style={{textAlign: 'center'}}>
          <SearchBar 
              handleSearch={handleSearch} 
-             url = {'http://13.36.215.163:8000/api/elastic/auteur/?nom='} 
+             url = {'http://51.68.80.15:8000/api/elastic/auteur/?nom='} 
              noOptionsText = 'Aucun auteur' 
              label="Saisir le nom de l'auteur"
          />

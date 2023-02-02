@@ -34,7 +34,7 @@ const DeleteAuthor = () => {
     React.useEffect(() => { 
         if(query.get('nom') != null){
             setLoading(true)
-            axios.get(`http://13.36.215.163:8000/api/elastic/auteur/?nom=${query.get('nom')}`)
+            axios.get(`http://51.68.80.15:8000/api/elastic/auteur/?nom=${query.get('nom')}`)
             .then(res => {
                 console.log(res.data)
                 setAuthors(res.data)
@@ -88,7 +88,7 @@ const DeleteAuthor = () => {
                 handleClose={()=>handleClose()}
                 item={currentWord}
                 message="Confirmez-vous la suppression définitive de l'auteur:"
-                url='http://13.36.215.163:8000/api/administration/delete_auteur_es/'
+                url='http://51.68.80.15:8000/api/administration/delete_auteur_es/'
              />
             </>
     )

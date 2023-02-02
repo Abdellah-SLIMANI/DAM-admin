@@ -27,7 +27,7 @@ export default function DeleteElasticDef(){
      React.useEffect(() => {
          setLoading(true)
          ;(async () => {
-             const response = await fetch('http://13.36.215.163:8000/api/elastic/auteur/?nom='+inputValue)
+             const response = await fetch('http://51.68.80.15:8000/api/elastic/auteur/?nom='+inputValue)
                  .finally(() => {setLoading(false)})
              const authors = await response.json()
              setAuthors(authors)
@@ -40,7 +40,7 @@ export default function DeleteElasticDef(){
             setAuthors([])
          }
      }, [open])
-     const url = 'http://13.36.215.163:8000/api/elastic/auteur/?nom='
+     const url = 'http://51.68.80.15:8000/api/elastic/auteur/?nom='
      const history = useHistory()
         return (
             <div>

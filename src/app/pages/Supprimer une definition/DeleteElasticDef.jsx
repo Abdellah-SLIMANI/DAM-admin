@@ -13,7 +13,7 @@ export default function DeleteElasticDef(){
          history.push(`/supprimer-une-definition/?${queryString}`);
         }
      }
-     const url = 'http://13.36.215.163:8000/api/elastic/search/?titre='
+     const url = 'http://51.68.80.15:8000/api/elastic/search/?titre='
      const history = useHistory()
         return (
             <div>

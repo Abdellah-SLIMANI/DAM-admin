@@ -13,7 +13,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function DeleteElasticModal({def,open ,handleClose}) {
     const handleFormSubmit = async () => {
         try {
-            axios.delete('http://13.36.215.163:8000/api/administration/delete_article_es/'+def.id, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
+            axios.delete('http://51.68.80.15:8000/api/administration/delete_article_es/'+def.id, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
             .then(res=> res.statusText == "OK" ? window.location.reload() : alert("problem occured"))
         } catch (e) {
             console.log(e)

@@ -43,7 +43,7 @@ const DeleteDefinition = () => {
     React.useEffect(() => { 
         if(query.get('titre') != null){
             setLoading(true)
-            axios.get(`http://13.36.215.163:8000/api/elastic/search/?titre=${query.get('titre')}`)
+            axios.get(`http://51.68.80.15:8000/api/elastic/search/?titre=${query.get('titre')}`)
             .then(res => {
                 console.log(res.data)
                 setDefinitions(res.data)
@@ -98,7 +98,7 @@ const DeleteDefinition = () => {
                 handleClose={()=>handleClose()}
                 item={currentWord}
                 message="Confirmez-vous la suppression définitive de la définition:"
-                url='http://13.36.215.163:8000/api/administration/delete_article_es/'
+                url='http://51.68.80.15:8000/api/administration/delete_article_es/'
              />
             </>
     )

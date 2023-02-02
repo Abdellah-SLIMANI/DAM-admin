@@ -13,7 +13,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ConfirmReinit({letter ,open ,handleClose}) {
     const handleFormSubmit = async () => {
         try {
-            axios.get('http://13.36.215.163:8000/api/administration/reset_lettre/'+letter, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
+            axios.get('http://51.68.80.15:8000/api/administration/reset_lettre/'+letter, {headers: {"Authorization": `Bearer  ${localStorage.getItem('accessToken')}`}})
             .then(res=> res.status == 204 || res.status == 200 ? handleClose() : alert("problem occured"))
         } catch (e) {
             console.log(e)

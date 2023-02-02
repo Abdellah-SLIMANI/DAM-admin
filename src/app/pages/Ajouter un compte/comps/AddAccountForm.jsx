@@ -30,7 +30,7 @@ export default function AddAccountForm() {
     const handleFormSubmit = async (event) => {
         setLoading(true)
         try {
-            axios.post('http://13.36.215.163:8000/api/administration/create_account/', userInfo)
+            axios.post('http://51.68.80.15:8000/api/administration/create_account/', userInfo)
             .then(res=> res.status == 200 ? history.push('./tableaux-de-bord'): alert("problem accured"))
         } catch (e) {
             console.log(e)
